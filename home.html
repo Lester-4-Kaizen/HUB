@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Study Hub — All Subjects</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- NAVBAR -->
+      <nav class="navbar" id="navbar"></nav>
+
+      <div class="layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+          <div class="sidebar-header">
+            <div class="brand">
+              <div class="brand-icon" title="Study Hub">📚</div>
+              <div>
+                <div class="brand-name">STUDY HUB</div>
+                <div class="brand-sub">CS · All Subjects</div>
+              </div>
+            </div>
+          </div>
+          <div id="sidebarNav"></div>
+          <div class="sidebar-footer">
+            <div
+              class="progress-summary"
+              style="
+                font-size: 12px;
+                color: var(--muted);
+                padding: 10px;
+                font-family: &quot;IBM Plex Mono&quot;, monospace;
+              "
+            >
+              7 subjects · 1 available
+            </div>
+          </div>
+        </aside>
+        <div
+          class="sidebar-overlay"
+          id="sidebarOverlay"
+          onclick="closeSidebar()"
+        ></div>
+
+        <!-- MAIN -->
+        <main class="main">
+          <div class="main-inner animate-in">
+            <div class="hub-hero">
+              <div class="hub-tag">📚 CS Study Hub</div>
+              <h1 class="hub-title">All <em>Subjects</em></h1>
+              <p class="hub-desc">
+                Choose a subject to start studying. Each subject has reading
+                notes, flashcards, and quizzes to test your understanding.
+              </p>
+            </div>
+            <div class="hub-sem-label">📘 Current Subjects</div>
+            <div class="subjects-grid" id="subjectsGrid"></div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- FIXED FOOTER -->
+    <footer class="site-footer" id="site-footer"></footer>
+
+    <script src="data.js"></script>
+    <script src="nav.js"></script>
+    <script src="sidebar.js"></script>
+    <script>
+      buildNavbar("home");
+      buildFooter();
+      buildGlobalSidebar(null);
+      buildSidebarToggleBtn();
+
+      function buildSubjectsGrid() {
+        const g = document.getElementById("subjectsGrid");
+        g.innerHTML = "";
+        subjects.forEach((s) => {
+          const card = document.createElement("a");
+          card.className = "subject-card" + (s.available ? "" : " coming-soon");
+          card.href = s.available ? s.url : s.url;
+          card.innerHTML = `
+        <div class="sc-icon">${s.icon}</div>
+        <div class="sc-name">${s.name}</div>
+        <div class="sc-desc">${s.desc}</div>
+        <div class="sc-footer">
+          <span class="sc-badge ${s.available ? "available" : "soon"}">${s.available ? "✓ Available" : "🚧 Coming Soon"}</span>
+          ${s.available ? `<span class="sc-topics">${s.topics} topics</span>` : ""}
+        </div>`;
+          g.appendChild(card);
+        });
+      }
+
+      buildSubjectsGrid();
+    </script>
+  </body>
+</html>

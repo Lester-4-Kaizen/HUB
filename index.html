@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Study Hub — CS Study Companion</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <div class="landing-nav-wrap">
+        <!-- NAVBAR -->
+        <nav class="navbar" id="navbar"></nav>
+
+        <!-- HERO -->
+        <main class="landing-main">
+          <div class="landing-inner animate-in">
+            <div class="landing-badge">🎓 CS Study Companion</div>
+            <div class="landing-logo">📚</div>
+            <h1 class="landing-title">Your Personal<br /><em>Study Hub</em></h1>
+            <p class="landing-desc">
+              A complete study companion for your Computer Science subjects —
+              read, review sub-topics, flip flashcards, and quiz yourself, all
+              in one place.
+            </p>
+            <div class="landing-subjects">
+              <div class="landing-subject-pill">🤖 Artificial Intelligence</div>
+              <div class="landing-subject-pill">⚙️ Automata Theory</div>
+              <div class="landing-subject-pill">🔬 Methods of Research</div>
+              <div class="landing-subject-pill">
+                📐 Modeling &amp; Simulation
+              </div>
+              <div class="landing-subject-pill">🛠️ Software Engineering 2</div>
+              <div class="landing-subject-pill">💡 CS Elective 3</div>
+              <div class="landing-subject-pill">💡 CS Elective 4</div>
+            </div>
+            <a class="btn-get-started" href="home.html">Get Started →</a>
+            <div class="landing-footer-note">
+              7 subjects · Topics, Flashcards &amp; Quizzes
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- FIXED FOOTER -->
+    <footer class="site-footer" id="site-footer"></footer>
+
+    <script src="data.js"></script>
+    <script src="nav.js"></script>
+    <script src="sidebar.js"></script>
+    <script>
+      buildNavbar("landing");
+      buildFooter();
+    </script>
+  </body>
+</html>

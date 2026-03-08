@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Study Hub — Supervised Machine Learning</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ---- Flashcards ---- */
+    .flashcard-area{display:flex;flex-direction:column;align-items:center;padding:20px 0}
+    .fc-counter{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:14px}
+    .flashcard-wrap{width:100%;max-width:520px;perspective:1000px;margin-bottom:16px}
+    .flashcard{width:100%;height:200px;position:relative;transform-style:preserve-3d;transition:transform .5s;cursor:pointer;border-radius:16px}
+    .flashcard.flipped{transform:rotateY(180deg)}
+    .fc-face{position:absolute;inset:0;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+    .fc-front{background:var(--surface);border:2px solid var(--border)}
+    .fc-back{background:linear-gradient(135deg,#1a472a,#2d6a4f);color:#fff;transform:rotateY(180deg)}
+    .fc-label{font-size:10px;font-family:'IBM Plex Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+    .fc-back .fc-label{color:rgba(255,255,255,0.6)}
+    .fc-text{font-family:'Lora',serif;font-size:15px;font-weight:600;line-height:1.5;color:var(--text)}
+    .fc-back .fc-text{color:#fff;font-size:14px}
+    .fc-hint{font-size:11px;color:var(--muted);margin-top:10px;font-family:'IBM Plex Mono',monospace}
+    .fc-nav{display:flex;gap:10px;width:100%;max-width:520px}
+    .fc-btn{flex:1;padding:10px;background:var(--surface);border:1px solid var(--border);border-radius:9px;font-size:13px;font-family:'Nunito',sans-serif;font-weight:600;cursor:pointer;color:var(--muted);transition:all .15s}
+    .fc-btn:hover,.fc-btn.primary{border-color:var(--accent);color:var(--accent)}
+    .fc-btn.primary{background:var(--tag-bg)}
+    /* ---- Sections ---- */
+    .section-block{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin-bottom:16px}
+    .section-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+    .section-icon{font-size:18px}
+    .section-title{font-family:'Lora',serif;font-size:17px;font-weight:700;color:var(--text)}
+    .section-body{font-size:14px;line-height:1.75;color:var(--text)}
+    .concepts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:14px}
+    .concept-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+    .concept-term{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;color:var(--accent);margin-bottom:5px}
+    .concept-def{font-size:13px;color:var(--muted);line-height:1.55}
+    /* ---- Subtopics ---- */
+    .subtopics-list{display:flex;flex-direction:column;gap:8px}
+    .subtopic-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+    .subtopic-header{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;transition:background .15s}
+    .subtopic-header:hover{background:var(--bg)}
+    .subtopic-icon{font-size:16px;flex-shrink:0}
+    .subtopic-name{flex:1;font-size:14px;font-weight:600;color:var(--text)}
+    .subtopic-badge{font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--accent);background:var(--tag-bg);border-radius:100px;padding:2px 8px}
+    .subtopic-chevron{font-size:18px;color:var(--muted);transition:transform .2s}
+    .subtopic-chevron.open{transform:rotate(90deg)}
+    .subtopic-body{padding:14px 16px;font-size:14px;line-height:1.7;color:var(--text);border-top:1px solid var(--border)}
+    /* ---- Tabs ---- */
+    .tab-bar{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+    .tab-btn{padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:var(--surface);font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s}
+    .tab-btn:hover{border-color:var(--accent);color:var(--accent)}
+    .tab-btn.active{background:var(--tag-bg);border-color:var(--accent);color:var(--accent)}
+    /* ---- Quiz ---- */
+    .quiz-setup{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:20px}
+    .quiz-setup-title{font-family:'Lora',serif;font-size:19px;font-weight:700;color:var(--text);margin-bottom:6px}
+    .quiz-setup-desc{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.55}
+    .quiz-in-progress{display:none;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px}
+    .qp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .qp-counter,.qp-score{font-size:13px;font-family:'IBM Plex Mono',monospace;color:var(--muted)}
+    .qp-score{color:var(--success)}
+    .qp-progress-wrap{flex:1;margin:0 12px;background:var(--border);border-radius:100px;height:5px;overflow:hidden}
+    .qp-progress-bar{height:100%;background:var(--accent);border-radius:100px;transition:width .3s}
+    .qp-question-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px}
+    .qp-question-text{font-family:'Lora',serif;font-size:18px;font-weight:600;color:var(--text);line-height:1.45}
+    .qp-options{display:flex;flex-direction:column;gap:9px;margin-bottom:14px}
+    .qp-option{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;font-size:14px;font-family:'Nunito',sans-serif;font-weight:600;color:var(--text);transition:all .15s;width:100%}
+    .qp-option-letter{width:26px;height:26px;border-radius:6px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);flex-shrink:0}
+    .qp-option:hover:not(:disabled){border-color:var(--accent);background:var(--tag-bg)}
+    .qp-option.correct{border-color:var(--success);background:rgba(22,163,74,.06)}
+    .qp-option.correct .qp-option-letter{background:var(--success);color:#fff}
+    .qp-option.wrong{border-color:var(--danger);opacity:.7}
+    .qp-option.wrong .qp-option-letter{background:var(--danger);color:#fff}
+    .qp-option:disabled{cursor:default}
+    .qp-explain{background:var(--highlight);border-left:3px solid var(--accent2);border-radius:0 8px 8px 0;padding:12px 14px;font-size:13px;line-height:1.6;color:var(--text);display:none;margin-bottom:12px}
+    .qp-explain strong{color:var(--accent)}
+    .qp-nav{display:flex;justify-content:space-between;align-items:center;gap:10px}
+    /* ---- Reader header ---- */
+    .reader-header{margin-bottom:24px}
+    .reader-icon{font-size:40px;margin-bottom:12px}
+    .reader-title{font-family:'Lora',serif;font-size:clamp(22px,3.5vw,32px);font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.2}
+    .reader-source{font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+    .reader-source a{color:var(--accent);text-decoration:none}
+    .reader-source a:hover{text-decoration:underline}
+    .reader-summary{background:var(--highlight);border-left:3px solid var(--accent2);border-radius:0 10px 10px 0;padding:14px 16px;font-size:14px;line-height:1.7;color:var(--text);margin-bottom:24px}
+    .breadcrumb{display:flex;align-items:center;gap:6px;margin-bottom:20px;font-size:12px;color:var(--muted);font-family:'IBM Plex Mono',monospace;flex-wrap:wrap}
+    .breadcrumb a{color:var(--accent);text-decoration:none}
+    .breadcrumb a:hover{text-decoration:underline}
+    .breadcrumb-sep{color:var(--border)}
+    /* ---- Finals Reference ---- */
+    .fr-block{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin-bottom:20px}
+    .fr-block h2{font-family:'Lora',serif;font-size:20px;font-weight:700;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--border)}
+    .fr-block h3{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:var(--accent);margin:16px 0 8px;text-transform:uppercase;letter-spacing:1px}
+    .fr-block h4{font-size:14px;font-weight:700;color:var(--text);margin:12px 0 6px}
+    .fr-block p{font-size:14px;line-height:1.75;color:var(--text);margin-bottom:10px}
+    .fr-block ul,.fr-block ol{padding-left:20px;margin-bottom:12px}
+    .fr-block li{font-size:14px;line-height:1.65;color:var(--text);margin-bottom:5px}
+    .fr-block strong{color:var(--text)}
+    .fr-block table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px}
+    .fr-block th{background:var(--accent);color:#fff;padding:8px 12px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.5px}
+    .fr-block td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+    .fr-block tr:nth-child(even) td{background:var(--bg)}
+    .img-placeholder{background:var(--bg);border:2px dashed var(--accent2);border-radius:10px;padding:22px;margin:14px 0;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted)}
+    .img-placeholder strong{display:block;color:var(--accent2);margin-bottom:6px;font-size:11px;letter-spacing:1px;text-transform:uppercase}
+    .callout{background:var(--highlight);border-left:4px solid var(--accent2);border-radius:0 10px 10px 0;padding:14px 16px;margin:14px 0;font-size:13.5px;line-height:1.65}
+    .callout strong{color:var(--accent)}
+    .code-block{background:#1c1917;color:#e7e5e4;border-radius:10px;padding:14px 18px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.65;margin:12px 0;overflow-x:auto;white-space:pre}
+    .tag-chip{display:inline-block;background:var(--tag-bg);color:var(--tag-text);border-radius:6px;padding:2px 8px;font-family:'IBM Plex Mono',monospace;font-size:11px;margin:2px 2px}
+    .highlight-box{background:var(--highlight);border-radius:8px;padding:12px 14px;margin-top:12px;font-size:13px;line-height:1.6}
+    .sub-list{padding-left:20px}
+    .sub-list li{margin-bottom:6px;font-size:14px}
+  </style>
+</head>
+<body>
+<div id="app">
+  <nav class="navbar" id="navbar"></nav>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <div class="brand-icon">📚</div>
+          <div><div class="brand-name">STUDY HUB</div><div class="brand-sub">Artificial Intelligence</div></div>
+        </div>
+      </div>
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="sidebarSearch" placeholder="Search topics..." oninput="filterNav(this.value)"/>
+      </div>
+      <div id="sidebarNav"><div class="nav-section">
+  <div class="nav-section-label">Overview</div>
+  <a class="nav-item" href="ai.html"><span class="nav-item-icon">🏠</span><span class="nav-item-name">AI Subject Home</span></a>
+</div>
+<div class="nav-section">
+  <div class="nav-section-label">AI Topics</div>
+  <a class="nav-item" href="topic-what-is-ai.html"><span class="nav-item-icon">🤖</span><span class="nav-item-name">What is AI?</span></a>
+  <a class="nav-item" href="topic-machine-learning.html"><span class="nav-item-icon">🧠</span><span class="nav-item-name">Machine Learning</span></a>
+  <a class="nav-item" href="topic-narrow-ai.html"><span class="nav-item-icon">🎯</span><span class="nav-item-name">Narrow AI</span></a>
+  <a class="nav-item" href="topic-agi.html"><span class="nav-item-icon">🌐</span><span class="nav-item-name">AGI</span></a>
+  <a class="nav-item" href="topic-asi.html"><span class="nav-item-icon">🚀</span><span class="nav-item-name">ASI</span></a>
+  <a class="nav-item" href="topic-generative-ai.html"><span class="nav-item-icon">✨</span><span class="nav-item-name">Generative AI</span></a>
+  <a class="nav-item" href="topic-nlp.html"><span class="nav-item-icon">💬</span><span class="nav-item-name">NLP</span></a>
+  <a class="nav-item" href="topic-expert-systems.html"><span class="nav-item-icon">🧑‍⚕️</span><span class="nav-item-name">Expert Systems</span></a>
+  <a class="nav-item" href="topic-ai-models.html"><span class="nav-item-icon">📊</span><span class="nav-item-name">AI Models</span></a>
+  <a class="nav-item active" href="topic-supervised-learning.html"><span class="nav-item-icon">📚</span><span class="nav-item-name">Supervised Learning</span></a>
+  <a class="nav-item" href="topic-unsupervised-learning.html"><span class="nav-item-icon">🔍</span><span class="nav-item-name">Unsupervised Learning</span></a>
+  <a class="nav-item" href="topic-reinforcement-learning.html"><span class="nav-item-icon">🏆</span><span class="nav-item-name">Reinforcement Learning</span></a>
+  <a class="nav-item" href="topic-finals-reference.html"><span class="nav-item-icon">📄</span><span class="nav-item-name">Finals Reference</span></a>
+</div></div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+    <main class="main">
+      <div class="main-inner animate-in">
+        <div class="breadcrumb">
+          <a href="home.html">All Subjects</a>
+          <span class="breadcrumb-sep">›</span>
+          <a href="ai.html">Artificial Intelligence</a>
+          <span class="breadcrumb-sep">›</span>
+          <span>Supervised Learning</span>
+        </div>
+        <div class="reader-header">
+          <div class="reader-icon">📚</div>
+          <h1 class="reader-title">Supervised Machine Learning</h1>
+          <div class="reader-source"><span>📎</span><a href="https://www.geeksforgeeks.org/machine-learning/supervised-machine-learning/" target="_blank" rel="noopener">https://www.geeksforgeeks.org/machine-learning/supervised-machine-learning/</a></div>
+        </div>
+        <div class="reader-summary">Supervised Learning trains models on labeled datasets (input-output pairs) to predict or classify new data. Key algorithms include Linear/Logistic Regression, Decision Trees, Random Forest, SVM, and Neural Networks.</div>
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="switchTab('reading',this)">📖 Reading Notes</button>
+          <button class="tab-btn" onclick="switchTab('subtopics',this)">🔗 Sub-Topics</button>
+          <button class="tab-btn" onclick="switchTab('flashcards',this)">🃏 Flashcards</button>
+          <button class="tab-btn" onclick="switchTab('quiz',this)">📝 Quiz</button>
+        </div>
+        <div id="tab-reading"><div class="section-block animate-in" style="animation-delay:0.00s">
+  <div class="section-header"><span class="section-icon">🏷️</span><h3 class="section-title">What is Supervised Learning?</h3></div>
+  <div class="section-body">Supervised Learning is ML where models are trained on <strong>labeled datasets</strong> — each training example has an input and a corresponding correct output. The model learns to map inputs to outputs and is adjusted to minimize prediction errors. The goal is generalization: performing well on <em>new, unseen data</em>.</div>
+</div>
+<div class="section-block animate-in" style="animation-delay:0.05s">
+  <div class="section-header"><span class="section-icon">📐</span><h3 class="section-title">Two Categories: Regression & Classification</h3></div>
+  <div class="section-body"><strong>Regression</strong> — predicts <em>continuous numerical values</em> (house price, temperature). Algorithms: Linear Regression, Ridge, Polynomial. <strong>Classification</strong> — predicts <em>categorical labels</em> (spam/not-spam, cat/dog). Algorithms: Logistic Regression, Decision Trees, SVM, K-NN, Neural Networks. Evaluation: Regression uses MSE/RMSE; Classification uses Accuracy, Precision, Recall, F1-Score.</div><div class="concepts-grid"><div class="concept-card"><div class="concept-term">Linear Regression</div><div class="concept-def">Predicts continuous values by fitting a straight line between inputs and numerical output.</div></div><div class="concept-card"><div class="concept-term">Logistic Regression</div><div class="concept-def">Classifies binary outcomes (yes/no) using a sigmoid function to output probabilities.</div></div><div class="concept-card"><div class="concept-term">Decision Tree</div><div class="concept-def">Tree-like flowchart — makes decisions through a series of simple yes/no questions at each node.</div></div><div class="concept-card"><div class="concept-term">SVM (Support Vector Machine)</div><div class="concept-def">Finds the optimal boundary (hyperplane) that maximizes the margin between classes.</div></div><div class="concept-card"><div class="concept-term">K-Nearest Neighbors (K-NN)</div><div class="concept-def">Classifies based on the labels of the k most similar training examples.</div></div></div>
+</div>
+<div class="section-block animate-in" style="animation-delay:0.10s">
+  <div class="section-header"><span class="section-icon">📊</span><h3 class="section-title">Evaluation Metrics</h3></div>
+  <div class="section-body"><strong>Classification:</strong> Accuracy = correct/total. Precision = TP/(TP+FP). Recall = TP/(TP+FN). F1-Score = harmonic mean of precision & recall (best for imbalanced datasets). ROC-AUC = area under ROC curve. <strong>Regression:</strong> MSE (Mean Squared Error), RMSE, MAE (Mean Absolute Error), R² (coefficient of determination).</div>
+</div>
+<div class="section-block animate-in" style="animation-delay:0.15s">
+  <div class="section-header"><span class="section-icon">🌍</span><h3 class="section-title">Real-World Applications</h3></div>
+  <div class="section-body">Supervised learning powers: <strong>Email Spam Detection</strong> (Naive Bayes, SVM). <strong>Medical Diagnosis</strong> (disease classification). <strong>Fraud Detection</strong> (labeled transaction history). <strong>Credit Scoring</strong> (loan default prediction). <strong>Image Classification</strong> (CNNs). <strong>Sentiment Analysis</strong> (text classification). <strong>Autonomous Vehicles</strong> (object detection and lane classification).</div>
+</div></div>
+        <div class="tab-section" id="tab-subtopics" style="display:none"><div class="subtopics-list">
+<div class="subtopic-block">
+  <div class="subtopic-header" onclick="toggleST(0)">
+    <span class="subtopic-icon">🌲</span>
+    <span class="subtopic-name">Decision Trees & Random Forests — Deep Dive</span>
+    <span class="subtopic-badge">Algorithm Detail</span>
+    <span class="subtopic-chevron" id="stc-0">›</span>
+  </div>
+  <div class="subtopic-body" id="stb-0" style="display:none">A <strong>Decision Tree</strong> recursively splits training data based on features that maximize information gain (or minimize Gini impurity). Each leaf is a final prediction. Trees are highly interpretable but prone to overfitting. <strong>Random Forest</strong> builds hundreds of trees on random data and feature subsets (Bagging + Feature Randomness). Final predictions: majority vote (classification) or average (regression). One of the most reliable general-purpose ML algorithms.</div>
+</div>
+<div class="subtopic-block">
+  <div class="subtopic-header" onclick="toggleST(1)">
+    <span class="subtopic-icon">⚖️</span>
+    <span class="subtopic-name">Train-Test Split, Cross-Validation & Bias-Variance</span>
+    <span class="subtopic-badge">ML Fundamentals</span>
+    <span class="subtopic-chevron" id="stc-1">›</span>
+  </div>
+  <div class="subtopic-body" id="stb-1" style="display:none">Data splits: <strong>Training set</strong> (~60-80%) — model learns. <strong>Validation set</strong> (~10-20%) — hyperparameter tuning. <strong>Test set</strong> (~10-20%) — final evaluation. <strong>k-Fold Cross-Validation</strong> — splits data into k parts, trains on k-1 and tests on remaining fold — repeated k times for robust estimates. <strong>Bias-Variance Tradeoff</strong>: High Bias = underfitting; High Variance = overfitting. Goal: balance both.</div>
+</div></div></div>
+        <div class="tab-section" id="tab-flashcards" style="display:none">
+  <div class="flashcard-area">
+    <div class="fc-counter" id="fcCounter">1 / 5</div>
+    <div class="flashcard-wrap"><div class="flashcard" id="fc" onclick="flipCard()">
+      <div class="fc-face fc-front"><div class="fc-label">QUESTION</div><div class="fc-text" id="fcQ"></div><div class="fc-hint">Click to reveal answer</div></div>
+      <div class="fc-face fc-back"><div class="fc-label">ANSWER</div><div class="fc-text" id="fcA"></div></div>
+    </div></div>
+    <div class="fc-nav">
+      <button class="fc-btn" onclick="prevFC()">← Prev</button>
+      <button class="fc-btn primary" onclick="flipCard()">Flip</button>
+      <button class="fc-btn" onclick="nextFC()">Next →</button>
+    </div>
+  </div>
+  <script>
+    var _fc=[{"q":"What distinguishes Supervised Learning from Unsupervised Learning?","a":"Supervised uses labeled data (known input-output pairs). Unsupervised uses unlabeled data and discovers patterns independently."},{"q":"What is the difference between Regression and Classification?","a":"Regression predicts continuous numerical values (house price). Classification predicts categorical labels (spam/not spam, cat/dog)."},{"q":"What is F1-Score and when is it preferred over Accuracy?","a":"F1-Score is the harmonic mean of Precision and Recall. Preferred for imbalanced datasets where one class is much more common."},{"q":"What is the Bias-Variance Tradeoff?","a":"High Bias = underfitting (model too simple). High Variance = overfitting (model too complex). Goal: find the sweet spot balancing both."},{"q":"What is k-Fold Cross-Validation?","a":"Data is split into k parts; the model trains on k-1 folds and tests on the remaining fold — repeated k times for robust performance estimates."}],_fi=0,_ff=false;
+    function _rc(){document.getElementById('fcQ').textContent=_fc[_fi].q;document.getElementById('fcA').textContent=_fc[_fi].a;document.getElementById('fcCounter').textContent=(_fi+1)+' / '+_fc.length;document.getElementById('fc').classList.remove('flipped');_ff=false;}
+    function flipCard(){_ff=!_ff;document.getElementById('fc').classList.toggle('flipped',_ff);}
+    function nextFC(){_fi=(_fi+1)%_fc.length;_rc();}
+    function prevFC(){_fi=(_fi-1+_fc.length)%_fc.length;_rc();}
+    _rc();
+  </script>
+</div>
+        <div class="tab-section" id="tab-quiz" style="display:none">
+  <div class="quiz-setup" id="qzSetup">
+    <div class="quiz-setup-title">📝 Topic Quiz</div>
+    <div class="quiz-setup-desc">Test your understanding with 5 questions.</div>
+    <button class="btn-launch-quiz" onclick="startQz()">Start Quiz →</button>
+  </div>
+  <div class="quiz-in-progress" id="qzProg">
+    <div class="qp-header"><div class="qp-counter" id="qzCtr">1/5</div><div class="qp-progress-wrap"><div class="qp-progress-bar" id="qzBar" style="width:0%"></div></div><div class="qp-score" id="qzSc">✓ 0</div></div>
+    <div class="qp-question-card"><div class="qp-question-text" id="qzQ"></div></div>
+    <div class="qp-options" id="qzOpts"></div>
+    <div class="qp-explain" id="qzExp"></div>
+    <div class="qp-nav"><button class="btn-outline" onclick="resetQz()">✕ Exit</button><button id="qzNxt" class="btn-launch-quiz" style="display:none" onclick="nextQz()">Next →</button></div>
+  </div>
+  <script>
+    var _qq=[{"q":"In Supervised Learning, the training data must be:","options":["Unlabeled and unstructured","Labeled — meaning each input has a corresponding correct output","Random and incomplete","Collected from social media only"],"answer":1,"explain":"Supervised learning uses labeled datasets — each input has a known corresponding output. The model learns to map inputs to outputs and is adjusted based on errors."},{"q":"Which algorithm is best suited for predicting a continuous numerical value?","options":["K-Means Clustering","Linear Regression","Principal Component Analysis (PCA)","Hierarchical Clustering"],"answer":1,"explain":"Linear Regression is used to predict continuous numerical values, finding the relationship between input features and a numerical output."},{"q":"Random Forest is an improvement over a single Decision Tree because:","options":["It uses fewer data points","It combines multiple decision trees, improving accuracy and reducing overfitting","It requires no training data","It works only for image data"],"answer":1,"explain":"Random Forests combine many decision trees trained on different data subsets and features — the final prediction aggregates all trees, reducing overfitting."},{"q":"What is the F1-Score?","options":["The percentage of training samples used","The harmonic mean of Precision and Recall — balances both in imbalanced datasets","The ratio of correct to incorrect predictions","The learning rate of the model"],"answer":1,"explain":"F1-Score is the harmonic mean of Precision and Recall — it's the preferred metric for imbalanced classification problems where accuracy can be misleading."},{"q":"What is a real-world application of supervised learning in banking?","options":["Recommending music playlists","Fraud Detection — trained on labeled historical transaction data to identify fraud patterns","Grouping customers without any labels","Designing bank branch layouts"],"answer":1,"explain":"Fraud Detection in banking utilizes supervised learning — models are trained on labeled datasets of legitimate and fraudulent transactions to predict fraud."}],_qi=0,_qs=0,_qa=false;
+    function startQz(){_qi=0;_qs=0;_qa=false;document.getElementById('qzSetup').style.display='none';document.getElementById('qzProg').style.display='block';rQz();}
+    function rQz(){var q=_qq[_qi];document.getElementById('qzCtr').textContent=(_qi+1)+'/'+_qq.length;document.getElementById('qzBar').style.width=((_qi/_qq.length)*100)+'%';document.getElementById('qzSc').textContent='✓ '+_qs;document.getElementById('qzQ').textContent=q.q;document.getElementById('qzExp').style.display='none';document.getElementById('qzNxt').style.display='none';var o=document.getElementById('qzOpts');o.innerHTML='';_qa=false;q.options.forEach(function(opt,i){var b=document.createElement('button');b.className='qp-option';b.innerHTML='<span class="qp-option-letter">'+'ABCD'[i]+'</span>'+opt;b.onclick=function(){if(!_qa)aQz(i,b);};o.appendChild(b);});}
+    function aQz(i,btn){_qa=true;var q=_qq[_qi];var bs=document.querySelectorAll('.qp-option');bs.forEach(function(b){b.disabled=true;});if(i===q.answer){btn.classList.add('correct');_qs++;}else{btn.classList.add('wrong');bs[q.answer].classList.add('correct');}var e=document.getElementById('qzExp');e.innerHTML='<strong>Explanation:</strong> '+q.explain;e.style.display='block';document.getElementById('qzNxt').style.display='block';document.getElementById('qzSc').textContent='✓ '+_qs;}
+    function nextQz(){_qi++;if(_qi>=_qq.length){document.getElementById('qzProg').innerHTML='<div style="text-align:center;padding:40px"><div style="font-size:48px;margin-bottom:16px">'+(_qs/_qq.length>=0.8?'🎉':'📚')+'</div><div style="font-family:Lora,serif;font-size:24px;font-weight:700;margin-bottom:8px">Quiz Complete!</div><div style="color:var(--muted);margin-bottom:24px">You scored '+_qs+' / '+_qq.length+'</div><button class="btn-launch-quiz" onclick="resetQz()">Try Again</button></div>';}else{rQz();}}
+    function resetQz(){location.reload();}
+  </script>
+</div>
+      </div>
+    </main>
+  </div>
+</div>
+<footer class="site-footer" id="site-footer"></footer>
+<script src="data.js"></script>
+<script src="nav.js"></script>
+<script src="sidebar.js"></script>
+<script>
+  buildNavbar('ai');
+  buildFooter();
+  buildSidebarToggleBtn();
+  function switchTab(n,btn){
+    ['reading','subtopics','flashcards','quiz'].forEach(function(id){var el=document.getElementById('tab-'+id);if(el)el.style.display='none';});
+    document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+    var el=document.getElementById('tab-'+n);if(el)el.style.display='block';
+    if(btn)btn.classList.add('active');
+    if(n==='flashcards'&&typeof _rc==='function')_rc();
+  }
+  function toggleST(i){var b=document.getElementById('stb-'+i),c=document.getElementById('stc-'+i);if(!b)return;var open=b.style.display!=='none';b.style.display=open?'none':'block';if(c)c.classList.toggle('open',!open);}
+  function filterNav(q){var ql=q.toLowerCase();document.querySelectorAll('#sidebarNav .nav-item').forEach(function(item){var nm=item.querySelector('.nav-item-name');item.style.display=(nm&&nm.textContent.toLowerCase().includes(ql))||!q?'':'none';});}
+</script>
+</body>
+</html>

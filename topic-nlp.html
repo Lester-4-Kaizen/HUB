@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Study Hub — Natural Language Processing (NLP)</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ---- Flashcards ---- */
+    .flashcard-area{display:flex;flex-direction:column;align-items:center;padding:20px 0}
+    .fc-counter{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:14px}
+    .flashcard-wrap{width:100%;max-width:520px;perspective:1000px;margin-bottom:16px}
+    .flashcard{width:100%;height:200px;position:relative;transform-style:preserve-3d;transition:transform .5s;cursor:pointer;border-radius:16px}
+    .flashcard.flipped{transform:rotateY(180deg)}
+    .fc-face{position:absolute;inset:0;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+    .fc-front{background:var(--surface);border:2px solid var(--border)}
+    .fc-back{background:linear-gradient(135deg,#1a472a,#2d6a4f);color:#fff;transform:rotateY(180deg)}
+    .fc-label{font-size:10px;font-family:'IBM Plex Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+    .fc-back .fc-label{color:rgba(255,255,255,0.6)}
+    .fc-text{font-family:'Lora',serif;font-size:15px;font-weight:600;line-height:1.5;color:var(--text)}
+    .fc-back .fc-text{color:#fff;font-size:14px}
+    .fc-hint{font-size:11px;color:var(--muted);margin-top:10px;font-family:'IBM Plex Mono',monospace}
+    .fc-nav{display:flex;gap:10px;width:100%;max-width:520px}
+    .fc-btn{flex:1;padding:10px;background:var(--surface);border:1px solid var(--border);border-radius:9px;font-size:13px;font-family:'Nunito',sans-serif;font-weight:600;cursor:pointer;color:var(--muted);transition:all .15s}
+    .fc-btn:hover,.fc-btn.primary{border-color:var(--accent);color:var(--accent)}
+    .fc-btn.primary{background:var(--tag-bg)}
+    /* ---- Sections ---- */
+    .section-block{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin-bottom:16px}
+    .section-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+    .section-icon{font-size:18px}
+    .section-title{font-family:'Lora',serif;font-size:17px;font-weight:700;color:var(--text)}
+    .section-body{font-size:14px;line-height:1.75;color:var(--text)}
+    .concepts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:14px}
+    .concept-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+    .concept-term{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;color:var(--accent);margin-bottom:5px}
+    .concept-def{font-size:13px;color:var(--muted);line-height:1.55}
+    /* ---- Subtopics ---- */
+    .subtopics-list{display:flex;flex-direction:column;gap:8px}
+    .subtopic-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+    .subtopic-header{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;transition:background .15s}
+    .subtopic-header:hover{background:var(--bg)}
+    .subtopic-icon{font-size:16px;flex-shrink:0}
+    .subtopic-name{flex:1;font-size:14px;font-weight:600;color:var(--text)}
+    .subtopic-badge{font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--accent);background:var(--tag-bg);border-radius:100px;padding:2px 8px}
+    .subtopic-chevron{font-size:18px;color:var(--muted);transition:transform .2s}
+    .subtopic-chevron.open{transform:rotate(90deg)}
+    .subtopic-body{padding:14px 16px;font-size:14px;line-height:1.7;color:var(--text);border-top:1px solid var(--border)}
+    /* ---- Tabs ---- */
+    .tab-bar{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+    .tab-btn{padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:var(--surface);font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s}
+    .tab-btn:hover{border-color:var(--accent);color:var(--accent)}
+    .tab-btn.active{background:var(--tag-bg);border-color:var(--accent);color:var(--accent)}
+    /* ---- Quiz ---- */
+    .quiz-setup{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:20px}
+    .quiz-setup-title{font-family:'Lora',serif;font-size:19px;font-weight:700;color:var(--text);margin-bottom:6px}
+    .quiz-setup-desc{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.55}
+    .quiz-in-progress{display:none;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px}
+    .qp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .qp-counter,.qp-score{font-size:13px;font-family:'IBM Plex Mono',monospace;color:var(--muted)}
+    .qp-score{color:var(--success)}
+    .qp-progress-wrap{flex:1;margin:0 12px;background:var(--border);border-radius:100px;height:5px;overflow:hidden}
+    .qp-progress-bar{height:100%;background:var(--accent);border-radius:100px;transition:width .3s}
+    .qp-question-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px}
+    .qp-question-text{font-family:'Lora',serif;font-size:18px;font-weight:600;color:var(--text);line-height:1.45}
+    .qp-options{display:flex;flex-direction:column;gap:9px;margin-bottom:14px}
+    .qp-option{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;font-size:14px;font-family:'Nunito',sans-serif;font-weight:600;color:var(--text);transition:all .15s;width:100%}
+    .qp-option-letter{width:26px;height:26px;border-radius:6px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);flex-shrink:0}
+    .qp-option:hover:not(:disabled){border-color:var(--accent);background:var(--tag-bg)}
+    .qp-option.correct{border-color:var(--success);background:rgba(22,163,74,.06)}
+    .qp-option.correct .qp-option-letter{background:var(--success);color:#fff}
+    .qp-option.wrong{border-color:var(--danger);opacity:.7}
+    .qp-option.wrong .qp-option-letter{background:var(--danger);color:#fff}
+    .qp-option:disabled{cursor:default}
+    .qp-explain{background:var(--highlight);border-left:3px solid var(--accent2);border-radius:0 8px 8px 0;padding:12px 14px;font-size:13px;line-height:1.6;color:var(--text);display:none;margin-bottom:12px}
+    .qp-explain strong{color:var(--accent)}
+    .qp-nav{display:flex;justify-content:space-between;align-items:center;gap:10px}
+    /* ---- Reader header ---- */
+    .reader-header{margin-bottom:24px}
+    .reader-icon{font-size:40px;margin-bottom:12px}
+    .reader-title{font-family:'Lora',serif;font-size:clamp(22px,3.5vw,32px);font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.2}
+    .reader-source{font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+    .reader-source a{color:var(--accent);text-decoration:none}
+    .reader-source a:hover{text-decoration:underline}
+    .reader-summary{background:var(--highlight);border-left:3px solid var(--accent2);border-radius:0 10px 10px 0;padding:14px 16px;font-size:14px;line-height:1.7;color:var(--text);margin-bottom:24px}
+    .breadcrumb{display:flex;align-items:center;gap:6px;margin-bottom:20px;font-size:12px;color:var(--muted);font-family:'IBM Plex Mono',monospace;flex-wrap:wrap}
+    .breadcrumb a{color:var(--accent);text-decoration:none}
+    .breadcrumb a:hover{text-decoration:underline}
+    .breadcrumb-sep{color:var(--border)}
+    /* ---- Finals Reference ---- */
+    .fr-block{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin-bottom:20px}
+    .fr-block h2{font-family:'Lora',serif;font-size:20px;font-weight:700;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--border)}
+    .fr-block h3{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:var(--accent);margin:16px 0 8px;text-transform:uppercase;letter-spacing:1px}
+    .fr-block h4{font-size:14px;font-weight:700;color:var(--text);margin:12px 0 6px}
+    .fr-block p{font-size:14px;line-height:1.75;color:var(--text);margin-bottom:10px}
+    .fr-block ul,.fr-block ol{padding-left:20px;margin-bottom:12px}
+    .fr-block li{font-size:14px;line-height:1.65;color:var(--text);margin-bottom:5px}
+    .fr-block strong{color:var(--text)}
+    .fr-block table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px}
+    .fr-block th{background:var(--accent);color:#fff;padding:8px 12px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.5px}
+    .fr-block td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+    .fr-block tr:nth-child(even) td{background:var(--bg)}
+    .img-placeholder{background:var(--bg);border:2px dashed var(--accent2);border-radius:10px;padding:22px;margin:14px 0;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted)}
+    .img-placeholder strong{display:block;color:var(--accent2);margin-bottom:6px;font-size:11px;letter-spacing:1px;text-transform:uppercase}
+    .callout{background:var(--highlight);border-left:4px solid var(--accent2);border-radius:0 10px 10px 0;padding:14px 16px;margin:14px 0;font-size:13.5px;line-height:1.65}
+    .callout strong{color:var(--accent)}
+    .code-block{background:#1c1917;color:#e7e5e4;border-radius:10px;padding:14px 18px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.65;margin:12px 0;overflow-x:auto;white-space:pre}
+    .tag-chip{display:inline-block;background:var(--tag-bg);color:var(--tag-text);border-radius:6px;padding:2px 8px;font-family:'IBM Plex Mono',monospace;font-size:11px;margin:2px 2px}
+    .highlight-box{background:var(--highlight);border-radius:8px;padding:12px 14px;margin-top:12px;font-size:13px;line-height:1.6}
+    .sub-list{padding-left:20px}
+    .sub-list li{margin-bottom:6px;font-size:14px}
+  </style>
+</head>
+<body>
+<div id="app">
+  <nav class="navbar" id="navbar"></nav>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <div class="brand-icon">💬</div>
+          <div><div class="brand-name">STUDY HUB</div><div class="brand-sub">Artificial Intelligence</div></div>
+        </div>
+      </div>
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="sidebarSearch" placeholder="Search topics..." oninput="filterNav(this.value)"/>
+      </div>
+      <div id="sidebarNav"><div class="nav-section">
+  <div class="nav-section-label">Overview</div>
+  <a class="nav-item" href="ai.html"><span class="nav-item-icon">🏠</span><span class="nav-item-name">AI Subject Home</span></a>
+</div>
+<div class="nav-section">
+  <div class="nav-section-label">AI Topics</div>
+  <a class="nav-item" href="topic-what-is-ai.html"><span class="nav-item-icon">🤖</span><span class="nav-item-name">What is AI?</span></a>
+  <a class="nav-item" href="topic-machine-learning.html"><span class="nav-item-icon">🧠</span><span class="nav-item-name">Machine Learning</span></a>
+  <a class="nav-item" href="topic-narrow-ai.html"><span class="nav-item-icon">🎯</span><span class="nav-item-name">Narrow AI</span></a>
+  <a class="nav-item" href="topic-agi.html"><span class="nav-item-icon">🌐</span><span class="nav-item-name">AGI</span></a>
+  <a class="nav-item" href="topic-asi.html"><span class="nav-item-icon">🚀</span><span class="nav-item-name">ASI</span></a>
+  <a class="nav-item" href="topic-generative-ai.html"><span class="nav-item-icon">✨</span><span class="nav-item-name">Generative AI</span></a>
+  <a class="nav-item active" href="topic-nlp.html"><span class="nav-item-icon">💬</span><span class="nav-item-name">NLP</span></a>
+  <a class="nav-item" href="topic-expert-systems.html"><span class="nav-item-icon">🧑‍⚕️</span><span class="nav-item-name">Expert Systems</span></a>
+  <a class="nav-item" href="topic-ai-models.html"><span class="nav-item-icon">📊</span><span class="nav-item-name">AI Models</span></a>
+  <a class="nav-item" href="topic-supervised-learning.html"><span class="nav-item-icon">📚</span><span class="nav-item-name">Supervised Learning</span></a>
+  <a class="nav-item" href="topic-unsupervised-learning.html"><span class="nav-item-icon">🔍</span><span class="nav-item-name">Unsupervised Learning</span></a>
+  <a class="nav-item" href="topic-reinforcement-learning.html"><span class="nav-item-icon">🏆</span><span class="nav-item-name">Reinforcement Learning</span></a>
+  <a class="nav-item" href="topic-finals-reference.html"><span class="nav-item-icon">📄</span><span class="nav-item-name">Finals Reference</span></a>
+</div></div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+    <main class="main">
+      <div class="main-inner animate-in">
+        <div class="breadcrumb">
+          <a href="home.html">All Subjects</a>
+          <span class="breadcrumb-sep">›</span>
+          <a href="ai.html">Artificial Intelligence</a>
+          <span class="breadcrumb-sep">›</span>
+          <span>NLP</span>
+        </div>
+        <div class="reader-header">
+          <div class="reader-icon">💬</div>
+          <h1 class="reader-title">Natural Language Processing (NLP)</h1>
+          <div class="reader-source"><span>📎</span><a href="https://www.geeksforgeeks.org/nlp/natural-language-processing-nlp-tutorial/" target="_blank" rel="noopener">https://www.geeksforgeeks.org/nlp/natural-language-processing-nlp-tutorial/</a></div>
+        </div>
+        <div class="reader-summary">NLP is the field of AI that enables computers to understand, interpret, and generate human language. It encompasses preprocessing techniques, classical algorithms, and modern Transformer models (BERT, GPT) used for tasks like sentiment analysis, translation, NER, and question answering.</div>
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="switchTab('reading',this)">📖 Reading Notes</button>
+          <button class="tab-btn" onclick="switchTab('subtopics',this)">🔗 Sub-Topics</button>
+          <button class="tab-btn" onclick="switchTab('flashcards',this)">🃏 Flashcards</button>
+          <button class="tab-btn" onclick="switchTab('quiz',this)">📝 Quiz</button>
+        </div>
+        <div id="tab-reading"><div class="section-block animate-in" style="animation-delay:0.00s">
+  <div class="section-header"><span class="section-icon">📝</span><h3 class="section-title">What is NLP?</h3></div>
+  <div class="section-body">Natural Language Processing (NLP) is a field of AI focused on the interaction between computers and human language. The goal is for machines to understand, interpret, and generate meaningful natural language — bridging human communication and computer processing. NLP underpins voice assistants, search engines, chatbots, translation tools, and content moderation.</div>
+</div>
+<div class="section-block animate-in" style="animation-delay:0.05s">
+  <div class="section-header"><span class="section-icon">🔧</span><h3 class="section-title">Core Preprocessing Techniques</h3></div>
+  <div class="section-body">Text preparation steps: <strong>Tokenization</strong> — splitting text into words/sentences. <strong>Stopword Removal</strong> — removing common words (and, the, is). <strong>Stemming</strong> — reducing to root form (running → run). <strong>Lemmatization</strong> — reducing to dictionary base form. <strong>POS Tagging</strong> — assigning grammatical roles (noun, verb) to each word.</div><div class="concepts-grid"><div class="concept-card"><div class="concept-term">Tokenization</div><div class="concept-def">Splitting text into smaller units (tokens: words, subwords, sentences) for processing.</div></div><div class="concept-card"><div class="concept-term">Stemming</div><div class="concept-def">Reducing words to their base/root form by removing suffixes (runs → run, running → run).</div></div><div class="concept-card"><div class="concept-term">Lemmatization</div><div class="concept-def">More sophisticated than stemming — reduces words to their dictionary base form considering context (better → good).</div></div><div class="concept-card"><div class="concept-term">POS Tagging</div><div class="concept-def">Assigning grammatical parts of speech (noun, verb, adjective) to each word in a sentence.</div></div><div class="concept-card"><div class="concept-term">NER (Named Entity Recognition)</div><div class="concept-def">Identifies and classifies named entities (people, organizations, locations, dates) in text.</div></div></div>
+</div>
+<div class="section-block animate-in" style="animation-delay:0.10s">
+  <div class="section-header"><span class="section-icon">🔬</span><h3 class="section-title">NLP Tasks & Applications</h3></div>
+  <div class="section-body">Key NLP tasks: <strong>Text Classification</strong> — categorizing text (spam detection, sentiment). <strong>NER</strong> — identifying entities (Google → Organization; London → Location). <strong>Machine Translation</strong> — translating between languages. <strong>Question Answering</strong> — answering based on context. <strong>Sentiment Analysis</strong> — emotional tone detection. <strong>Speech Recognition</strong> — converting spoken words to text (ASR).</div>
+</div>
+<div class="section-block animate-in" style="animation-delay:0.15s">
+  <div class="section-header"><span class="section-icon">⚡</span><h3 class="section-title">Modern NLP: Transformer Models</h3></div>
+  <div class="section-body">The 2017 <strong>Transformer architecture</strong> (Attention Is All You Need) revolutionized NLP. <strong>BERT</strong> — Google's bidirectional model for NER, classification, QA. <strong>GPT</strong> — OpenAI's autoregressive generative models. <strong>T5</strong> — frames all NLP tasks as text-to-text transformations. These models are pre-trained on massive text corpora and fine-tuned for specific tasks.</div>
+</div></div>
+        <div class="tab-section" id="tab-subtopics" style="display:none"><div class="subtopics-list">
+<div class="subtopic-block">
+  <div class="subtopic-header" onclick="toggleST(0)">
+    <span class="subtopic-icon">🔤</span>
+    <span class="subtopic-name">BERT — Bidirectional Encoder Representations</span>
+    <span class="subtopic-badge">Transformer Model</span>
+    <span class="subtopic-chevron" id="stc-0">›</span>
+  </div>
+  <div class="subtopic-body" id="stb-0" style="display:none">BERT reads text bidirectionally — left and right context simultaneously. Pre-trained on: <strong>Masked Language Modeling (MLM)</strong> — predicting masked words, and <strong>Next Sentence Prediction (NSP)</strong>. Fine-tuned for Sentiment Analysis (classification on [CLS] token), NER (token-level classification), and QA (predicting answer start/end positions). BERT BASE has 12 transformer layers; BERT LARGE has 24.</div>
+</div>
+<div class="subtopic-block">
+  <div class="subtopic-header" onclick="toggleST(1)">
+    <span class="subtopic-icon">🗂️</span>
+    <span class="subtopic-name">NER — Named Entity Recognition</span>
+    <span class="subtopic-badge">NLP Task</span>
+    <span class="subtopic-chevron" id="stc-1">›</span>
+  </div>
+  <div class="subtopic-body" id="stb-1" style="display:none">NER classifies named entities: People (B-PER), Locations (B-LOC), Organizations (B-ORG), Dates. Uses <strong>BIO tagging</strong>: B=Beginning, I=Inside, O=Outside. Modern NER uses BERT contextual embeddings that resolve ambiguity (e.g., "Apple" = company vs. fruit based on context). Tools: spaCy, NLTK, Hugging Face Transformers.<div class="highlight-box">Example: "John lives in New York" → John: B-PER, New: B-LOC, York: I-LOC</div></div>
+</div></div></div>
+        <div class="tab-section" id="tab-flashcards" style="display:none">
+  <div class="flashcard-area">
+    <div class="fc-counter" id="fcCounter">1 / 5</div>
+    <div class="flashcard-wrap"><div class="flashcard" id="fc" onclick="flipCard()">
+      <div class="fc-face fc-front"><div class="fc-label">QUESTION</div><div class="fc-text" id="fcQ"></div><div class="fc-hint">Click to reveal answer</div></div>
+      <div class="fc-face fc-back"><div class="fc-label">ANSWER</div><div class="fc-text" id="fcA"></div></div>
+    </div></div>
+    <div class="fc-nav">
+      <button class="fc-btn" onclick="prevFC()">← Prev</button>
+      <button class="fc-btn primary" onclick="flipCard()">Flip</button>
+      <button class="fc-btn" onclick="nextFC()">Next →</button>
+    </div>
+  </div>
+  <script>
+    var _fc=[{"q":"What is NLP?","a":"Natural Language Processing — the field of AI that enables computers to understand, interpret, and generate human language."},{"q":"What is Tokenization?","a":"Splitting text into smaller units (tokens: words, subwords, or sentences) as the first step in NLP processing."},{"q":"What is the difference between Stemming and Lemmatization?","a":"Stemming crudely cuts word suffixes to a root. Lemmatization more accurately reduces to dictionary base form using linguistic knowledge."},{"q":"What makes BERT bidirectional?","a":"BERT reads text in both left and right context simultaneously (unlike GPT which is unidirectional). This gives it deeper contextual understanding."},{"q":"What is Named Entity Recognition (NER)?","a":"An NLP task that identifies and classifies named entities in text: people, organizations, locations, dates, etc."}],_fi=0,_ff=false;
+    function _rc(){document.getElementById('fcQ').textContent=_fc[_fi].q;document.getElementById('fcA').textContent=_fc[_fi].a;document.getElementById('fcCounter').textContent=(_fi+1)+' / '+_fc.length;document.getElementById('fc').classList.remove('flipped');_ff=false;}
+    function flipCard(){_ff=!_ff;document.getElementById('fc').classList.toggle('flipped',_ff);}
+    function nextFC(){_fi=(_fi+1)%_fc.length;_rc();}
+    function prevFC(){_fi=(_fi-1+_fc.length)%_fc.length;_rc();}
+    _rc();
+  </script>
+</div>
+        <div class="tab-section" id="tab-quiz" style="display:none">
+  <div class="quiz-setup" id="qzSetup">
+    <div class="quiz-setup-title">📝 Topic Quiz</div>
+    <div class="quiz-setup-desc">Test your understanding with 5 questions.</div>
+    <button class="btn-launch-quiz" onclick="startQz()">Start Quiz →</button>
+  </div>
+  <div class="quiz-in-progress" id="qzProg">
+    <div class="qp-header"><div class="qp-counter" id="qzCtr">1/5</div><div class="qp-progress-wrap"><div class="qp-progress-bar" id="qzBar" style="width:0%"></div></div><div class="qp-score" id="qzSc">✓ 0</div></div>
+    <div class="qp-question-card"><div class="qp-question-text" id="qzQ"></div></div>
+    <div class="qp-options" id="qzOpts"></div>
+    <div class="qp-explain" id="qzExp"></div>
+    <div class="qp-nav"><button class="btn-outline" onclick="resetQz()">✕ Exit</button><button id="qzNxt" class="btn-launch-quiz" style="display:none" onclick="nextQz()">Next →</button></div>
+  </div>
+  <script>
+    var _qq=[{"q":"NLP stands for:","options":["Network Layer Protocol","Natural Language Processing","Neural Logic Programming","Numeric Learning Process"],"answer":1,"explain":"NLP stands for Natural Language Processing — a field of AI focused on how computers understand, interpret, and generate human language."},{"q":"Which is a common preprocessing step in NLP?","options":["Pixel filtering","Tokenization — splitting text into words or sentences","Voltage normalization","Model deployment"],"answer":1,"explain":"Tokenization is a fundamental NLP preprocessing step — it splits text into smaller units like words or sentences for further processing."},{"q":"What makes BERT different from earlier NLP models?","options":["It is a traditional rule-based system","It reads text bidirectionally for richer contextual understanding","It can only process English text","It requires no training data"],"answer":1,"explain":"BERT (Bidirectional Encoder Representations from Transformers) reads text in both directions simultaneously — giving it deeper contextual understanding than previous unidirectional models."},{"q":"Sentiment Analysis in NLP is used to:","options":["Detect malware in code","Identify emotions or opinions expressed in text (positive/negative/neutral)","Convert speech to text only","Sort numerical data"],"answer":1,"explain":"Sentiment Analysis determines whether text expresses positive, negative, or neutral emotion — used for product reviews, social media monitoring, and brand analysis."},{"q":"Which NLP library provides tools for tokenization, stemming, and POS tagging in Python?","options":["Pandas","Scikit-learn","NLTK (Natural Language Toolkit)","NumPy"],"answer":2,"explain":"NLTK (Natural Language Toolkit) is a popular open-source Python library that provides tools for NLP tasks such as tokenization, stemming, and part-of-speech tagging."}],_qi=0,_qs=0,_qa=false;
+    function startQz(){_qi=0;_qs=0;_qa=false;document.getElementById('qzSetup').style.display='none';document.getElementById('qzProg').style.display='block';rQz();}
+    function rQz(){var q=_qq[_qi];document.getElementById('qzCtr').textContent=(_qi+1)+'/'+_qq.length;document.getElementById('qzBar').style.width=((_qi/_qq.length)*100)+'%';document.getElementById('qzSc').textContent='✓ '+_qs;document.getElementById('qzQ').textContent=q.q;document.getElementById('qzExp').style.display='none';document.getElementById('qzNxt').style.display='none';var o=document.getElementById('qzOpts');o.innerHTML='';_qa=false;q.options.forEach(function(opt,i){var b=document.createElement('button');b.className='qp-option';b.innerHTML='<span class="qp-option-letter">'+'ABCD'[i]+'</span>'+opt;b.onclick=function(){if(!_qa)aQz(i,b);};o.appendChild(b);});}
+    function aQz(i,btn){_qa=true;var q=_qq[_qi];var bs=document.querySelectorAll('.qp-option');bs.forEach(function(b){b.disabled=true;});if(i===q.answer){btn.classList.add('correct');_qs++;}else{btn.classList.add('wrong');bs[q.answer].classList.add('correct');}var e=document.getElementById('qzExp');e.innerHTML='<strong>Explanation:</strong> '+q.explain;e.style.display='block';document.getElementById('qzNxt').style.display='block';document.getElementById('qzSc').textContent='✓ '+_qs;}
+    function nextQz(){_qi++;if(_qi>=_qq.length){document.getElementById('qzProg').innerHTML='<div style="text-align:center;padding:40px"><div style="font-size:48px;margin-bottom:16px">'+(_qs/_qq.length>=0.8?'🎉':'📚')+'</div><div style="font-family:Lora,serif;font-size:24px;font-weight:700;margin-bottom:8px">Quiz Complete!</div><div style="color:var(--muted);margin-bottom:24px">You scored '+_qs+' / '+_qq.length+'</div><button class="btn-launch-quiz" onclick="resetQz()">Try Again</button></div>';}else{rQz();}}
+    function resetQz(){location.reload();}
+  </script>
+</div>
+      </div>
+    </main>
+  </div>
+</div>
+<footer class="site-footer" id="site-footer"></footer>
+<script src="data.js"></script>
+<script src="nav.js"></script>
+<script src="sidebar.js"></script>
+<script>
+  buildNavbar('ai');
+  buildFooter();
+  buildSidebarToggleBtn();
+  function switchTab(n,btn){
+    ['reading','subtopics','flashcards','quiz'].forEach(function(id){var el=document.getElementById('tab-'+id);if(el)el.style.display='none';});
+    document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+    var el=document.getElementById('tab-'+n);if(el)el.style.display='block';
+    if(btn)btn.classList.add('active');
+    if(n==='flashcards'&&typeof _rc==='function')_rc();
+  }
+  function toggleST(i){var b=document.getElementById('stb-'+i),c=document.getElementById('stc-'+i);if(!b)return;var open=b.style.display!=='none';b.style.display=open?'none':'block';if(c)c.classList.toggle('open',!open);}
+  function filterNav(q){var ql=q.toLowerCase();document.querySelectorAll('#sidebarNav .nav-item').forEach(function(item){var nm=item.querySelector('.nav-item-name');item.style.display=(nm&&nm.textContent.toLowerCase().includes(ql))||!q?'':'none';});}
+</script>
+</body>
+</html>

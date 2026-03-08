@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Study Hub — Artificial Intelligence</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Extra styles for flashcard layout not in shared CSS */
+    .flashcard-area { display:none; flex-direction:column; align-items:center; padding:20px 0; }
+    .flashcard-area.active { display:flex; }
+    .flashcard-wrap { width:100%; max-width:520px; perspective:1000px; margin-bottom:16px; }
+    .flashcard { width:100%; height:200px; position:relative; transform-style:preserve-3d; transition:transform 0.5s; cursor:pointer; border-radius:16px; }
+    .flashcard.flipped { transform:rotateY(180deg); }
+    .fc-face { position:absolute; inset:0; border-radius:16px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:28px; text-align:center; backface-visibility:hidden; -webkit-backface-visibility:hidden; }
+    .fc-front { background:var(--surface); border:2px solid var(--border); }
+    .fc-back { background:linear-gradient(135deg,#1a472a,#2d6a4f); color:#fff; transform:rotateY(180deg); }
+    .fc-label { font-size:10px; font-family:'IBM Plex Mono',monospace; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+    .fc-back .fc-label { color:rgba(255,255,255,0.6); }
+    .fc-text { font-family:'Lora',serif; font-size:16px; font-weight:600; line-height:1.5; color:var(--text); }
+    .fc-back .fc-text { color:#fff; font-size:14.5px; }
+    .fc-hint { font-size:11px; color:var(--muted); margin-top:10px; font-family:'IBM Plex Mono',monospace; }
+    .fc-nav { display:flex; gap:10px; width:100%; max-width:520px; }
+    .fc-btn { flex:1; padding:10px; background:var(--surface); border:1px solid var(--border); border-radius:9px; font-size:13px; font-family:'Nunito',sans-serif; font-weight:600; cursor:pointer; color:var(--muted); transition:all 0.15s; }
+    .fc-btn:hover,.fc-btn.primary { border-color:var(--accent); color:var(--accent); }
+    .fc-btn.primary { background:var(--tag-bg); }
+    /* Quiz area inside reader */
+    .quiz-setup { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:24px; margin-bottom:20px; }
+    .quiz-setup-title { font-family:'Lora',serif; font-size:19px; font-weight:700; color:var(--text); margin-bottom:6px; }
+    .quiz-setup-desc { font-size:14px; color:var(--muted); margin-bottom:20px; line-height:1.55; }
+    .qs-row { margin-bottom:18px; }
+    .quiz-in-progress { display:none; background:var(--card); border:1px solid var(--border); border-radius:16px; padding:24px; }
+    .qp-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+    .qp-counter { font-size:13px; font-family:'IBM Plex Mono',monospace; color:var(--muted); }
+    .qp-score { font-size:13px; font-family:'IBM Plex Mono',monospace; color:var(--success); }
+    .qp-progress-wrap { flex:1; margin:0 12px; background:var(--border); border-radius:100px; height:5px; overflow:hidden; }
+    .qp-progress-bar { height:100%; background:var(--accent); border-radius:100px; transition:width 0.3s; }
+    .qp-topic-tag { font-size:12px; font-family:'IBM Plex Mono',monospace; color:var(--muted); margin-bottom:12px; }
+    .qp-question-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px; margin-bottom:16px; }
+    .qp-question-text { font-family:'Lora',serif; font-size:18px; font-weight:600; color:var(--text); line-height:1.45; }
+    .qp-options { display:flex; flex-direction:column; gap:9px; margin-bottom:14px; }
+    .qp-option { display:flex; align-items:center; gap:12px; padding:12px 16px; background:var(--surface); border:1.5px solid var(--border); border-radius:10px; cursor:pointer; text-align:left; font-size:14px; font-family:'Nunito',sans-serif; font-weight:600; color:var(--text); transition:all 0.15s; width:100%; }
+    .qp-option-letter { width:26px; height:26px; border-radius:6px; background:var(--bg); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); flex-shrink:0; transition:all 0.15s; }
+    .qp-option:hover:not(:disabled) { border-color:var(--accent); background:var(--tag-bg); }
+    .qp-option:hover:not(:disabled) .qp-option-letter { background:var(--accent); color:#fff; border-color:var(--accent); }
+    .qp-option.correct { border-color:var(--success); background:rgba(22,163,74,0.06); }
+    .qp-option.correct .qp-option-letter { background:var(--success); color:#fff; border-color:var(--success); }
+    .qp-option.wrong { border-color:var(--danger); background:rgba(220,38,38,0.05); opacity:0.7; }
+    .qp-option.wrong .qp-option-letter { background:var(--danger); color:#fff; border-color:var(--danger); }
+    .qp-option:disabled { cursor:default; }
+    .qp-explain { background:var(--highlight); border-left:3px solid var(--accent2); border-radius:0 8px 8px 0; padding:12px 14px; font-size:13px; line-height:1.6; color:var(--text); display:none; margin-bottom:12px; }
+    .qp-explain strong { color:var(--accent); }
+    .qp-nav { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+    .quiz-results { display:none; }
+    /* Highlight box in subtopics */
+    .highlight-box { background:var(--highlight); border-radius:8px; padding:12px 14px; margin-top:12px; font-size:13px; line-height:1.6; }
+    .sub-list { padding-left:20px; }
+    .sub-list li { margin-bottom:6px; font-size:14px; color:var(--text); }
+    /* Hub page hidden by default, reader shown when topic opened */
+    #aiSubjectHome { display:block; }
+    #readerPage { display:none; }
+    /* Section cards — two-button layout */
+    .section-cards-row { display:flex; flex-direction:column; gap:14px; margin-top:8px; }
+    .section-card { display:flex; align-items:center; gap:20px; background:var(--surface); border:1.5px solid var(--border); border-radius:16px; padding:24px; text-decoration:none; color:inherit; transition:all 0.2s; cursor:pointer; }
+    .section-card:hover { border-color:var(--accent); transform:translateY(-2px); box-shadow:0 8px 28px rgba(26,71,42,0.10); }
+    .sc-icon { font-size:36px; flex-shrink:0; width:56px; height:56px; background:var(--tag-bg); border-radius:14px; display:flex; align-items:center; justify-content:center; }
+    .sc-content { flex:1; }
+    .sc-title { font-family:'Lora',serif; font-size:19px; font-weight:700; color:var(--text); margin-bottom:5px; }
+    .sc-desc { font-size:13.5px; color:var(--muted); line-height:1.55; margin-bottom:8px; }
+    .sc-meta { font-size:11px; font-family:'IBM Plex Mono',monospace; color:var(--accent); background:var(--tag-bg); display:inline-block; padding:3px 10px; border-radius:100px; }
+    .sc-arrow { font-size:22px; color:var(--muted); flex-shrink:0; transition:transform 0.2s; }
+    .section-card:hover .sc-arrow { transform:translateX(4px); color:var(--accent); }
+  </style>
+</head>
+<body>
+<div id="app">
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar"></nav>
+
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <div class="brand-icon" title="Artificial Intelligence">🤖</div>
+          <div>
+            <div class="brand-name">STUDY HUB</div>
+            <div class="brand-sub">Artificial Intelligence</div>
+          </div>
+        </div>
+      </div>
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" placeholder="Search topics..." id="sidebarSearch" />
+      </div>
+      <div id="sidebarNav"></div>
+      <div class="sidebar-footer">
+        <div class="progress-summary">
+          <div class="ps-label">AI Topics Progress</div>
+          <div class="ps-bar-wrap"><div class="ps-bar" id="sidebarProgressBar" style="width:0%"></div></div>
+          <div class="ps-text" id="sidebarProgressText">0 / 12 topics read</div>
+        </div>
+      </div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- MAIN -->
+    <main class="main">
+      <div class="main-inner">
+
+        <!-- AI SUBJECT HOME -->
+        <div id="aiSubjectHome" class="animate-in">
+          <div class="subject-hero">
+            <div class="home-tag">🤖 Artificial Intelligence</div>
+            <h1 class="home-title">Master <em>Artificial Intelligence</em><br />from the Ground Up</h1>
+            <p class="home-desc">Read, study sub-topics, flip flashcards, and quiz yourself — all 12 AI topics in one place.</p>
+            <div class="home-action-row">
+              <button class="btn-launch-quiz" onclick="openGlobalQuiz()">🧪 Take Full Quiz →</button>
+              <a class="btn-outline" href="home.html">← Back to Subjects</a>
+            </div>
+          </div>
+          <div id="aiTopicsGrid">
+            <div class="section-cards-row">
+              <a class="section-card" href="ai-study-hub.html">
+                <div class="sc-icon">📚</div>
+                <div class="sc-content">
+                  <div class="sc-title">GfG12 Topics</div>
+                  <div class="sc-desc">All 12 GeeksforGeeks AI topics — Reading Notes, Sub-Topics, Flashcards &amp; Quizzes</div>
+                  <div class="sc-meta">12 topics · 6 flashcards each · Full quiz mode</div>
+                </div>
+                <div class="sc-arrow">→</div>
+              </a>
+              <a class="section-card" href="topic-finals-reference.html">
+                <div class="sc-icon">📄</div>
+                <div class="sc-content">
+                  <div class="sc-title">Finals Reference</div>
+                  <div class="sc-desc">Event-Driven Design for AI Agents — Confluent Inc. reference guide for agentic projects</div>
+                  <div class="sc-meta">Lecture &amp; Laboratory · EDA Patterns · Agent Architecture</div>
+                </div>
+                <div class="sc-arrow">→</div>
+              </a>
+            </div>
+          </div>
+
+        <!-- READER PAGE -->
+        <div id="readerPage">
+          <div class="breadcrumb">
+            <a class="breadcrumb-link" href="home.html">All Subjects</a>
+            <span class="breadcrumb-sep">›</span>
+            <span class="breadcrumb-link" onclick="showAIHome()">Artificial Intelligence</span>
+            <span class="breadcrumb-sep">›</span>
+            <span class="breadcrumb-cur" id="bcCurrent"></span>
+          </div>
+          <div class="reader-header">
+            <div class="reader-icon" id="readerIcon"></div>
+            <h2 class="reader-title" id="readerTitle"></h2>
+            <div class="reader-source"><span>📎 Source:</span><a href="#" id="readerSourceLink" target="_blank"></a></div>
+          </div>
+          <div class="tab-bar" id="readerTabBar">
+            <button class="tab-btn active" onclick="switchTab('reading',this)">📖 Reading Notes</button>
+            <button class="tab-btn" onclick="switchTab('subtopics',this)">🔗 Sub-Topics</button>
+            <button class="tab-btn" onclick="switchTab('flashcards',this)">🃏 Flashcards</button>
+            <button class="tab-btn" onclick="switchTab('quiz',this)">🧪 Quiz</button>
+          </div>
+          <!-- TAB: Reading -->
+          <div class="reading-content active" id="tab-reading">
+            <div id="readingContent"></div>
+            <button class="mark-read-btn" id="markReadBtn" onclick="toggleRead()">
+              <span id="markReadIcon">☐</span>
+              <span id="markReadText">Mark as Read</span>
+            </button>
+          </div>
+          <!-- TAB: Sub-Topics -->
+          <div class="subtopics-area" id="tab-subtopics"><div id="subtopicsContent"></div></div>
+          <!-- TAB: Flashcards -->
+          <div class="flashcard-area" id="tab-flashcards">
+            <div class="fc-counter" id="fcCounter">Card 1 of 5</div>
+            <div class="flashcard-wrap">
+              <div class="flashcard" id="flashcard" onclick="flipCard()">
+                <div class="fc-face fc-front">
+                  <div class="fc-label">CONCEPT</div>
+                  <div class="fc-text" id="fcFront"></div>
+                  <div class="fc-hint">tap to reveal →</div>
+                </div>
+                <div class="fc-face fc-back">
+                  <div class="fc-label">EXPLANATION</div>
+                  <div class="fc-text" id="fcBack"></div>
+                </div>
+              </div>
+            </div>
+            <div class="fc-nav">
+              <button class="fc-btn" onclick="fcPrev()">← Prev</button>
+              <button class="fc-btn primary" onclick="flipCard()">Flip Card</button>
+              <button class="fc-btn" onclick="fcNext()">Next →</button>
+            </div>
+          </div>
+          <!-- TAB: Quiz -->
+          <div class="quiz-tab-area" id="tab-quiz">
+            <div class="quiz-setup" id="topicQuizSetup">
+              <div class="quiz-setup-title" id="tqsTitle">Quiz: Topic</div>
+              <div class="quiz-setup-desc" id="tqsDesc">Test your understanding.</div>
+              <div class="qs-row">
+                <div class="qs-label">Questions</div>
+                <div class="qs-mode-row" id="tqsModeRow"></div>
+              </div>
+              <button class="qs-start-btn" onclick="startTopicQuiz()">Start Quiz →</button>
+            </div>
+            <div class="quiz-in-progress" id="topicQuizProgress">
+              <div class="qp-header">
+                <div class="qp-counter" id="tqCounter">1/5</div>
+                <div class="qp-progress-wrap"><div class="qp-progress-bar" id="tqProgressBar" style="width:0%"></div></div>
+                <div class="qp-score" id="tqScore">✓ 0</div>
+              </div>
+              <div class="qp-topic-tag" id="tqTopicTag"></div>
+              <div class="qp-question-card"><div class="qp-question-text" id="tqQuestion"></div></div>
+              <div class="qp-options" id="tqOptions"></div>
+              <div class="qp-explain" id="tqExplain"></div>
+              <div class="qp-nav">
+                <button class="qp-back-btn" onclick="resetTopicQuiz()">← Restart</button>
+                <button class="qp-next-btn" id="tqNextBtn" onclick="tqNext()">Next →</button>
+              </div>
+            </div>
+            <div class="quiz-results" id="topicQuizResults">
+              <span class="qr-emoji" id="tqrEmoji"></span>
+              <div class="qr-title" id="tqrTitle"></div>
+              <div class="qr-score" id="tqrScore"></div>
+              <div class="qr-meta" id="tqrMeta"></div>
+              <div class="qr-stats" id="tqrStats"></div>
+              <div class="qr-actions">
+                <button class="qr-btn-primary" onclick="startTopicQuiz()">Retry Quiz</button>
+                <button class="qr-btn-secondary" onclick="resetTopicQuiz()">Back to Setup</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /readerPage -->
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- GLOBAL QUIZ MODAL -->
+  <div class="quiz-modal-overlay" id="globalQuizOverlay" onclick="handleOverlayClick(event)">
+    <div class="quiz-modal">
+      <button class="qm-close" onclick="closeGlobalQuiz()">✕</button>
+      <div class="qm-setup" id="qmSetup">
+        <div class="qm-badge">⚡ Full Quiz Mode</div>
+        <div class="qm-title">AI Concepts<br />Reviewer</div>
+        <div class="qm-subtitle">Choose your topics and question count, then test everything you've studied.</div>
+        <div class="qm-section">
+          <div class="qm-section-label">Select Topics</div>
+          <div class="qm-chips" id="qmChips"></div>
+        </div>
+        <div class="qm-section">
+          <div class="qm-section-label">Questions</div>
+          <div class="qm-mode-row" id="qmModeRow">
+            <button class="qm-mode-btn active" data-count="10">10 Questions</button>
+            <button class="qm-mode-btn" data-count="20">20 Questions</button>
+            <button class="qm-mode-btn" data-count="999">All</button>
+          </div>
+        </div>
+        <button class="qm-start" onclick="startGlobalQuiz()">Start Quiz →</button>
+      </div>
+      <div class="qm-active" id="qmActive">
+        <div class="qma-header">
+          <div class="qma-counter" id="qmaCounter">1/10</div>
+          <div class="qma-prog-wrap"><div class="qma-prog-bar" id="qmaProgBar" style="width:0%"></div></div>
+          <div class="qma-score" id="qmaScore">✓ 0</div>
+        </div>
+        <div class="qma-topic" id="qmaTopic"></div>
+        <div class="qma-card"><div class="qma-question" id="qmaQuestion"></div></div>
+        <div class="qma-options" id="qmaOptions"></div>
+        <div class="qma-explain" id="qmaExplain"></div>
+        <div class="qma-nav">
+          <button class="qma-back" onclick="closeGlobalQuiz()">✕ Exit</button>
+          <button class="qma-next" id="qmaNextBtn" onclick="qmaNext()">Next →</button>
+        </div>
+      </div>
+      <div class="qm-results" id="qmResults">
+        <span class="qmr-emoji" id="qmrEmoji"></span>
+        <div class="qmr-title" id="qmrTitle"></div>
+        <div class="qmr-score" id="qmrScore"></div>
+        <div class="qmr-meta" id="qmrMeta"></div>
+        <div class="qmr-stats" id="qmrStats"></div>
+        <div class="qmr-breakdown" id="qmrBreakdown"></div>
+        <div class="qmr-actions">
+          <button class="qmr-btn-p" onclick="startGlobalQuiz()">Retry</button>
+          <button class="qmr-btn-s" onclick="showGlobalSetup()">Change Topics</button>
+          <button class="qmr-btn-s" onclick="closeGlobalQuiz()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FIXED FOOTER -->
+<footer class="site-footer" id="site-footer"></footer>
+
+<script src="data.js"></script>
+<script src="nav.js"></script>
+<script src="sidebar.js"></script>
+<script>
+  // ==================== INIT ====================
+  buildNavbar('ai');
+  buildFooter();
+
+  let readTopics = new Set(JSON.parse(localStorage.getItem('studyHubReadTopics') || '[]'));
+  let currentTopicId = null;
+  let fcIndex = 0, fcFlipped = false;
+  let tqQuestions = [], tqIndex = 0, tqScore = 0, tqAnswered = false, tqCount = 5;
+  let gqSelectedTopics = topics.map(t => t.id);
+  let gqCount = 10;
+  let gqQuestions = [], gqIndex = 0, gqScore = 0, gqAnswered = false, gqTopicStats = {};
+
+  function saveRead() {
+    localStorage.setItem('studyHubReadTopics', JSON.stringify([...readTopics]));
+  }
+
+  // Build sidebar — two main topic buttons
+  (function buildAISidebar() {
+    const c = document.getElementById('sidebarNav');
+    if (!c) return;
+    let html = '<div class="nav-section"><div class="nav-section-label">Overview</div>';
+    html += '<button class="nav-item active" onclick="showAIHome()"><span class="nav-item-icon">📋</span><span class="nav-item-name">All Topics</span></button>';
+    html += '</div>';
+    html += '<div class="nav-section"><div class="nav-section-label">Topics</div>';
+    html += '<a class="nav-item" href="ai-study-hub.html"><span class="nav-item-icon">📚</span><span class="nav-item-name">GfG12 Topics</span></a>';
+    html += '<a class="nav-item" href="topic-finals-reference.html"><span class="nav-item-icon">📄</span><span class="nav-item-name">Finals Reference</span></a>';
+    html += '</div>';
+    c.innerHTML = html;
+  })();
+  buildSidebarToggleBtn();
+  initSidebarSearch();
+  buildAITopicsGrid();
+
+  // ==================== PAGE NAV ====================
+  function showAIHome() {
+    document.getElementById('aiSubjectHome').style.display = 'block';
+    document.getElementById('readerPage').style.display = 'none';
+    updateSidebarActiveNav(null);
+    buildAITopicsGrid();
+    window.scrollTo(0, 0);
+  }
+
+  // ==================== TOPICS GRID ====================
+  function buildAITopicsGrid() { /* Cards are now static HTML */ }
+
+  // ==================== TOPIC READER ====================
+  function openTopic(id, tabOverride) {
+    const t = topics.find(x => x.id === id);
+    if (!t) return;
+    currentTopicId = id;
+    fcIndex = 0; fcFlipped = false;
+    document.getElementById('aiSubjectHome').style.display = 'none';
+    document.getElementById('readerPage').style.display = 'block';
+    document.getElementById('bcCurrent').textContent = t.shortName;
+    document.getElementById('readerIcon').textContent = t.icon;
+    document.getElementById('readerTitle').textContent = t.name;
+    const srcLink = document.getElementById('readerSourceLink');
+    srcLink.textContent = t.source; srcLink.href = t.source;
+    const defaultTab = tabOverride || 'reading';
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    const tabBtns = document.querySelectorAll('#readerTabBar .tab-btn');
+    const tabMap = { reading: 0, subtopics: 1, flashcards: 2, quiz: 3 };
+    if (tabBtns[tabMap[defaultTab]]) tabBtns[tabMap[defaultTab]].classList.add('active');
+    switchTabById(defaultTab);
+    buildReadingContent(t);
+    buildSubtopics(t);
+    renderFlashcard(t);
+    buildTopicQuizSetup(t);
+    updateMarkRead();
+    updateSidebarActiveNav(id);
+    closeSidebar();
+    window.scrollTo(0, 0);
+  }
+
+  function openTopicAndQuiz(id) { openTopic(id, 'quiz'); }
+
+  function buildReadingContent(t) {
+    let html = `<div class="summary-box"><div class="summary-label">📋 Summary</div><div class="summary-text">${t.summary}</div></div>`;
+    (t.sections || []).forEach(sec => {
+      html += `<div class="section-block"><div class="section-title"><div class="section-title-icon">${sec.icon}</div>${sec.title}</div><div class="section-body"><p>${sec.body}</p></div>`;
+      if (sec.concepts && sec.concepts.length) {
+        html += `<div class="key-concepts">`;
+        sec.concepts.forEach((c, i) => {
+          html += `<div class="concept-row"><div class="concept-bullet">${i + 1}</div><div class="concept-text"><div class="concept-term">${c.term}</div><div class="concept-def">${c.def}</div></div></div>`;
+        });
+        html += `</div>`;
+      }
+      html += `</div>`;
+    });
+    if (t.links && t.links.length) {
+      html += `<div class="linked-topics"><div class="lt-title">🔗 Linked Topics</div><div class="lt-grid">`;
+      t.links.forEach(lid => {
+        const lt = topics.find(x => x.id === lid);
+        if (lt) html += `<div class="lt-chip" onclick="openTopic('${lt.id}')">${lt.icon} ${lt.shortName}</div>`;
+      });
+      html += `</div></div>`;
+    }
+    document.getElementById('readingContent').innerHTML = html;
+  }
+
+  function buildSubtopics(t) {
+    const c = document.getElementById('subtopicsContent');
+    if (!t.subtopics || !t.subtopics.length) {
+      c.innerHTML = '<p style="color:var(--muted);font-size:14px;padding:20px 0">No sub-topics for this section.</p>'; return;
+    }
+    c.innerHTML = t.subtopics.map((st, i) => `
+      <div class="subtopic-block" id="stb-${i}">
+        <div class="subtopic-header" onclick="toggleSubtopic(${i})">
+          <div class="stb-left"><span class="stb-icon">${st.icon}</span><span class="stb-name">${st.name}</span></div>
+          <div style="display:flex;align-items:center;gap:8px"><span class="stb-badge">${st.badge}</span><span class="stb-arrow">▼</span></div>
+        </div>
+        <div class="subtopic-body">${st.content}</div>
+      </div>`).join('');
+  }
+
+  function toggleSubtopic(i) { document.getElementById(`stb-${i}`).classList.toggle('open'); }
+
+  // ==================== TABS ====================
+  function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    switchTabById(tabId);
+  }
+  function switchTabById(tabId) {
+    ['reading','subtopics','flashcards','quiz'].forEach(id => {
+      const el = document.getElementById('tab-' + id);
+      if (!el) return;
+      el.style.display = 'none'; el.classList.remove('active');
+    });
+    const el = document.getElementById('tab-' + tabId);
+    if (!el) return;
+    if (tabId === 'flashcards') { el.style.display = 'flex'; } else { el.style.display = 'block'; }
+    el.classList.add('active');
+  }
+
+  // ==================== FLASHCARDS ====================
+  function renderFlashcard(t) {
+    if (!t) return;
+    const cards = t.flashcards || [];
+    if (!cards.length) return;
+    if (fcIndex >= cards.length) fcIndex = 0;
+    const card = cards[fcIndex];
+    document.getElementById('fcCounter').textContent = `Card ${fcIndex + 1} of ${cards.length}`;
+    document.getElementById('fcFront').textContent = card.q;
+    document.getElementById('fcBack').textContent = card.a;
+    document.getElementById('flashcard').classList.remove('flipped');
+    fcFlipped = false;
+  }
+  function flipCard() { fcFlipped = !fcFlipped; document.getElementById('flashcard').classList.toggle('flipped', fcFlipped); }
+  function fcNext() { const t = topics.find(x => x.id === currentTopicId); if (!t) return; fcIndex = (fcIndex + 1) % t.flashcards.length; renderFlashcard(t); }
+  function fcPrev() { const t = topics.find(x => x.id === currentTopicId); if (!t) return; fcIndex = (fcIndex - 1 + t.flashcards.length) % t.flashcards.length; renderFlashcard(t); }
+
+  // ==================== MARK READ ====================
+  function updateMarkRead() {
+    const done = readTopics.has(currentTopicId);
+    document.getElementById('markReadIcon').textContent = done ? '✓' : '☐';
+    document.getElementById('markReadText').textContent = done ? 'Marked as Read' : 'Mark as Read';
+    document.getElementById('markReadBtn').classList.toggle('done', done);
+  }
+  function toggleRead() {
+    if (!currentTopicId) return;
+    if (readTopics.has(currentTopicId)) readTopics.delete(currentTopicId); else readTopics.add(currentTopicId);
+    saveRead(); updateMarkRead(); buildAINav(currentTopicId); buildAITopicsGrid(); updateSidebarProgress();
+  }
+
+  // ==================== TOPIC QUIZ ====================
+  function buildTopicQuizSetup(t) {
+    document.getElementById('tqsTitle').textContent = `🧪 Quiz: ${t.shortName}`;
+    document.getElementById('tqsDesc').textContent = `Test your understanding of "${t.name}" with ${t.questions.length} multiple-choice questions.`;
+    const modeRow = document.getElementById('tqsModeRow');
+    modeRow.innerHTML = '';
+    [5, 999].forEach(c => {
+      if (c === 999 && t.questions.length <= 5) return;
+      const btn = document.createElement('button');
+      btn.className = 'qs-mode-btn' + (c === 5 ? ' active' : '');
+      btn.dataset.count = c;
+      btn.textContent = c === 999 ? `All (${t.questions.length})` : `${c} Questions`;
+      btn.onclick = () => { document.querySelectorAll('#tqsModeRow .qs-mode-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); tqCount = parseInt(btn.dataset.count); };
+      modeRow.appendChild(btn);
+    });
+    tqCount = 5; resetTopicQuiz();
+  }
+  function resetTopicQuiz() {
+    document.getElementById('topicQuizSetup').style.display = 'block';
+    document.getElementById('topicQuizProgress').style.display = 'none';
+    document.getElementById('topicQuizResults').style.display = 'none';
+  }
+  function startTopicQuiz() {
+    const t = topics.find(x => x.id === currentTopicId); if (!t) return;
+    let pool = [...t.questions].sort(() => Math.random() - 0.5).map(q => {
+      const opts = q.options.map((o, i) => ({ text: o, orig: i })).sort(() => Math.random() - 0.5);
+      return { ...q, options: opts.map(o => o.text), answer: opts.findIndex(o => o.orig === q.answer) };
+    });
+    tqQuestions = pool.slice(0, Math.min(tqCount, pool.length));
+    tqIndex = 0; tqScore = 0; tqAnswered = false;
+    document.getElementById('topicQuizSetup').style.display = 'none';
+    document.getElementById('topicQuizProgress').style.display = 'block';
+    document.getElementById('topicQuizResults').style.display = 'none';
+    renderTopicQuestion();
+  }
+  function renderTopicQuestion() {
+    const q = tqQuestions[tqIndex]; tqAnswered = false;
+    const t = topics.find(x => x.id === currentTopicId);
+    document.getElementById('tqCounter').textContent = `${tqIndex + 1}/${tqQuestions.length}`;
+    document.getElementById('tqProgressBar').style.width = `${(tqIndex / tqQuestions.length) * 100}%`;
+    document.getElementById('tqScore').textContent = `✓ ${tqScore}`;
+    document.getElementById('tqTopicTag').textContent = `${t.icon} ${t.shortName}`;
+    document.getElementById('tqQuestion').textContent = q.q;
+    document.getElementById('tqExplain').style.display = 'none';
+    document.getElementById('tqNextBtn').style.display = 'none';
+    const letters = ['A', 'B', 'C', 'D'];
+    document.getElementById('tqOptions').innerHTML = q.options.map((opt, i) =>
+      `<button class="qp-option" onclick="selectTopicAnswer(${i})"><span class="qp-option-letter">${letters[i]}</span><span>${opt}</span></button>`).join('');
+  }
+  function selectTopicAnswer(idx) {
+    if (tqAnswered) return; tqAnswered = true;
+    const q = tqQuestions[tqIndex];
+    const btns = document.querySelectorAll('#tqOptions .qp-option');
+    btns.forEach(b => b.disabled = true);
+    const isCorrect = idx === q.answer;
+    btns[idx].classList.add(isCorrect ? 'correct' : 'wrong');
+    if (!isCorrect) btns[q.answer].classList.add('correct');
+    if (isCorrect) { tqScore++; document.getElementById('tqScore').textContent = `✓ ${tqScore}`; }
+    const box = document.getElementById('tqExplain');
+    box.innerHTML = `<strong>${isCorrect ? '✓ Correct!' : '✗ Incorrect.'}</strong> ${q.explain}`;
+    box.style.display = 'block'; box.style.borderLeftColor = isCorrect ? 'var(--success)' : 'var(--danger)';
+    const nBtn = document.getElementById('tqNextBtn');
+    nBtn.style.display = 'block'; nBtn.textContent = tqIndex + 1 < tqQuestions.length ? 'Next →' : 'See Results →';
+  }
+  function tqNext() { tqIndex++; if (tqIndex >= tqQuestions.length) showTopicResults(); else renderTopicQuestion(); }
+  function showTopicResults() {
+    document.getElementById('topicQuizProgress').style.display = 'none';
+    document.getElementById('topicQuizResults').style.display = 'block';
+    const pct = Math.round((tqScore / tqQuestions.length) * 100);
+    const map = [[90,'🏆','Outstanding!'],[75,'🎉','Great Job!'],[60,'👍','Good Effort!'],[40,'📖','Keep Studying!'],[0,'💪','Keep Practicing!']];
+    const [, emoji, title] = map.find(([min]) => pct >= min);
+    document.getElementById('tqrEmoji').textContent = emoji;
+    document.getElementById('tqrTitle').textContent = title;
+    document.getElementById('tqrScore').textContent = `${tqScore}/${tqQuestions.length}`;
+    document.getElementById('tqrMeta').textContent = `${pct}% correct`;
+    document.getElementById('tqrStats').innerHTML = `
+      <div class="qr-stat"><div class="qr-stat-val" style="color:var(--success)">${tqScore}</div><div class="qr-stat-label">Correct</div></div>
+      <div class="qr-stat"><div class="qr-stat-val" style="color:var(--danger)">${tqQuestions.length - tqScore}</div><div class="qr-stat-label">Incorrect</div></div>
+      <div class="qr-stat"><div class="qr-stat-val" style="color:var(--accent3)">${pct}%</div><div class="qr-stat-label">Score</div></div>`;
+  }
+
+  // ==================== GLOBAL QUIZ ====================
+  function openGlobalQuiz() { document.getElementById('globalQuizOverlay').classList.add('open'); buildGlobalChips(); showGlobalSetup(); }
+  function closeGlobalQuiz() { document.getElementById('globalQuizOverlay').classList.remove('open'); }
+  function handleOverlayClick(e) { if (e.target === document.getElementById('globalQuizOverlay')) closeGlobalQuiz(); }
+  function showGlobalSetup() { document.getElementById('qmSetup').style.display = 'block'; document.getElementById('qmActive').style.display = 'none'; document.getElementById('qmResults').style.display = 'none'; }
+  function buildGlobalChips() {
+    const c = document.getElementById('qmChips'); c.innerHTML = '';
+    topics.forEach(t => {
+      const chip = document.createElement('div');
+      chip.className = 'qm-chip selected'; chip.dataset.id = t.id;
+      chip.innerHTML = `<div class="qm-chip-icon">${t.icon}</div><div class="qm-chip-name">${t.shortName}</div><div class="qm-chip-count">${t.questions.length}q</div>`;
+      chip.onclick = () => {
+        if (gqSelectedTopics.includes(t.id)) { if (gqSelectedTopics.length === 1) return; gqSelectedTopics = gqSelectedTopics.filter(x => x !== t.id); chip.classList.remove('selected'); }
+        else { gqSelectedTopics.push(t.id); chip.classList.add('selected'); }
+      };
+      c.appendChild(chip);
+    });
+    document.getElementById('qmModeRow').querySelectorAll('.qm-mode-btn').forEach(btn => {
+      btn.onclick = () => { document.querySelectorAll('.qm-mode-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); gqCount = parseInt(btn.dataset.count); };
+    });
+  }
+  function buildGlobalQuestions() {
+    let pool = [];
+    topics.filter(t => gqSelectedTopics.includes(t.id)).forEach(t => {
+      t.questions.forEach(q => pool.push({ ...q, topicId: t.id, topicName: t.name, topicIcon: t.icon }));
+    });
+    pool = pool.sort(() => Math.random() - 0.5).map(q => {
+      const opts = q.options.map((o, i) => ({ text: o, orig: i })).sort(() => Math.random() - 0.5);
+      return { ...q, options: opts.map(o => o.text), answer: opts.findIndex(o => o.orig === q.answer) };
+    });
+    return pool.slice(0, Math.min(gqCount, pool.length));
+  }
+  function startGlobalQuiz() {
+    gqQuestions = buildGlobalQuestions(); gqIndex = 0; gqScore = 0; gqAnswered = false; gqTopicStats = {};
+    topics.forEach(t => { gqTopicStats[t.id] = { correct: 0, total: 0, name: t.name, icon: t.icon }; });
+    document.getElementById('qmSetup').style.display = 'none';
+    document.getElementById('qmActive').style.display = 'block';
+    document.getElementById('qmResults').style.display = 'none';
+    renderGlobalQuestion();
+  }
+  function renderGlobalQuestion() {
+    const q = gqQuestions[gqIndex]; gqAnswered = false;
+    document.getElementById('qmaCounter').textContent = `${gqIndex + 1}/${gqQuestions.length}`;
+    document.getElementById('qmaProgBar').style.width = `${(gqIndex / gqQuestions.length) * 100}%`;
+    document.getElementById('qmaScore').textContent = `✓ ${gqScore}`;
+    document.getElementById('qmaTopic').textContent = `${q.topicIcon} ${q.topicName}`;
+    document.getElementById('qmaQuestion').textContent = q.q;
+    document.getElementById('qmaExplain').style.display = 'none';
+    document.getElementById('qmaNextBtn').style.display = 'none';
+    const letters = ['A', 'B', 'C', 'D'];
+    document.getElementById('qmaOptions').innerHTML = q.options.map((opt, i) =>
+      `<button class="qma-option" onclick="selectGlobalAnswer(${i})"><span class="qma-option-letter">${letters[i]}</span><span>${opt}</span></button>`).join('');
+  }
+  function selectGlobalAnswer(idx) {
+    if (gqAnswered) return; gqAnswered = true;
+    const q = gqQuestions[gqIndex];
+    const btns = document.querySelectorAll('#qmaOptions .qma-option');
+    btns.forEach(b => b.disabled = true);
+    const isCorrect = idx === q.answer;
+    btns[idx].classList.add(isCorrect ? 'correct' : 'wrong');
+    if (!isCorrect) btns[q.answer].classList.add('correct');
+    gqTopicStats[q.topicId].total++;
+    if (isCorrect) { gqScore++; gqTopicStats[q.topicId].correct++; document.getElementById('qmaScore').textContent = `✓ ${gqScore}`; }
+    const box = document.getElementById('qmaExplain');
+    box.innerHTML = `<strong>${isCorrect ? '✓ Correct!' : '✗ Incorrect.'}</strong> ${q.explain}`;
+    box.style.display = 'block'; box.style.borderLeftColor = isCorrect ? '#22d3ee' : '#f87171';
+    const nBtn = document.getElementById('qmaNextBtn');
+    nBtn.style.display = 'block'; nBtn.textContent = gqIndex + 1 < gqQuestions.length ? 'Next →' : 'See Results →';
+  }
+  function qmaNext() { gqIndex++; if (gqIndex >= gqQuestions.length) showGlobalResults(); else renderGlobalQuestion(); }
+  function showGlobalResults() {
+    document.getElementById('qmActive').style.display = 'none';
+    document.getElementById('qmResults').style.display = 'block';
+    const pct = Math.round((gqScore / gqQuestions.length) * 100);
+    const map = [[90,'🏆','Outstanding!'],[75,'🎉','Great Job!'],[60,'👍','Good Effort!'],[40,'📖','Keep Studying!'],[0,'💪','Keep Practicing!']];
+    const [, emoji, title] = map.find(([min]) => pct >= min);
+    document.getElementById('qmrEmoji').textContent = emoji;
+    document.getElementById('qmrTitle').textContent = title;
+    document.getElementById('qmrScore').textContent = `${gqScore}/${gqQuestions.length}`;
+    document.getElementById('qmrMeta').textContent = `${pct}% correct across ${gqQuestions.length} questions`;
+    document.getElementById('qmrStats').innerHTML = `
+      <div class="qmr-stat"><div class="qmr-stat-val" style="color:var(--quiz-green)">${gqScore}</div><div class="qmr-stat-label">Correct</div></div>
+      <div class="qmr-stat"><div class="qmr-stat-val" style="color:var(--quiz-red)">${gqQuestions.length - gqScore}</div><div class="qmr-stat-label">Incorrect</div></div>
+      <div class="qmr-stat"><div class="qmr-stat-val" style="color:var(--quiz-cyan)">${pct}%</div><div class="qmr-stat-label">Score</div></div>`;
+    const active = Object.values(gqTopicStats).filter(t => t.total > 0);
+    let bHTML = `<div class="qmrb-title">Performance by Topic</div>`;
+    active.forEach(t => {
+      const p = Math.round((t.correct / t.total) * 100);
+      const col = p >= 75 ? '#4ade80' : p >= 50 ? '#22d3ee' : '#f87171';
+      bHTML += `<div class="qmrb-item"><div class="qmrb-name">${t.icon} ${t.name.slice(0, 18)}</div><div class="qmrb-bar-wrap"><div class="qmrb-bar" style="width:${p}%;background:${col}"></div></div><div class="qmrb-num">${t.correct}/${t.total}</div></div>`;
+    });
+    document.getElementById('qmrBreakdown').innerHTML = bHTML;
+  }
+</script>
+</body>
+</html>

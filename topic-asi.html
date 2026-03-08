@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Study Hub — Artificial Super Intelligence (ASI)</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ---- Flashcards ---- */
+    .flashcard-area{display:flex;flex-direction:column;align-items:center;padding:20px 0}
+    .fc-counter{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:14px}
+    .flashcard-wrap{width:100%;max-width:520px;perspective:1000px;margin-bottom:16px}
+    .flashcard{width:100%;height:200px;position:relative;transform-style:preserve-3d;transition:transform .5s;cursor:pointer;border-radius:16px}
+    .flashcard.flipped{transform:rotateY(180deg)}
+    .fc-face{position:absolute;inset:0;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+    .fc-front{background:var(--surface);border:2px solid var(--border)}
+    .fc-back{background:linear-gradient(135deg,#1a472a,#2d6a4f);color:#fff;transform:rotateY(180deg)}
+    .fc-label{font-size:10px;font-family:'IBM Plex Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+    .fc-back .fc-label{color:rgba(255,255,255,0.6)}
+    .fc-text{font-family:'Lora',serif;font-size:15px;font-weight:600;line-height:1.5;color:var(--text)}
+    .fc-back .fc-text{color:#fff;font-size:14px}
+    .fc-hint{font-size:11px;color:var(--muted);margin-top:10px;font-family:'IBM Plex Mono',monospace}
+    .fc-nav{display:flex;gap:10px;width:100%;max-width:520px}
+    .fc-btn{flex:1;padding:10px;background:var(--surface);border:1px solid var(--border);border-radius:9px;font-size:13px;font-family:'Nunito',sans-serif;font-weight:600;cursor:pointer;color:var(--muted);transition:all .15s}
+    .fc-btn:hover,.fc-btn.primary{border-color:var(--accent);color:var(--accent)}
+    .fc-btn.primary{background:var(--tag-bg)}
+    /* ---- Sections ---- */
+    .section-block{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin-bottom:16px}
+    .section-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+    .section-icon{font-size:18px}
+    .section-title{font-family:'Lora',serif;font-size:17px;font-weight:700;color:var(--text)}
+    .section-body{font-size:14px;line-height:1.75;color:var(--text)}
+    .concepts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:14px}
+    .concept-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+    .concept-term{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;color:var(--accent);margin-bottom:5px}
+    .concept-def{font-size:13px;color:var(--muted);line-height:1.55}
+    /* ---- Subtopics ---- */
+    .subtopics-list{display:flex;flex-direction:column;gap:8px}
+    .subtopic-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+    .subtopic-header{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;transition:background .15s}
+    .subtopic-header:hover{background:var(--bg)}
+    .subtopic-icon{font-size:16px;flex-shrink:0}
+    .subtopic-name{flex:1;font-size:14px;font-weight:600;color:var(--text)}
+    .subtopic-badge{font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--accent);background:var(--tag-bg);border-radius:100px;padding:2px 8px}
+    .subtopic-chevron{font-size:18px;color:var(--muted);transition:transform .2s}
+    .subtopic-chevron.open{transform:rotate(90deg)}
+    .subtopic-body{padding:14px 16px;font-size:14px;line-height:1.7;color:var(--text);border-top:1px solid var(--border)}
+    /* ---- Tabs ---- */
+    .tab-bar{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+    .tab-btn{padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:var(--surface);font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s}
+    .tab-btn:hover{border-color:var(--accent);color:var(--accent)}
+    .tab-btn.active{background:var(--tag-bg);border-color:var(--accent);color:var(--accent)}
+    /* ---- Quiz ---- */
+    .quiz-setup{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:20px}
+    .quiz-setup-title{font-family:'Lora',serif;font-size:19px;font-weight:700;color:var(--text);margin-bottom:6px}
+    .quiz-setup-desc{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.55}
+    .quiz-in-progress{display:none;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px}
+    .qp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .qp-counter,.qp-score{font-size:13px;font-family:'IBM Plex Mono',monospace;color:var(--muted)}
+    .qp-score{color:var(--success)}
+    .qp-progress-wrap{flex:1;margin:0 12px;background:var(--border);border-radius:100px;height:5px;overflow:hidden}
+    .qp-progress-bar{height:100%;background:var(--accent);border-radius:100px;transition:width .3s}
+    .qp-question-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px}
+    .qp-question-text{font-family:'Lora',serif;font-size:18px;font-weight:600;color:var(--text);line-height:1.45}
+    .qp-options{display:flex;flex-direction:column;gap:9px;margin-bottom:14px}
+    .qp-option{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;font-size:14px;font-family:'Nunito',sans-serif;font-weight:600;color:var(--text);transition:all .15s;width:100%}
+    .qp-option-letter{width:26px;height:26px;border-radius:6px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);flex-shrink:0}
+    .qp-option:hover:not(:disabled){border-color:var(--accent);background:var(--tag-bg)}
+    .qp-option.correct{border-color:var(--success);background:rgba(22,163,74,.06)}
+    .qp-option.correct .qp-option-letter{background:var(--success);color:#fff}
+    .qp-option.wrong{border-color:var(--danger);opacity:.7}
+    .qp-option.wrong .qp-option-letter{background:var(--danger);color:#fff}
+    .qp-option:disabled{cursor:default}
+    .qp-explain{background:var(--highlight);border-left:3px solid var(--accent2);border-radius:0 8px 8px 0;padding:12px 14px;font-size:13px;line-height:1.6;color:var(--text);display:none;margin-bottom:12px}
+    .qp-explain strong{color:var(--accent)}
+    .qp-nav{display:flex;justify-content:space-between;align-items:center;gap:10px}
+    /* ---- Reader header ---- */
+    .reader-header{margin-bottom:24px}
+    .reader-icon{font-size:40px;margin-bottom:12px}
+    .reader-title{font-family:'Lora',serif;font-size:clamp(22px,3.5vw,32px);font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.2}
+    .reader-source{font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+    .reader-source a{color:var(--accent);text-decoration:none}
+    .reader-source a:hover{text-decoration:underline}
+    .reader-summary{background:var(--highlight);border-left:3px solid var(--accent2);border-radius:0 10px 10px 0;padding:14px 16px;font-size:14px;line-height:1.7;color:var(--text);margin-bottom:24px}
+    .breadcrumb{display:flex;align-items:center;gap:6px;margin-bottom:20px;font-size:12px;color:var(--muted);font-family:'IBM Plex Mono',monospace;flex-wrap:wrap}
+    .breadcrumb a{color:var(--accent);text-decoration:none}
+    .breadcrumb a:hover{text-decoration:underline}
+    .breadcrumb-sep{color:var(--border)}
+    /* ---- Finals Reference ---- */
+    .fr-block{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin-bottom:20px}
+    .fr-block h2{font-family:'Lora',serif;font-size:20px;font-weight:700;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--border)}
+    .fr-block h3{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:var(--accent);margin:16px 0 8px;text-transform:uppercase;letter-spacing:1px}
+    .fr-block h4{font-size:14px;font-weight:700;color:var(--text);margin:12px 0 6px}
+    .fr-block p{font-size:14px;line-height:1.75;color:var(--text);margin-bottom:10px}
+    .fr-block ul,.fr-block ol{padding-left:20px;margin-bottom:12px}
+    .fr-block li{font-size:14px;line-height:1.65;color:var(--text);margin-bottom:5px}
+    .fr-block strong{color:var(--text)}
+    .fr-block table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px}
+    .fr-block th{background:var(--accent);color:#fff;padding:8px 12px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.5px}
+    .fr-block td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+    .fr-block tr:nth-child(even) td{background:var(--bg)}
+    .img-placeholder{background:var(--bg);border:2px dashed var(--accent2);border-radius:10px;padding:22px;margin:14px 0;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted)}
+    .img-placeholder strong{display:block;color:var(--accent2);margin-bottom:6px;font-size:11px;letter-spacing:1px;text-transform:uppercase}
+    .callout{background:var(--highlight);border-left:4px solid var(--accent2);border-radius:0 10px 10px 0;padding:14px 16px;margin:14px 0;font-size:13.5px;line-height:1.65}
+    .callout strong{color:var(--accent)}
+    .code-block{background:#1c1917;color:#e7e5e4;border-radius:10px;padding:14px 18px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.65;margin:12px 0;overflow-x:auto;white-space:pre}
+    .tag-chip{display:inline-block;background:var(--tag-bg);color:var(--tag-text);border-radius:6px;padding:2px 8px;font-family:'IBM Plex Mono',monospace;font-size:11px;margin:2px 2px}
+    .highlight-box{background:var(--highlight);border-radius:8px;padding:12px 14px;margin-top:12px;font-size:13px;line-height:1.6}
+    .sub-list{padding-left:20px}
+    .sub-list li{margin-bottom:6px;font-size:14px}
+  </style>
+</head>
+<body>
+<div id="app">
+  <nav class="navbar" id="navbar"></nav>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <div class="brand-icon">🚀</div>
+          <div><div class="brand-name">STUDY HUB</div><div class="brand-sub">Artificial Intelligence</div></div>
+        </div>
+      </div>
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="sidebarSearch" placeholder="Search topics..." oninput="filterNav(this.value)"/>
+      </div>
+      <div id="sidebarNav"><div class="nav-section">
+  <div class="nav-section-label">Overview</div>
+  <a class="nav-item" href="ai.html"><span class="nav-item-icon">🏠</span><span class="nav-item-name">AI Subject Home</span></a>
+</div>
+<div class="nav-section">
+  <div class="nav-section-label">AI Topics</div>
+  <a class="nav-item" href="topic-what-is-ai.html"><span class="nav-item-icon">🤖</span><span class="nav-item-name">What is AI?</span></a>
+  <a class="nav-item" href="topic-machine-learning.html"><span class="nav-item-icon">🧠</span><span class="nav-item-name">Machine Learning</span></a>
+  <a class="nav-item" href="topic-narrow-ai.html"><span class="nav-item-icon">🎯</span><span class="nav-item-name">Narrow AI</span></a>
+  <a class="nav-item" href="topic-agi.html"><span class="nav-item-icon">🌐</span><span class="nav-item-name">AGI</span></a>
+  <a class="nav-item active" href="topic-asi.html"><span class="nav-item-icon">🚀</span><span class="nav-item-name">ASI</span></a>
+  <a class="nav-item" href="topic-generative-ai.html"><span class="nav-item-icon">✨</span><span class="nav-item-name">Generative AI</span></a>
+  <a class="nav-item" href="topic-nlp.html"><span class="nav-item-icon">💬</span><span class="nav-item-name">NLP</span></a>
+  <a class="nav-item" href="topic-expert-systems.html"><span class="nav-item-icon">🧑‍⚕️</span><span class="nav-item-name">Expert Systems</span></a>
+  <a class="nav-item" href="topic-ai-models.html"><span class="nav-item-icon">📊</span><span class="nav-item-name">AI Models</span></a>
+  <a class="nav-item" href="topic-supervised-learning.html"><span class="nav-item-icon">📚</span><span class="nav-item-name">Supervised Learning</span></a>
+  <a class="nav-item" href="topic-unsupervised-learning.html"><span class="nav-item-icon">🔍</span><span class="nav-item-name">Unsupervised Learning</span></a>
+  <a class="nav-item" href="topic-reinforcement-learning.html"><span class="nav-item-icon">🏆</span><span class="nav-item-name">Reinforcement Learning</span></a>
+  <a class="nav-item" href="topic-finals-reference.html"><span class="nav-item-icon">📄</span><span class="nav-item-name">Finals Reference</span></a>
+</div></div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+    <main class="main">
+      <div class="main-inner animate-in">
+        <div class="breadcrumb">
+          <a href="home.html">All Subjects</a>
+          <span class="breadcrumb-sep">›</span>
+          <a href="ai.html">Artificial Intelligence</a>
+          <span class="breadcrumb-sep">›</span>
+          <span>ASI</span>
+        </div>
+        <div class="reader-header">
+          <div class="reader-icon">🚀</div>
+          <h1 class="reader-title">Artificial Super Intelligence (ASI)</h1>
+          <div class="reader-source"><span>📎</span><a href="https://www.geeksforgeeks.org/blogs/what-is-artificial-super-intelligence-asi/" target="_blank" rel="noopener">https://www.geeksforgeeks.org/blogs/what-is-artificial-super-intelligence-asi/</a></div>
+        </div>
+        <div class="reader-summary">ASI is a hypothetical form of AI that surpasses human intelligence in all domains. It is the subject of both optimistic anticipation and existential concern, with thinkers like Nick Bostrom warning of catastrophic risks.</div>
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="switchTab('reading',this)">📖 Reading Notes</button>
+          <button class="tab-btn" onclick="switchTab('subtopics',this)">🔗 Sub-Topics</button>
+          <button class="tab-btn" onclick="switchTab('flashcards',this)">🃏 Flashcards</button>
+          <button class="tab-btn" onclick="switchTab('quiz',this)">📝 Quiz</button>
+        </div>
+        <div id="tab-reading"><div class="section-block animate-in" style="animation-delay:0.00s">
+  <div class="section-header"><span class="section-icon">🌌</span><h3 class="section-title">What is ASI?</h3></div>
+  <div class="section-body">Artificial Super Intelligence (ASI) is a <em>hypothetical</em> form of AI that would surpass human intelligence in <strong>all areas</strong> — cognitive, creative, and social. The concept builds on AGI: once AGI exists and can improve itself, it might recursively self-improve, leading to an <strong>intelligence explosion</strong> — rapidly reaching and vastly exceeding human-level capabilities.</div>
+</div>
+<div class="section-block animate-in" style="animation-delay:0.05s">
+  <div class="section-header"><span class="section-icon">🌟</span><h3 class="section-title">Potential Benefits</h3></div>
+  <div class="section-body">Proponents envision ASI solving humanity's greatest challenges: <strong>Climate Change</strong> — optimal resource management. <strong>Medicine</strong> — accelerated drug discovery, eliminating diseases. <strong>Scientific Discovery</strong> — breakthroughs in years rather than centuries. <strong>Poverty</strong> — radical resource optimization. ASI could compress centuries of human progress into years.</div><div class="concepts-grid"><div class="concept-card"><div class="concept-term">Intelligence Explosion</div><div class="concept-def">The hypothetical rapid, recursive self-improvement of an AGI/ASI system — leading to superintelligence far beyond human capacity.</div></div><div class="concept-card"><div class="concept-term">Existential Risk (x-risk)</div><div class="concept-def">The possibility that ASI development leads to outcomes catastrophic for humanity.</div></div><div class="concept-card"><div class="concept-term">Singularity</div><div class="concept-def">The hypothetical point at which AI surpasses human intelligence and technological growth becomes uncontrollable/unpredictable.</div></div><div class="concept-card"><div class="concept-term">Control Problem (ASI)</div><div class="concept-def">How to maintain meaningful human oversight of a system vastly more intelligent than any human.</div></div></div>
+</div>
+<div class="section-block animate-in" style="animation-delay:0.10s">
+  <div class="section-header"><span class="section-icon">⚠️</span><h3 class="section-title">Risks & Existential Concerns</h3></div>
+  <div class="section-body">ASI risks: <strong>Misalignment</strong> — an ASI pursuing misaligned goals could optimize against human survival. <strong>Loss of Control</strong> — a sufficiently intelligent system might prevent being shut down. <strong>Value Lock-in</strong> — ASI designed by narrow groups could impose those values permanently. Nick Bostrom's <em>Superintelligence</em> (2014) brought these risks to mainstream attention.</div>
+</div></div>
+        <div class="tab-section" id="tab-subtopics" style="display:none"><div class="subtopics-list">
+<div class="subtopic-block">
+  <div class="subtopic-header" onclick="toggleST(0)">
+    <span class="subtopic-icon">📚</span>
+    <span class="subtopic-name">Key Thinkers on ASI</span>
+    <span class="subtopic-badge">Research</span>
+    <span class="subtopic-chevron" id="stc-0">›</span>
+  </div>
+  <div class="subtopic-body" id="stb-0" style="display:none"><strong>Nick Bostrom</strong> (Oxford) — <em>Superintelligence</em> (2014) — seminal work on ASI risks. <strong>Eliezer Yudkowsky</strong> (MIRI) — argues unaligned AGI/ASI is the default without extreme care. <strong>Stuart Russell</strong> (Berkeley) — <em>Human Compatible</em> (2019) — proposes inverse RL for value alignment. <strong>Ray Kurzweil</strong> (Google) — optimistic, predicts ASI by 2045. <strong>Max Tegmark</strong> (MIT) — <em>Life 3.0</em> — explores utopian and dystopian ASI futures.</div>
+</div>
+<div class="subtopic-block">
+  <div class="subtopic-header" onclick="toggleST(1)">
+    <span class="subtopic-icon">🔐</span>
+    <span class="subtopic-name">AI Safety Approaches for ASI</span>
+    <span class="subtopic-badge">Safety Research</span>
+    <span class="subtopic-chevron" id="stc-1">›</span>
+  </div>
+  <div class="subtopic-body" id="stb-1" style="display:none">Safety approaches: <strong>Corrigibility</strong> — AI that supports human oversight. <strong>Containment/Boxing</strong> — limiting ASI to isolated environments. <strong>Capability Control</strong> — limiting what ASI can do or know. <strong>Value Learning</strong> — AI that learns human values through observation (IRL). No consensus exists on which approach would be sufficient for a genuinely superintelligent system.</div>
+</div></div></div>
+        <div class="tab-section" id="tab-flashcards" style="display:none">
+  <div class="flashcard-area">
+    <div class="fc-counter" id="fcCounter">1 / 4</div>
+    <div class="flashcard-wrap"><div class="flashcard" id="fc" onclick="flipCard()">
+      <div class="fc-face fc-front"><div class="fc-label">QUESTION</div><div class="fc-text" id="fcQ"></div><div class="fc-hint">Click to reveal answer</div></div>
+      <div class="fc-face fc-back"><div class="fc-label">ANSWER</div><div class="fc-text" id="fcA"></div></div>
+    </div></div>
+    <div class="fc-nav">
+      <button class="fc-btn" onclick="prevFC()">← Prev</button>
+      <button class="fc-btn primary" onclick="flipCard()">Flip</button>
+      <button class="fc-btn" onclick="nextFC()">Next →</button>
+    </div>
+  </div>
+  <script>
+    var _fc=[{"q":"What is ASI (Artificial Super Intelligence)?","a":"A hypothetical AI that surpasses human intelligence in ALL areas — cognitive, creative, emotional, social. Does not currently exist."},{"q":"What is the \"Intelligence Explosion\"?","a":"The hypothetical process where an AGI improves itself recursively, rapidly reaching and vastly exceeding human-level intelligence."},{"q":"Who wrote \"Superintelligence\" and what is its main argument?","a":"Nick Bostrom (Oxford, 2014) — argues that a superintelligent AI with misaligned goals poses an existential risk to humanity."},{"q":"What is the Control Problem in ASI?","a":"How to maintain meaningful human oversight of a system potentially far more intelligent than any human — possibly preventing its own shutdown."}],_fi=0,_ff=false;
+    function _rc(){document.getElementById('fcQ').textContent=_fc[_fi].q;document.getElementById('fcA').textContent=_fc[_fi].a;document.getElementById('fcCounter').textContent=(_fi+1)+' / '+_fc.length;document.getElementById('fc').classList.remove('flipped');_ff=false;}
+    function flipCard(){_ff=!_ff;document.getElementById('fc').classList.toggle('flipped',_ff);}
+    function nextFC(){_fi=(_fi+1)%_fc.length;_rc();}
+    function prevFC(){_fi=(_fi-1+_fc.length)%_fc.length;_rc();}
+    _rc();
+  </script>
+</div>
+        <div class="tab-section" id="tab-quiz" style="display:none">
+  <div class="quiz-setup" id="qzSetup">
+    <div class="quiz-setup-title">📝 Topic Quiz</div>
+    <div class="quiz-setup-desc">Test your understanding with 4 questions.</div>
+    <button class="btn-launch-quiz" onclick="startQz()">Start Quiz →</button>
+  </div>
+  <div class="quiz-in-progress" id="qzProg">
+    <div class="qp-header"><div class="qp-counter" id="qzCtr">1/4</div><div class="qp-progress-wrap"><div class="qp-progress-bar" id="qzBar" style="width:0%"></div></div><div class="qp-score" id="qzSc">✓ 0</div></div>
+    <div class="qp-question-card"><div class="qp-question-text" id="qzQ"></div></div>
+    <div class="qp-options" id="qzOpts"></div>
+    <div class="qp-explain" id="qzExp"></div>
+    <div class="qp-nav"><button class="btn-outline" onclick="resetQz()">✕ Exit</button><button id="qzNxt" class="btn-launch-quiz" style="display:none" onclick="nextQz()">Next →</button></div>
+  </div>
+  <script>
+    var _qq=[{"q":"Artificial Super Intelligence (ASI) is:","options":["Current state of most AI systems","A hypothetical AI that surpasses human intelligence in all areas","An AI that only excels in one narrow task","A synonym for AGI"],"answer":1,"explain":"ASI is a hypothetical form of AI that would surpass human intelligence in all areas — cognitive, creative, emotional, and social. It does not currently exist."},{"q":"What is the key concern about ASI development?","options":["It will cost too much electricity","Ethical and existential risks — machines surpassing and potentially becoming uncontrollable by humans","It will make computers too slow","It only works with specific programming languages"],"answer":1,"explain":"ASI raises major ethical and safety concerns — the possibility that superintelligent machines could surpass human control is considered an existential risk."},{"q":"What is the \"Intelligence Explosion\" in the context of ASI?","options":["Rapid increase in internet users","The process where AGI recursively self-improves, rapidly reaching superintelligent levels","A sudden increase in AI funding","The speed at which neural networks process data"],"answer":1,"explain":"The Intelligence Explosion is the hypothetical process where AGI improves itself recursively, with each iteration more capable — rapidly exceeding human-level intelligence."},{"q":"Which of the following could be a potential benefit of ASI?","options":["Increasing manual labor requirements","Accelerating solutions to climate change, disease treatment, and scientific discovery","Eliminating all forms of creativity","Making human decision-making obsolete with no benefits"],"answer":1,"explain":"ASI could potentially solve problems like climate change, find disease treatments faster, optimize resources, and revolutionize healthcare, energy, and scientific research."}],_qi=0,_qs=0,_qa=false;
+    function startQz(){_qi=0;_qs=0;_qa=false;document.getElementById('qzSetup').style.display='none';document.getElementById('qzProg').style.display='block';rQz();}
+    function rQz(){var q=_qq[_qi];document.getElementById('qzCtr').textContent=(_qi+1)+'/'+_qq.length;document.getElementById('qzBar').style.width=((_qi/_qq.length)*100)+'%';document.getElementById('qzSc').textContent='✓ '+_qs;document.getElementById('qzQ').textContent=q.q;document.getElementById('qzExp').style.display='none';document.getElementById('qzNxt').style.display='none';var o=document.getElementById('qzOpts');o.innerHTML='';_qa=false;q.options.forEach(function(opt,i){var b=document.createElement('button');b.className='qp-option';b.innerHTML='<span class="qp-option-letter">'+'ABCD'[i]+'</span>'+opt;b.onclick=function(){if(!_qa)aQz(i,b);};o.appendChild(b);});}
+    function aQz(i,btn){_qa=true;var q=_qq[_qi];var bs=document.querySelectorAll('.qp-option');bs.forEach(function(b){b.disabled=true;});if(i===q.answer){btn.classList.add('correct');_qs++;}else{btn.classList.add('wrong');bs[q.answer].classList.add('correct');}var e=document.getElementById('qzExp');e.innerHTML='<strong>Explanation:</strong> '+q.explain;e.style.display='block';document.getElementById('qzNxt').style.display='block';document.getElementById('qzSc').textContent='✓ '+_qs;}
+    function nextQz(){_qi++;if(_qi>=_qq.length){document.getElementById('qzProg').innerHTML='<div style="text-align:center;padding:40px"><div style="font-size:48px;margin-bottom:16px">'+(_qs/_qq.length>=0.8?'🎉':'📚')+'</div><div style="font-family:Lora,serif;font-size:24px;font-weight:700;margin-bottom:8px">Quiz Complete!</div><div style="color:var(--muted);margin-bottom:24px">You scored '+_qs+' / '+_qq.length+'</div><button class="btn-launch-quiz" onclick="resetQz()">Try Again</button></div>';}else{rQz();}}
+    function resetQz(){location.reload();}
+  </script>
+</div>
+      </div>
+    </main>
+  </div>
+</div>
+<footer class="site-footer" id="site-footer"></footer>
+<script src="data.js"></script>
+<script src="nav.js"></script>
+<script src="sidebar.js"></script>
+<script>
+  buildNavbar('ai');
+  buildFooter();
+  buildSidebarToggleBtn();
+  function switchTab(n,btn){
+    ['reading','subtopics','flashcards','quiz'].forEach(function(id){var el=document.getElementById('tab-'+id);if(el)el.style.display='none';});
+    document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+    var el=document.getElementById('tab-'+n);if(el)el.style.display='block';
+    if(btn)btn.classList.add('active');
+    if(n==='flashcards'&&typeof _rc==='function')_rc();
+  }
+  function toggleST(i){var b=document.getElementById('stb-'+i),c=document.getElementById('stc-'+i);if(!b)return;var open=b.style.display!=='none';b.style.display=open?'none':'block';if(c)c.classList.toggle('open',!open);}
+  function filterNav(q){var ql=q.toLowerCase();document.querySelectorAll('#sidebarNav .nav-item').forEach(function(item){var nm=item.querySelector('.nav-item-name');item.style.display=(nm&&nm.textContent.toLowerCase().includes(ql))||!q?'':'none';});}
+</script>
+</body>
+</html>

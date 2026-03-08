@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Study Hub — Methods of Research in Computing</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .coming-soon-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 50vh;
+        text-align: center;
+        padding: 48px 20px;
+      }
+      .cs-back-row {
+        margin-top: 16px;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .btn-outline-cs {
+        font-size: 13px;
+        padding: 12px 24px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        color: var(--muted);
+        background: var(--surface);
+        transition: all 0.15s;
+      }
+      .btn-outline-cs:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <nav class="navbar" id="navbar"></nav>
+      <div class="layout">
+        <aside class="sidebar" id="sidebar">
+          <div class="sidebar-header">
+            <div class="brand">
+              <div class="brand-icon">🔬</div>
+              <div>
+                <div class="brand-name">STUDY HUB</div>
+                <div class="brand-sub">Methods of Research in Computing</div>
+              </div>
+            </div>
+          </div>
+          <div id="sidebarNav"></div>
+        </aside>
+        <div
+          class="sidebar-overlay"
+          id="sidebarOverlay"
+          onclick="closeSidebar()"
+        ></div>
+        <main class="main">
+          <div class="main-inner animate-in">
+            <div class="coming-soon-wrap">
+              <div class="cs-icon">🚧</div>
+              <h2 class="cs-title">Coming Soon</h2>
+              <div class="cs-subject-name">
+                🔬 Methods of Research in Computing
+              </div>
+              <p class="cs-desc">
+                Content for this subject is being prepared. Check back soon —
+                topics, flashcards, and quizzes will be added here.
+              </p>
+              <div class="cs-back-row">
+                <a
+                  class="btn-get-started"
+                  href="home.html"
+                  style="font-size: 13px; padding: 12px 28px"
+                  >← Back to Subjects</a
+                >
+                <a class="btn-outline-cs" href="ai.html">🤖 Try AI Topics</a>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- FIXED FOOTER -->
+    <footer class="site-footer" id="site-footer"></footer>
+
+    <script src="data.js"></script>
+    <script src="nav.js"></script>
+    <script src="sidebar.js"></script>
+    <script>
+      buildNavbar("research");
+      buildFooter();
+      buildSidebarToggleBtn();
+      buildGlobalSidebar("research");
+    </script>
+  </body>
+</html>

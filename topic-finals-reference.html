@@ -1,0 +1,1526 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Study Hub — Finals Reference</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .tab-bar {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+      .tab-btn {
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        font-family: "Nunito", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .tab-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .tab-btn.active {
+        background: var(--tag-bg);
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .reader-header {
+        margin-bottom: 24px;
+      }
+      .reader-icon {
+        font-size: 40px;
+        margin-bottom: 12px;
+      }
+      .reader-title {
+        font-family: "Lora", serif;
+        font-size: clamp(22px, 3.5vw, 30px);
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 8px;
+        line-height: 1.2;
+      }
+      .reader-source {
+        font-size: 12px;
+        color: var(--muted);
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 8px;
+        font-family: "IBM Plex Mono", monospace;
+      }
+      .reader-summary {
+        background: var(--highlight);
+        border-left: 3px solid var(--accent2);
+        border-radius: 0 10px 10px 0;
+        padding: 14px 16px;
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--text);
+        margin-bottom: 24px;
+      }
+      .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 20px;
+        font-size: 12px;
+        color: var(--muted);
+        font-family: "IBM Plex Mono", monospace;
+        flex-wrap: wrap;
+      }
+      .breadcrumb a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      .breadcrumb a:hover {
+        text-decoration: underline;
+      }
+      .breadcrumb-sep {
+        color: var(--border);
+      }
+      /* Content blocks */
+      .fr-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 22px 24px;
+        margin-bottom: 20px;
+      }
+      .fr-block h2 {
+        font-family: "Lora", serif;
+        font-size: 19px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--border);
+      }
+      .fr-block h3 {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--accent);
+        margin: 16px 0 8px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+      }
+      .fr-block h4 {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text);
+        margin: 12px 0 6px;
+        font-family: "Nunito", sans-serif;
+      }
+      .fr-block p {
+        font-size: 14px;
+        line-height: 1.75;
+        color: var(--text);
+        margin-bottom: 10px;
+      }
+      .fr-block ul,
+      .fr-block ol {
+        padding-left: 20px;
+        margin-bottom: 12px;
+      }
+      .fr-block li {
+        font-size: 14px;
+        line-height: 1.65;
+        color: var(--text);
+        margin-bottom: 5px;
+      }
+      .fr-block table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 14px 0;
+        font-size: 13px;
+      }
+      .fr-block th {
+        background: var(--accent);
+        color: #fff;
+        padding: 8px 12px;
+        text-align: left;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.5px;
+      }
+      .fr-block td {
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+        line-height: 1.55;
+      }
+      .fr-block tr:nth-child(even) td {
+        background: var(--bg);
+      }
+      .img-placeholder {
+        background: var(--bg);
+        border: 2px dashed var(--accent2);
+        border-radius: 10px;
+        padding: 28px 22px;
+        margin: 16px 0;
+        text-align: center;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .img-placeholder strong {
+        display: block;
+        color: var(--accent2);
+        margin-bottom: 8px;
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+      .img-placeholder span {
+        font-size: 13px;
+        color: var(--text);
+      }
+      .callout {
+        background: var(--highlight);
+        border-left: 4px solid var(--accent2);
+        border-radius: 0 10px 10px 0;
+        padding: 14px 16px;
+        margin: 14px 0;
+        font-size: 13.5px;
+        line-height: 1.65;
+      }
+      .callout strong {
+        color: var(--accent);
+      }
+      .code-block {
+        background: #1c1917;
+        color: #e7e5e4;
+        border-radius: 10px;
+        padding: 14px 18px;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12.5px;
+        line-height: 1.65;
+        margin: 12px 0;
+        overflow-x: auto;
+        white-space: pre;
+      }
+      .def-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+        gap: 10px;
+        margin-top: 14px;
+      }
+      .def-card {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 14px;
+      }
+      .def-term {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--accent);
+        margin-bottom: 5px;
+      }
+      .def-body {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+      .pattern-card {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 12px;
+      }
+      .pattern-title {
+        font-family: "Lora", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 4px;
+      }
+      .pattern-tag {
+        font-size: 10px;
+        font-family: "IBM Plex Mono", monospace;
+        color: var(--accent);
+        background: var(--tag-bg);
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 100px;
+        margin-bottom: 10px;
+      }
+      .pattern-body {
+        font-size: 13.5px;
+        line-height: 1.65;
+        color: var(--text);
+      }
+      .pattern-body p {
+        font-size: 13.5px;
+        margin-bottom: 8px;
+      }
+      .pdf-notice {
+        background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+        border: 1px solid #a7f3d0;
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 20px;
+        font-size: 13px;
+        line-height: 1.65;
+        color: var(--text);
+      }
+      .pdf-notice strong {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <nav class="navbar" id="navbar"></nav>
+      <div class="layout">
+        <aside class="sidebar" id="sidebar">
+          <div class="sidebar-header">
+            <div class="brand">
+              <div class="brand-icon">📄</div>
+              <div>
+                <div class="brand-name">STUDY HUB</div>
+                <div class="brand-sub">Artificial Intelligence</div>
+              </div>
+            </div>
+          </div>
+          <div class="search-box">
+            <span>🔍</span>
+            <input
+              type="text"
+              id="sidebarSearch"
+              placeholder="Search topics..."
+              oninput="filterNav(this.value)"
+            />
+          </div>
+          <div id="sidebarNav"></div>
+        </aside>
+        <div
+          class="sidebar-overlay"
+          id="sidebarOverlay"
+          onclick="closeSidebar()"
+        ></div>
+        <main class="main">
+          <div class="main-inner animate-in">
+            <div class="breadcrumb">
+              <a href="home.html">All Subjects</a>
+              <span class="breadcrumb-sep">›</span>
+              <a href="ai.html">Artificial Intelligence</a>
+              <span class="breadcrumb-sep">›</span>
+              <span>Finals Reference</span>
+            </div>
+
+            <div class="reader-header">
+              <div class="reader-icon">📄</div>
+              <h1 class="reader-title">
+                Finals Reference — Event-Driven Design for AI Agents
+              </h1>
+              <div class="reader-source">
+                <span>📎</span>
+                <span
+                  >Confluent Inc., 2025 — A Guide to Event-Driven Design for
+                  Agents and Multi-Agent Systems</span
+                >
+              </div>
+            </div>
+
+            <div class="reader-summary">
+              The Finals reference document covering Event-Driven Architecture
+              (EDA) for AI agents and multi-agent systems. Covers the evolution
+              of AI (Predictive → Generative → Agentic), agent anatomy, EDA
+              design patterns (Orchestrator-Worker, Hierarchical, Blackboard,
+              Market-Based), and real-world applications. This document serves
+              as the primary guide for building AI agentic projects.
+            </div>
+
+            <div class="pdf-notice">
+              ⚠️ <strong>PDF not yet uploaded.</strong> The content below is
+              structured from the topic summary and description. Please
+              re-upload the PDF file so the full lecture and laboratory content
+              can be extracted. Image placeholders are marked with
+              <code>[IMAGE: ...]</code> labels throughout.
+            </div>
+
+            <div class="tab-bar">
+              <button
+                class="tab-btn active"
+                onclick="switchTab('lecture', this)"
+              >
+                📖 Lecture Notes
+              </button>
+              <button class="tab-btn" onclick="switchTab('lab', this)">
+                🧪 Laboratory
+              </button>
+              <button class="tab-btn" onclick="switchTab('glossary', this)">
+                📋 Key Terms
+              </button>
+            </div>
+
+            <!-- ===== LECTURE NOTES ===== -->
+            <div id="tab-lecture">
+              <div class="fr-block">
+                <h2>Part 1 — The Evolution of AI</h2>
+                <p>
+                  The reference document grounds everything in the three-phase
+                  evolution of AI systems — each phase building on the last,
+                  requiring new architectural approaches as AI becomes more
+                  autonomous.
+                </p>
+
+                <h3>Phase 1 — Predictive AI</h3>
+                <p>
+                  Traditional machine learning systems trained on historical
+                  data to predict future outcomes. These systems operate within
+                  fixed problem scopes: classify this image, predict this price,
+                  detect this fraud. They are <strong>reactive</strong> and
+                  <strong>narrowly scoped</strong> — they answer specific
+                  questions with statistical models. Examples: fraud detection
+                  models, recommendation engines, demand forecasting pipelines.
+                </p>
+                <p>
+                  Key characteristic: <em>given input X, produce output Y</em>.
+                  The model does not plan, reason across steps, or take actions
+                  in the world. It simply maps inputs to outputs based on
+                  learned patterns.
+                </p>
+
+                <h3>Phase 2 — Generative AI</h3>
+                <p>
+                  Foundation models (LLMs, diffusion models) that generate novel
+                  content — text, images, code, audio. Examples: ChatGPT,
+                  DALL·E, Stable Diffusion, GitHub Copilot. Generative AI
+                  expanded AI's role from <em>prediction</em> to
+                  <em>creation</em>, but still required human orchestration for
+                  complex multi-step tasks.
+                </p>
+                <p>
+                  Key characteristic:
+                  <em
+                    >given a prompt, produce creative or informative content</em
+                  >. The human remained in the loop to decompose goals, connect
+                  results, and decide next steps.
+                </p>
+
+                <h3>Phase 3 — Agentic AI</h3>
+                <p>
+                  Autonomous systems that
+                  <strong>plan, reason, act, and self-correct</strong> to
+                  achieve goals over time. Unlike Generative AI (which responds
+                  to prompts), Agentic AI can:
+                </p>
+                <ul>
+                  <li>Break complex goals into sequences of sub-tasks</li>
+                  <li>
+                    Invoke external tools — APIs, databases, code interpreters,
+                    web search
+                  </li>
+                  <li>
+                    Maintain memory and context across multiple interactions
+                  </li>
+                  <li>
+                    Evaluate outcomes and revise plans when things go wrong
+                  </li>
+                  <li>
+                    Coordinate with other agents to divide and conquer large
+                    tasks
+                  </li>
+                </ul>
+                <div class="callout">
+                  <strong>The Core Shift:</strong> Predictive AI
+                  <em>classifies</em>. Generative AI <em>creates</em>. Agentic
+                  AI <em>acts</em>. This transition from reactive to proactive
+                  systems is what makes Event-Driven Architecture essential —
+                  agents need infrastructure that supports asynchronous,
+                  coordinated, long-running workflows.
+                </div>
+                <div class="img-placeholder">
+                  <strong>[IMAGE — Figure 1]</strong>
+                  <span
+                    >Insert image here — Progression diagram: Predictive AI →
+                    Generative AI → Agentic AI, showing key capabilities and
+                    transitions at each phase</span
+                  >
+                </div>
+              </div>
+
+              <div class="fr-block">
+                <h2>Part 2 — Anatomy of an AI Agent</h2>
+                <p>
+                  An AI agent is not a single component — it is a system of
+                  interacting parts that together enable autonomous,
+                  goal-directed behavior. Understanding the anatomy helps you
+                  design agents that are reliable, extensible, and observable.
+                </p>
+
+                <h3>Core Components</h3>
+                <div class="def-grid">
+                  <div class="def-card">
+                    <div class="def-term">🧠 LLM / Reasoning Core</div>
+                    <div class="def-body">
+                      The cognitive engine. Processes context, formulates plans,
+                      decides which tool to call next, and generates responses.
+                      Typically a large language model (GPT-4, Claude, Gemini,
+                      Llama).
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">💾 Short-Term Memory</div>
+                    <div class="def-body">
+                      The active context window — everything the agent currently
+                      "remembers" about the current task: prior messages, tool
+                      results, partial plans. Limited by the LLM's context
+                      length.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">🗄️ Long-Term Memory</div>
+                    <div class="def-body">
+                      Persistent storage that survives across sessions. Usually
+                      a vector database (Pinecone, Chroma, Weaviate) that stores
+                      past experiences, domain knowledge, and user preferences —
+                      retrieved by semantic similarity.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">🔧 Tools / Actions</div>
+                    <div class="def-body">
+                      The agent's hands. External capabilities it can invoke:
+                      web search, code execution, database queries, API calls,
+                      file I/O, email sending. Each tool has a defined interface
+                      the LLM can call.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">📋 Planner</div>
+                    <div class="def-body">
+                      Decomposes high-level goals into a sequence of concrete,
+                      executable steps. Approaches: ReAct (interleave reasoning
+                      with action), Chain-of-Thought, Tree-of-Thought,
+                      Plan-and-Execute.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">🔄 Feedback / Evaluator</div>
+                    <div class="def-body">
+                      Observes the results of each action, compares against the
+                      goal, and decides whether to continue the current plan or
+                      re-plan. Enables self-correction — a defining capability
+                      of robust agents.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">📡 Communication Interface</div>
+                    <div class="def-body">
+                      How the agent receives tasks and reports results. In EDA
+                      systems this is the event bus — the agent consumes task
+                      events and publishes result events. In simpler systems it
+                      may be a REST API or message queue.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">🆔 Identity / Profile</div>
+                    <div class="def-body">
+                      The agent's defined role, capabilities, and constraints.
+                      In multi-agent systems, each agent has a declared identity
+                      so the orchestrator knows what tasks to assign to it.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="img-placeholder">
+                  <strong>[IMAGE — Figure 2]</strong>
+                  <span
+                    >Insert image here — Agent anatomy diagram showing all
+                    components (LLM core, memory, tools, planner, feedback loop,
+                    communication) and their connections</span
+                  >
+                </div>
+
+                <h3>The ReAct Agent Loop</h3>
+                <p>
+                  The most widely used agent pattern is
+                  <strong>ReAct (Reason + Act)</strong> — the agent alternates
+                  between reasoning steps and tool invocations:
+                </p>
+                <div class="code-block">
+                  Goal received → Thought: "What is the first step I need to
+                  take?" → Action: call_tool("web_search", query="...") →
+                  Observation: search results returned → Thought: "Based on
+                  results, I need to..." → Action: call_tool("code_executor",
+                  code="...") → Observation: code output → Thought: "Goal
+                  achieved / need to revise plan because..." → Final Answer:
+                  deliver result
+                </div>
+                <p>
+                  This loop continues until the agent determines the goal is
+                  satisfied or a maximum iteration limit is reached. The key
+                  insight is that reasoning and action are
+                  <strong>interleaved</strong> — the agent can observe results
+                  before deciding its next move.
+                </p>
+
+                <h3>Memory Architecture in Detail</h3>
+                <p>Agent memory operates at multiple timescales:</p>
+                <ul>
+                  <li>
+                    <strong>In-context (working memory):</strong> Everything in
+                    the current LLM prompt — limited by context window (e.g.,
+                    128K tokens for GPT-4o). Very fast access, but ephemeral.
+                  </li>
+                  <li>
+                    <strong>External short-term (episodic):</strong> Recent task
+                    history stored in a database, retrieved for the current
+                    session. Survives context window limits.
+                  </li>
+                  <li>
+                    <strong>External long-term (semantic):</strong> Accumulated
+                    knowledge, user preferences, domain facts. Stored as vector
+                    embeddings in a vector DB. Retrieved by similarity to
+                    current query.
+                  </li>
+                  <li>
+                    <strong>Procedural:</strong> The agent's "how-to" knowledge
+                    — often encoded in system prompts or fine-tuning rather than
+                    explicit retrieval.
+                  </li>
+                </ul>
+              </div>
+
+              <div class="fr-block">
+                <h2>Part 3 — Event-Driven Architecture (EDA)</h2>
+                <p>
+                  <strong>Event-Driven Architecture</strong> is a software
+                  design paradigm in which system components communicate by
+                  producing and consuming <em>events</em> — discrete, immutable
+                  records that something notable has happened — rather than via
+                  direct synchronous API calls.
+                </p>
+
+                <h3>Core Vocabulary</h3>
+                <div class="def-grid">
+                  <div class="def-card">
+                    <div class="def-term">📨 Event</div>
+                    <div class="def-body">
+                      An immutable record: "Payment of $150 processed at
+                      14:32:01". Contains: event type, timestamp, source,
+                      payload, and optionally a correlation ID for tracing
+                      related events.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">📢 Producer (Publisher)</div>
+                    <div class="def-body">
+                      A component that emits events when something happens.
+                      Producers are <em>decoupled</em> — they don't know which
+                      consumers (if any) will react to their events.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">📥 Consumer (Subscriber)</div>
+                    <div class="def-body">
+                      A component that subscribes to specific event types and
+                      reacts when they arrive. Multiple consumers can
+                      independently react to the same event — no coordination
+                      required.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">🚌 Event Bus / Broker</div>
+                    <div class="def-body">
+                      The messaging infrastructure routing events from producers
+                      to consumers. Examples: Apache Kafka, AWS EventBridge,
+                      Google Pub/Sub, RabbitMQ, NATS.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">📊 Event Stream</div>
+                    <div class="def-body">
+                      A persistent, ordered, append-only log of events. Unlike
+                      traditional message queues (messages deleted after
+                      consumption), streams <em>retain</em> events — enabling
+                      replay, auditing, and time-travel debugging.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">📁 Topic / Channel</div>
+                    <div class="def-body">
+                      A named category of events. Producers write to topics;
+                      consumers subscribe to topics. Example topics:
+                      "agent.tasks", "agent.results", "agent.errors",
+                      "payment.processed".
+                    </div>
+                  </div>
+                </div>
+
+                <div class="img-placeholder">
+                  <strong>[IMAGE — Figure 3]</strong>
+                  <span
+                    >Insert image here — EDA overview diagram: Producers → Event
+                    Bus (with Topics) → Multiple Consumers, showing the
+                    decoupled flow</span
+                  >
+                </div>
+
+                <h3>Why EDA is the Right Architecture for AI Agents</h3>
+                <p>
+                  Traditional request-response (REST APIs) works well for
+                  simple, fast, synchronous interactions. But AI agents —
+                  especially multi-agent systems — have characteristics that
+                  make REST a poor fit:
+                </p>
+                <table>
+                  <tr>
+                    <th>Agent Requirement</th>
+                    <th>Problem with REST</th>
+                    <th>EDA Solution</th>
+                  </tr>
+                  <tr>
+                    <td>LLM inference is slow (seconds to minutes)</td>
+                    <td>Caller must wait, holding a connection open</td>
+                    <td>
+                      Fire-and-forget event; caller gets result via event when
+                      ready
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Multiple agents need shared context</td>
+                    <td>Each pair needs its own API contract</td>
+                    <td>Shared event stream acts as common "working memory"</td>
+                  </tr>
+                  <tr>
+                    <td>Scale agent instances up/down independently</td>
+                    <td>Tight coupling makes independent scaling hard</td>
+                    <td>
+                      Producers/consumers scale independently based on queue
+                      depth
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Full audit trail of decisions</td>
+                    <td>REST logs don't capture causality chains</td>
+                    <td>
+                      Event log captures every action, input, and output in
+                      sequence
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Fault tolerance — agents can crash</td>
+                    <td>In-progress request is lost if agent restarts</td>
+                    <td>
+                      Events are persisted; agent resumes from last committed
+                      offset
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Fan-out — one task triggers many agents</td>
+                    <td>Caller must manage multiple parallel calls</td>
+                    <td>One event can be consumed by N agents independently</td>
+                  </tr>
+                </table>
+              </div>
+
+              <div class="fr-block">
+                <h2>Part 4 — EDA Design Patterns for Multi-Agent Systems</h2>
+                <p>
+                  The document covers four foundational patterns for
+                  coordinating multiple AI agents. Each pattern makes different
+                  tradeoffs between control, flexibility, fault tolerance, and
+                  complexity.
+                </p>
+
+                <div class="pattern-card">
+                  <div class="pattern-title">
+                    🎯 Pattern 1: Orchestrator-Worker
+                  </div>
+                  <div class="pattern-tag">Centralized Control</div>
+                  <div class="pattern-body">
+                    <p>
+                      A central <strong>Orchestrator agent</strong> receives the
+                      top-level goal, decomposes it into sub-tasks, assigns each
+                      sub-task to a <strong>Worker agent</strong> via an event,
+                      and aggregates the results into a final output.
+                    </p>
+                    <p><strong>Event flow:</strong></p>
+                    <p>
+                      <code
+                        >User Goal Event → Orchestrator → Task Events (one per
+                        worker) → Workers process → Result Events → Orchestrator
+                        → Final Output Event</code
+                      >
+                    </p>
+                    <p>
+                      <strong>When to use:</strong> Structured, predictable
+                      workflows where the task decomposition is well understood.
+                      Examples: document processing pipeline (parse → extract →
+                      summarize → format), code review (lint → test → security
+                      scan → review), customer query routing.
+                    </p>
+                    <p>
+                      <strong>Strengths:</strong> Simple to reason about; clear
+                      chain of responsibility; workers are stateless and
+                      horizontally scalable; easy to add new worker types.
+                    </p>
+                    <p>
+                      <strong>Weaknesses:</strong> Orchestrator is a single
+                      point of failure; bottleneck if the orchestrator is slow;
+                      poor fit for tasks where the decomposition is unknown
+                      upfront.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="img-placeholder">
+                  <strong>[IMAGE — Figure 4]</strong>
+                  <span
+                    >Insert image here — Orchestrator-Worker pattern diagram
+                    from the PDF showing event flow between orchestrator and
+                    multiple worker agents</span
+                  >
+                </div>
+
+                <div class="pattern-card">
+                  <div class="pattern-title">
+                    🌳 Pattern 2: Hierarchical Multi-Agent
+                  </div>
+                  <div class="pattern-tag">Multi-Level Coordination</div>
+                  <div class="pattern-body">
+                    <p>
+                      A tree of agents: a
+                      <strong>Top-Level Manager</strong> decomposes the goal and
+                      routes sub-goals to <strong>Department Managers</strong>,
+                      each of which further decomposes and routes to
+                      <strong>Worker agents</strong>. Each level communicates
+                      through its own event channels.
+                    </p>
+                    <p>
+                      <strong>When to use:</strong> Large-scale enterprise
+                      systems where different sub-domains have their own
+                      expertise and policies. Example: a company-wide AI
+                      assistant where a top-level agent routes to HR, Finance,
+                      Engineering, and Legal sub-agents, each of which has their
+                      own specialist workers.
+                    </p>
+                    <p>
+                      <strong>Strengths:</strong> Scales to very large systems;
+                      clear separation of concerns; sub-hierarchies can be
+                      developed and deployed independently.
+                    </p>
+                    <p>
+                      <strong>Weaknesses:</strong> High design complexity; deep
+                      call chains increase latency; debugging requires tracing
+                      across multiple levels.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="img-placeholder">
+                  <strong>[IMAGE — Figure 5]</strong>
+                  <span
+                    >Insert image here — Hierarchical pattern diagram showing
+                    tree structure of manager and worker agents at multiple
+                    levels</span
+                  >
+                </div>
+
+                <div class="pattern-card">
+                  <div class="pattern-title">
+                    📋 Pattern 3: Blackboard (Shared Knowledge)
+                  </div>
+                  <div class="pattern-tag">Collaborative / Emergent</div>
+                  <div class="pattern-body">
+                    <p>
+                      All agents share access to a
+                      <strong>common event stream</strong> — the "blackboard".
+                      Any agent can publish observations, partial results, or
+                      hypotheses. Any agent can consume others' contributions
+                      and build on them. There is no single coordinator — the
+                      solution emerges from collective contributions.
+                    </p>
+                    <p>
+                      <strong>When to use:</strong> Problems where no single
+                      agent has complete knowledge and the best solution emerges
+                      iteratively. Examples: scientific hypothesis generation,
+                      collaborative document drafting, complex debugging where
+                      different specialist agents surface different insights.
+                    </p>
+                    <p>
+                      <strong>Strengths:</strong> Highly flexible; enables
+                      emergent behavior; no single point of failure; specialists
+                      contribute at their own pace.
+                    </p>
+                    <p>
+                      <strong>Weaknesses:</strong> Hard to reason about; can
+                      produce conflicts if agents publish contradicting
+                      information; requires careful event schema design; harder
+                      to guarantee task completion.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="img-placeholder">
+                  <strong>[IMAGE — Figure 6]</strong>
+                  <span
+                    >Insert image here — Blackboard pattern diagram: multiple
+                    specialized agents all reading from and writing to a shared
+                    central event stream</span
+                  >
+                </div>
+
+                <div class="pattern-card">
+                  <div class="pattern-title">
+                    💰 Pattern 4: Market-Based (Competitive Bidding)
+                  </div>
+                  <div class="pattern-tag">Self-Organizing</div>
+                  <div class="pattern-body">
+                    <p>
+                      Tasks are published as events on an open market.
+                      <strong>Specialist agents bid</strong> for tasks based on
+                      their current capabilities, load, and confidence. A
+                      <strong>Task Allocator</strong> evaluates bids and assigns
+                      the task to the most suitable bidder, who then executes
+                      and reports results.
+                    </p>
+                    <p>
+                      <strong>When to use:</strong> Dynamic workloads where the
+                      right agent depends on current conditions (load,
+                      expertise, availability). Examples: cloud resource
+                      allocation, distributed rendering pipelines, content
+                      moderation at scale, logistics optimization.
+                    </p>
+                    <p>
+                      <strong>Strengths:</strong> Self-organizing; resilient (if
+                      one agent is overloaded, another wins the bid); naturally
+                      load-balances; encourages agent specialization.
+                    </p>
+                    <p>
+                      <strong>Weaknesses:</strong> Bidding overhead adds
+                      latency; requires agents to accurately self-assess
+                      capabilities; more complex to implement and debug than
+                      Orchestrator-Worker.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="img-placeholder">
+                  <strong>[IMAGE — Figure 7]</strong>
+                  <span
+                    >Insert image here — Market-based pattern: task event
+                    published → specialist agents submit bid events → allocator
+                    assigns → winning agent executes</span
+                  >
+                </div>
+
+                <h3>Pattern Selection Guide</h3>
+                <table>
+                  <tr>
+                    <th>Pattern</th>
+                    <th>Control Model</th>
+                    <th>Best For</th>
+                    <th>Avoid When</th>
+                  </tr>
+                  <tr>
+                    <td><strong>Orchestrator-Worker</strong></td>
+                    <td>Centralized</td>
+                    <td>Known, structured pipelines</td>
+                    <td>Task decomposition is unknown upfront</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Hierarchical</strong></td>
+                    <td>Multi-level</td>
+                    <td>Large enterprise with sub-domains</td>
+                    <td>Low-latency or simple tasks</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Blackboard</strong></td>
+                    <td>Decentralized</td>
+                    <td>Emergent, collaborative problems</td>
+                    <td>Strict ordering or consistency required</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Market-Based</strong></td>
+                    <td>Self-organizing</td>
+                    <td>Dynamic, variable workloads</td>
+                    <td>Predictable, low-volume tasks</td>
+                  </tr>
+                </table>
+              </div>
+
+              <div class="fr-block">
+                <h2>Part 5 — Apache Kafka for Agent Coordination</h2>
+                <p>
+                  The document uses <strong>Apache Kafka</strong> (Confluent's
+                  core product) as the reference event streaming platform. Kafka
+                  is the de facto standard for high-throughput, fault-tolerant
+                  event streaming in production AI systems.
+                </p>
+
+                <h3>Key Kafka Concepts</h3>
+                <div class="def-grid">
+                  <div class="def-card">
+                    <div class="def-term">📁 Topic</div>
+                    <div class="def-body">
+                      Named, partitioned event channel. Agents subscribe to
+                      relevant topics. Example: "tasks.research",
+                      "results.research", "errors.all".
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">📦 Partition</div>
+                    <div class="def-body">
+                      Topics split into N partitions. Each partition is an
+                      ordered log. Multiple agent instances consume different
+                      partitions in parallel — enabling horizontal scale.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">🔖 Offset</div>
+                    <div class="def-body">
+                      Position of an event within a partition. Consumers track
+                      their offset — if a consumer crashes, it resumes from the
+                      last committed offset. No work is lost.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">👥 Consumer Group</div>
+                    <div class="def-body">
+                      N agent instances in the same group collectively consume a
+                      topic. Kafka distributes partitions evenly — natural load
+                      balancing without any orchestration code.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">🔄 Exactly-Once</div>
+                    <div class="def-body">
+                      Kafka's strongest delivery guarantee. Each event processed
+                      exactly once even across failures. Critical for financial
+                      agents, medical agents — duplicate actions could be
+                      catastrophic.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">⏳ Retention Policy</div>
+                    <div class="def-body">
+                      Events stored for configurable duration (minutes to
+                      forever). Full retention enables event replay — debugging
+                      agent misbehavior by replaying the exact same event
+                      sequence.
+                    </div>
+                  </div>
+                </div>
+
+                <h3>Sample Agent Event Structure</h3>
+                <div class="code-block">
+                  { "event_id": "evt_9a2f1b3c", "event_type": "TASK_ASSIGNED",
+                  "schema_version": "1.0", "timestamp":
+                  "2025-03-15T09:41:22.341Z", "source_agent":
+                  "orchestrator-prod-01", "target_agent": "research-worker",
+                  "correlation_id": "goal_xyz789", // ties all events for one
+                  goal together "payload": { "task_id": "task_042", "task_type":
+                  "web_research", "query": "recent advances in agentic AI 2025",
+                  "deadline": "2025-03-15T09:42:22Z", "priority": "HIGH",
+                  "context": "Part of user goal: write a research summary" } }
+                </div>
+
+                <div class="img-placeholder">
+                  <strong>[IMAGE — Figure 8]</strong>
+                  <span
+                    >Insert image here — Kafka architecture diagram: topics,
+                    partitions, producer agents, consumer agent groups with
+                    offset tracking</span
+                  >
+                </div>
+
+                <h3>Designing Agent Topics</h3>
+                <p>
+                  Well-designed topic schemas are critical for maintainable
+                  multi-agent systems. Recommended topic naming convention:
+                </p>
+                <ul>
+                  <li>
+                    <strong>agent.{agent-type}.tasks</strong> — incoming task
+                    assignments
+                  </li>
+                  <li>
+                    <strong>agent.{agent-type}.results</strong> — completed task
+                    outputs
+                  </li>
+                  <li>
+                    <strong>agent.{agent-type}.errors</strong> — failed tasks
+                    with error details
+                  </li>
+                  <li>
+                    <strong>agent.{agent-type}.status</strong> — heartbeat /
+                    health events
+                  </li>
+                  <li>
+                    <strong>workflow.{workflow-id}.events</strong> — all events
+                    for a specific goal (for tracing)
+                  </li>
+                </ul>
+              </div>
+
+              <div class="fr-block">
+                <h2>Part 6 — Building Agentic Projects: Practical Guide</h2>
+                <p>
+                  This section synthesizes the practical recommendations from
+                  the reference for implementing your own agent systems.
+                </p>
+
+                <h3>Step 1 — Define Scope and Goal</h3>
+                <p>
+                  Before writing any code, clearly define: What is the agent's
+                  objective? What are the success criteria? What tools/APIs does
+                  it need? What data sources will it use? What's the failure
+                  mode if it gets stuck?
+                </p>
+
+                <h3>Step 2 — Choose the Right Pattern</h3>
+                <p>
+                  Map your problem to one of the four patterns. Start with
+                  <strong>Orchestrator-Worker</strong> unless you have a strong
+                  reason for another — it's the easiest to implement, test, and
+                  debug. Add complexity only when the simpler pattern genuinely
+                  can't handle your use case.
+                </p>
+
+                <h3>Step 3 — Design Your Event Schema First</h3>
+                <p>
+                  Define all events before writing any agent code. For each
+                  event specify: event_type, required fields, optional fields,
+                  and which agents produce/consume it. Treat this like a
+                  contract — changing event schemas in production is painful.
+                </p>
+
+                <h3>Step 4 — Implement the Core Agent Loop</h3>
+                <div class="code-block">
+                  class Agent: def run(self): while True: # 1. Observe — get
+                  next task event event =
+                  self.event_bus.consume(self.task_topic) # 2. Recall — retrieve
+                  relevant memory context =
+                  self.memory.search(event.correlation_id) history =
+                  self.memory.get_recent(event.correlation_id) # 3. Plan —
+                  reason about what to do next plan = self.llm.plan(
+                  goal=event.payload, context=context, history=history,
+                  available_tools=self.tools.list() ) # 4. Act — execute the
+                  next action result = self.tools.execute(plan.next_action) # 5.
+                  Store — save what happened
+                  self.memory.store(event.correlation_id, result) # 6. Emit —
+                  publish result or next task if plan.is_complete:
+                  self.event_bus.publish(self.result_topic, result) else:
+                  self.event_bus.publish(self.task_topic, plan.next_task)
+                </div>
+
+                <h3>Step 5 — Add Memory Incrementally</h3>
+                <ul>
+                  <li>
+                    <strong>Start:</strong> Pass last N tool results in the LLM
+                    context window
+                  </li>
+                  <li>
+                    <strong>Add:</strong> A simple key-value store (Redis) for
+                    session state
+                  </li>
+                  <li>
+                    <strong>Scale:</strong> A vector database (Chroma, Pinecone)
+                    for semantic retrieval across sessions
+                  </li>
+                </ul>
+
+                <h3>Step 6 — Observability from Day One</h3>
+                <p>
+                  Instrument every agent action. You should be able to answer:
+                  "Why did the agent take action X at time T?" The event log is
+                  your primary debugging tool — keep it complete and searchable.
+                  Add span tracing (OpenTelemetry) to correlate events across
+                  agents using the correlation_id field.
+                </p>
+
+                <div class="callout">
+                  <strong>For Your Finals Agentic Projects:</strong> Start with
+                  the Orchestrator-Worker pattern on a simple task you
+                  understand well. Use a lightweight message queue (Redis
+                  Streams or even a simple in-memory queue) before committing to
+                  Kafka. Define clear event schemas. Build the
+                  feedback/evaluator loop early — it's what separates a fragile
+                  demo from a robust agent.
+                </div>
+
+                <div class="img-placeholder">
+                  <strong>[IMAGE — Figure 9]</strong>
+                  <span
+                    >Insert image here — Any architecture diagram from the PDF
+                    showing the recommended implementation approach, technology
+                    stack, or reference architecture for agentic projects</span
+                  >
+                </div>
+              </div>
+
+              <div class="fr-block">
+                <h2>Part 7 — Real-World Applications</h2>
+
+                <h3>Customer Support Automation</h3>
+                <p>
+                  Customer message arrives as an event → Classifier agent routes
+                  to specialist (billing, technical, returns) → Specialist
+                  researches and drafts a response → Quality agent reviews →
+                  Response delivered. EDA allows each step to run asynchronously
+                  — customers don't wait while backend agents work in parallel.
+                </p>
+
+                <h3>Software Development Pipeline</h3>
+                <p>
+                  Code commit event → Lint agent → Test runner agent → Security
+                  scanner agent → Code review agent → Deploy agent. Failures at
+                  any stage emit an error event that triggers a remediation
+                  agent. The entire pipeline is observable through the event
+                  log.
+                </p>
+
+                <h3>Healthcare Diagnostics</h3>
+                <p>
+                  Patient data event → Imaging analysis agent + Lab results
+                  agent + Medical history agent (parallel, Blackboard pattern) →
+                  Diagnostic synthesis agent → Treatment recommendation agent →
+                  Physician review. The blackboard pattern allows all
+                  specialists to contribute concurrently without blocking each
+                  other.
+                </p>
+
+                <h3>Financial Trading</h3>
+                <p>
+                  Market data stream → Analysis agents → Signal generation →
+                  Risk assessment agent → Position sizing agent → Execution
+                  agent. Kafka's ability to process millions of events/second
+                  makes it suitable for real-time trading systems where
+                  millisecond latency matters.
+                </p>
+
+                <div class="img-placeholder">
+                  <strong>[IMAGE — Figure 10]</strong>
+                  <span
+                    >Insert image here — Any real-world application diagram from
+                    the PDF showing a complete EDA + multi-agent architecture in
+                    a specific industry context</span
+                  >
+                </div>
+              </div>
+            </div>
+            <!-- /tab-lecture -->
+
+            <!-- ===== LABORATORY ===== -->
+            <div id="tab-lab" style="display: none">
+              <div class="fr-block">
+                <h2>Laboratory Reference</h2>
+                <div class="pdf-notice">
+                  ⚠️ <strong>PDF not yet uploaded.</strong> Laboratory
+                  exercises, step-by-step guides, code templates, and grading
+                  criteria will be extracted and placed here once the PDF is
+                  uploaded.
+                </div>
+                <p>Once the PDF is uploaded, this section will include:</p>
+                <ul>
+                  <li>
+                    Laboratory exercise descriptions and learning objectives
+                  </li>
+                  <li>Starter code and scaffolding templates</li>
+                  <li>
+                    Step-by-step implementation guides for agentic projects
+                  </li>
+                  <li>Expected system architecture diagrams</li>
+                  <li>Evaluation rubric and submission requirements</li>
+                </ul>
+                <div class="callout">
+                  <strong>To populate this page:</strong> Re-upload the Finals
+                  Reference PDF in a new message and ask Claude to extract and
+                  format all laboratory content here.
+                </div>
+              </div>
+            </div>
+
+            <!-- ===== GLOSSARY ===== -->
+            <div id="tab-glossary" style="display: none">
+              <div class="fr-block">
+                <h2>Key Terms & Quick Reference</h2>
+                <table>
+                  <tr>
+                    <th>Term</th>
+                    <th>Definition</th>
+                  </tr>
+                  <tr>
+                    <td><strong>AI Agent</strong></td>
+                    <td>
+                      An autonomous system that perceives its environment,
+                      reasons about goals, selects actions, and executes them —
+                      repeatedly until the goal is achieved
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Multi-Agent System (MAS)</strong></td>
+                    <td>
+                      Multiple AI agents collaborating (or competing) to solve
+                      problems too complex for a single agent
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Agentic AI</strong></td>
+                    <td>
+                      The third phase of AI — autonomous systems that plan,
+                      reason, act, and self-correct without step-by-step human
+                      guidance
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Event-Driven Architecture (EDA)</strong></td>
+                    <td>
+                      A design paradigm where components communicate via
+                      immutable events through a broker, rather than direct API
+                      calls
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Event</strong></td>
+                    <td>
+                      An immutable record that something happened — includes
+                      event_type, timestamp, source, payload, and correlation_id
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Event Stream</strong></td>
+                    <td>
+                      A persistent, ordered, append-only log of events. Unlike
+                      queues, streams retain events enabling replay and audit
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Event Bus / Broker</strong></td>
+                    <td>
+                      Infrastructure routing events from producers to consumers
+                      — Kafka, RabbitMQ, AWS EventBridge, Redis Streams
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Producer</strong></td>
+                    <td>
+                      A component that publishes events. Decoupled from
+                      consumers — doesn't know or care who reacts to its events
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Consumer</strong></td>
+                    <td>
+                      A component that subscribes to and processes events.
+                      Multiple consumers can independently react to the same
+                      event
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Topic</strong></td>
+                    <td>
+                      A named category of events (Kafka). Producers write to
+                      topics; consumers subscribe to topics
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Partition</strong></td>
+                    <td>
+                      A topic is split into N ordered partitions. Multiple
+                      consumers process different partitions in parallel for
+                      scale
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Offset</strong></td>
+                    <td>
+                      Consumer's position in a partition. On restart, consumer
+                      resumes from last committed offset — no events lost
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Consumer Group</strong></td>
+                    <td>
+                      N instances of the same consumer collectively consuming a
+                      topic. Kafka distributes partitions evenly for load
+                      balancing
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Exactly-Once Semantics</strong></td>
+                    <td>
+                      Guarantee that each event is processed exactly once, even
+                      across failures — critical for financial/medical agents
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Event Sourcing</strong></td>
+                    <td>
+                      Storing all state changes as events — enables full replay,
+                      time-travel debugging, and complete audit trail
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>CQRS</strong></td>
+                    <td>
+                      Command Query Responsibility Segregation — separate event
+                      streams for write (commands) and read (queries) paths
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Orchestrator</strong></td>
+                    <td>
+                      A controlling agent that decomposes goals into tasks and
+                      assigns them to worker agents via events
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Worker Agent</strong></td>
+                    <td>
+                      A specialist agent that executes a specific type of task
+                      assigned by an orchestrator or marketplace
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Blackboard Pattern</strong></td>
+                    <td>
+                      All agents share a common event stream — any agent can
+                      publish or consume, enabling emergent collaborative
+                      solutions
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Market-Based Pattern</strong></td>
+                    <td>
+                      Tasks posted as events; agents bid; allocator assigns to
+                      best bidder — self-organizing load balancing
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>ReAct</strong></td>
+                    <td>
+                      Reason + Act — agent alternates between thinking about
+                      what to do (Thought) and doing it (Action), observing
+                      results at each step
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Tool Calling</strong></td>
+                    <td>
+                      LLM's ability to invoke external functions (web search,
+                      code execution, APIs) during the agent loop
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Correlation ID</strong></td>
+                    <td>
+                      A unique identifier linking all events belonging to one
+                      goal — enables end-to-end tracing across multiple agents
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Vector Database</strong></td>
+                    <td>
+                      Storage system for embeddings — enables semantic search
+                      for long-term agent memory. Examples: Pinecone, Chroma,
+                      Weaviate
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Apache Kafka</strong></td>
+                    <td>
+                      Distributed event streaming platform by Confluent —
+                      industry standard for high-throughput, fault-tolerant
+                      event streaming
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Predictive AI</strong></td>
+                    <td>
+                      Phase 1 — AI trained on historical data to classify or
+                      predict. Reactive and narrowly scoped (e.g., fraud
+                      detection)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Generative AI</strong></td>
+                    <td>
+                      Phase 2 — AI that creates new content (text, images, code)
+                      from learned distributions. Examples: GPT-4, DALL·E
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- /main-inner -->
+        </main>
+      </div>
+    </div>
+
+    <footer class="site-footer" id="site-footer"></footer>
+
+    <script src="data.js"></script>
+    <script src="nav.js"></script>
+    <script src="sidebar.js"></script>
+    <script>
+      buildNavbar("ai");
+      buildFooter();
+
+      // Build two-button sidebar
+      (function () {
+        var c = document.getElementById("sidebarNav");
+        if (!c) return;
+        var html =
+          '<div class="nav-section"><div class="nav-section-label">Overview</div>';
+        html +=
+          '<a class="nav-item" href="ai.html"><span class="nav-item-icon">🏠</span><span class="nav-item-name">AI Subject Home</span></a>';
+        html += "</div>";
+        html +=
+          '<div class="nav-section"><div class="nav-section-label">Topics</div>';
+        html +=
+          '<a class="nav-item" href="ai-study-hub.html"><span class="nav-item-icon">📚</span><span class="nav-item-name">GfG12 Topics</span></a>';
+        html +=
+          '<a class="nav-item active" href="topic-finals-reference.html"><span class="nav-item-icon">📄</span><span class="nav-item-name">Finals Reference</span></a>';
+        html += "</div>";
+        c.innerHTML = html;
+      })();
+
+      buildSidebarToggleBtn();
+
+      function switchTab(n, btn) {
+        ["lecture", "lab", "glossary"].forEach(function (id) {
+          var el = document.getElementById("tab-" + id);
+          if (el) el.style.display = "none";
+        });
+        document.querySelectorAll(".tab-btn").forEach(function (b) {
+          b.classList.remove("active");
+        });
+        var el = document.getElementById("tab-" + n);
+        if (el) el.style.display = "block";
+        if (btn) btn.classList.add("active");
+      }
+
+      function filterNav(q) {
+        var ql = q.toLowerCase();
+        document
+          .querySelectorAll("#sidebarNav .nav-item")
+          .forEach(function (item) {
+            var nm = item.querySelector(".nav-item-name");
+            item.style.display =
+              (nm && nm.textContent.toLowerCase().includes(ql)) || !q
+                ? ""
+                : "none";
+          });
+      }
+    </script>
+  </body>
+</html>
