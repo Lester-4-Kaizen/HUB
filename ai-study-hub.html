@@ -7,7 +7,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
   <style>
-:root {
+
+      :root {
         --bg: #f7f4ef;
         --surface: #fff;
         --border: #e2ddd6;
@@ -1857,41 +1858,7 @@
         border-color: var(--quiz-accent);
         color: var(--quiz-accent);
       }
-
-      /* MOBILE */
-      .mobile-toggle {
-        display: none;
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: var(--accent);
-        color: #fff;
-        border: none;
-        border-radius: 50%;
-        width: 52px;
-        height: 52px;
-        font-size: 22px;
-        cursor: pointer;
-        box-shadow: 0 4px 16px rgba(26, 71, 42, 0.3);
-        z-index: 100;
-        align-items: center;
-        justify-content: center;
-      }
       @media (max-width: 768px) {
-        .sidebar {
-          position: fixed;
-          top: 0;
-          left: -280px;
-          height: 100%;
-          z-index: 200;
-          transition: left 0.3s;
-        }
-        .sidebar.open {
-          left: 0;
-        }
-        .mobile-toggle {
-          display: flex;
-        }
         .main-inner {
           padding: 24px 16px;
         }
@@ -1917,27 +1884,78 @@
       .animate-in {
         animation: fadeUp 0.3s ease forwards;
       }
-  /* ====== STUDY HUB INTEGRATION OVERRIDES ====== */
-  /* Push layout down for Study Hub navbar */
-  body { padding-top: 0; }
-  #gfgApp { position: relative; z-index: 1; }
+    
 
-  /* Sidebar back button to Study Hub */
+
+
+  /* ================================================================
+     STUDY HUB INTEGRATION — Sidebar toggle (matches sidebar.js)
+     ================================================================ */
+
+  /* 1. Override GfG's sticky sidebar — must be fixed for transform to work */
+  #gfgApp .sidebar {
+    position: fixed !important;
+    top: var(--navbar-h, 60px) !important;
+    left: 0 !important;
+    height: calc(100vh - var(--navbar-h, 60px)) !important;
+    width: 280px !important;
+    z-index: 300 !important;
+    overflow-y: auto !important;
+    /* transition injected by JS after first paint */
+  }
+
+  /* 2. Main content area — margin-left driven by JS */
+  #gfgApp .main {
+    display: block;
+    width: 100%;
+    min-height: calc(100vh - var(--navbar-h, 60px));
+    padding-bottom: var(--footer-h, 42px);
+    /* margin-left driven by JS */
+  }
+
+  /* 3. Layout flex container — remove original sticky context */
+  #gfgApp .layout {
+    display: block !important;
+    min-height: calc(100vh - var(--navbar-h, 60px));
+  }
+
+  /* 4. Overlay */
+  #gfgApp .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.38);
+    z-index: 290;
+  }
+
+  /* 5. Toggle button positioned below Study Hub navbar */
+  #sidebarToggleBtn {
+    top: calc(var(--navbar-h, 60px) + 12px) !important;
+    z-index: 500 !important;
+  }
+
+  /* 6. Back-to-hub link */
   .back-to-hub {
-    display: flex; align-items: center; gap: 8px;
-    padding: 8px 16px 14px;
-    font-size: 12px; font-family: 'IBM Plex Mono', monospace;
-    color: var(--muted); text-decoration: none;
-    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px 14px;
+    font-size: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: #78716c;
+    text-decoration: none;
+    border-bottom: 1px solid #e2ddd6;
     transition: color 0.15s;
   }
-  .back-to-hub:hover { color: var(--accent); }
-  .back-to-hub span { font-size: 14px; }
+  .back-to-hub:hover { color: #1a472a; }
 
-  /* Mobile toggle positioned to not conflict with Study Hub navbar */
-  .mobile-toggle {
-    bottom: 70px !important;
-    top: auto !important;
+  /* 7. GfG's own mobile-toggle button — hide it, we use Study Hub's toggle */
+  .mobile-toggle { display: none !important; }
+
+  /* 8. Mobile: sidebar overlays, content stays full-width */
+  @media (max-width: 768px) {
+    #gfgApp .main { margin-left: 0 !important; }
+    #gfgApp .layout { padding-left: 0 !important; }
   }
   </style>
 </head>
@@ -2003,6 +2021,7 @@
             </div>
           </div>
         </aside>
+      <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
         <!-- MAIN -->
         <main class="main">
@@ -2283,24 +2302,23 @@
           </div>
         </div>
       </div>
-
-      <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
     </div>
 </div>
 
 <!-- STUDY HUB FOOTER -->
 <footer class="site-footer" id="site-footer"></footer>
 
-<script src="data.js"></script>
+<!-- Study Hub nav/footer only — GfG JS handles everything else -->
 <script src="nav.js"></script>
-<script src="sidebar.js" defer></script>
 <script>
-  // Study Hub navbar + footer
   buildNavbar('ai');
   buildFooter();
 </script>
+
+<!-- GfG App (self-contained: topics data + all logic) -->
 <script>
-// ==================== FULL TOPIC DATA ====================
+
+      // ==================== FULL TOPIC DATA ====================
       const topics = [
         {
           id: "what-is-ai",
@@ -4187,7 +4205,7 @@
         document.querySelector('[data-topic="home"]').classList.add("active");
         buildTopicsGrid();
         currentTopicId = null;
-        closeSidebar();
+        if (_isMobileSH()) closeSidebar();
       }
 
       // ==================== TOPIC READER ====================
@@ -4225,7 +4243,7 @@
           .forEach((n) => n.classList.remove("active"));
         const navBtn = document.querySelector(`[data-topic="${id}"]`);
         if (navBtn) navBtn.classList.add("active");
-        closeSidebar();
+        if (_isMobileSH()) closeSidebar();
         window.scrollTo(0, 0);
       }
 
@@ -4722,29 +4740,94 @@
           });
         });
 
-      // ==================== MOBILE ====================
-      function toggleSidebar() {
-        document.getElementById("sidebar").classList.toggle("open");
+      // ==================== SIDEBAR TOGGLE (new — matches Study Hub) ====================
+      var SIDEBAR_W = 280; // px — GfG sidebar width
+      var _sidebarOpen = true;
+
+      function _isMobileSH() { return window.innerWidth <= 768; }
+
+      function _applyStateSH(open) {
+        var sidebar  = document.getElementById('sidebar');
+        var overlay  = document.getElementById('sidebarOverlay');
+        var main     = document.querySelector('#gfgApp .main');
+        var btn      = document.getElementById('sidebarToggleBtn');
+        if (!sidebar) return;
+        _sidebarOpen = open;
+        if (_isMobileSH()) {
+          sidebar.style.transform = open ? 'translateX(0)' : 'translateX(-' + SIDEBAR_W + 'px)';
+          if (overlay) overlay.style.display = open ? 'block' : 'none';
+          if (main)    main.style.marginLeft = '0';
+          if (btn)     btn.style.left = '10px';
+        } else {
+          sidebar.style.transform = open ? 'translateX(0)' : 'translateX(-' + SIDEBAR_W + 'px)';
+          if (overlay) overlay.style.display = 'none';
+          if (main)    main.style.marginLeft = open ? SIDEBAR_W + 'px' : '0';
+          if (btn)     btn.style.left = open ? (SIDEBAR_W - 16) + 'px' : '10px';
+        }
+        if (btn) { btn.title = open ? 'Collapse sidebar' : 'Expand sidebar'; }
       }
-      function closeSidebar() {
-        document.getElementById("sidebar").classList.remove("open");
+
+      function toggleSidebar() { _applyStateSH(!_sidebarOpen); }
+      function closeSidebar()  { _applyStateSH(false); }
+      function openSidebar()   { _applyStateSH(true); }
+
+      function _buildToggleBtn() {
+        var old = document.getElementById('sidebarToggleBtn');
+        if (old) old.remove();
+        var btn = document.createElement('button');
+        btn.id = 'sidebarToggleBtn';
+        btn.setAttribute('aria-label', 'Toggle sidebar');
+        btn.innerHTML =
+          '<span class="stb-bar"></span>' +
+          '<span class="stb-bar"></span>' +
+          '<span class="stb-bar"></span>';
+        btn.addEventListener('click', toggleSidebar);
+        document.body.appendChild(btn);
+
+        // Disable transition for initial paint
+        var sb = document.getElementById('sidebar');
+        var mn = document.querySelector('#gfgApp .main');
+        if (sb) sb.style.transition = 'none';
+        if (mn) mn.style.transition = 'none';
+
+        _applyStateSH(_isMobileSH() ? false : true);
+
+        // Re-enable smooth transitions after first paint
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
+            var sb = document.getElementById('sidebar');
+            var mn = document.querySelector('#gfgApp .main');
+            if (sb) sb.style.transition = 'transform 0.28s cubic-bezier(0.4,0,0.2,1)';
+            if (mn) mn.style.transition = 'margin-left 0.28s cubic-bezier(0.4,0,0.2,1)';
+          });
+        });
+
+        // Resize handler
+        var _rt;
+        window.addEventListener('resize', function() {
+          clearTimeout(_rt);
+          _rt = setTimeout(function() {
+            _applyStateSH(_isMobileSH() ? false : _sidebarOpen);
+          }, 100);
+        });
       }
 
       // ==================== INIT ====================
-      buildNav();
-      showHome();
-
-  // Override init to also add back-to-hub link in sidebar header
-  (function() {
-    const header = document.querySelector('#gfgApp .sidebar-header');
-    if (header) {
-      const backLink = document.createElement('a');
-      backLink.href = 'ai.html';
-      backLink.className = 'back-to-hub';
-      backLink.innerHTML = '<span>←</span> Back to AI Subject';
-      header.after(backLink);
-    }
-  })();
+      document.addEventListener('DOMContentLoaded', function() {
+        _buildToggleBtn();
+        buildNav();
+        showHome();
+        // Inject back link into sidebar
+        var hdr = document.querySelector('#gfgApp .sidebar-header');
+        if (hdr) {
+          var a = document.createElement('a');
+          a.href = 'ai.html';
+          a.className = 'back-to-hub';
+          a.innerHTML = '<span>←</span> Back to AI Subject';
+          hdr.after(a);
+        }
+      });
+    
 </script>
 </body>
 </html>
