@@ -1,0 +1,1145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Study Hub — Role of Advanced Analytics in Organizations</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .flashcard-area {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 0;
+      }
+      .fc-counter {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 14px;
+      }
+      .flashcard-wrap {
+        width: 100%;
+        max-width: 520px;
+        perspective: 1000px;
+        margin-bottom: 16px;
+      }
+      .flashcard {
+        width: 100%;
+        height: 200px;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.5s;
+        cursor: pointer;
+        border-radius: 16px;
+      }
+      .flashcard.flipped {
+        transform: rotateY(180deg);
+      }
+      .fc-face {
+        position: absolute;
+        inset: 0;
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 28px;
+        text-align: center;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+      }
+      .fc-front {
+        background: var(--surface);
+        border: 2px solid var(--border);
+      }
+      .fc-back {
+        background: linear-gradient(135deg, #1a472a, #2d6a4f);
+        color: #fff;
+        transform: rotateY(180deg);
+      }
+      .fc-label {
+        font-size: 10px;
+        font-family: "IBM Plex Mono", monospace;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+      .fc-back .fc-label {
+        color: rgba(255, 255, 255, 0.6);
+      }
+      .fc-text {
+        font-family: "Lora", serif;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.5;
+        color: var(--text);
+      }
+      .fc-back .fc-text {
+        color: #fff;
+        font-size: 14px;
+      }
+      .fc-hint {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 10px;
+        font-family: "IBM Plex Mono", monospace;
+      }
+      .fc-nav {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+        max-width: 520px;
+      }
+      .fc-btn {
+        flex: 1;
+        padding: 10px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        font-size: 13px;
+        font-family: "Nunito", sans-serif;
+        font-weight: 600;
+        cursor: pointer;
+        color: var(--muted);
+        transition: all 0.15s;
+      }
+      .fc-btn:hover,
+      .fc-btn.primary {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .fc-btn.primary {
+        background: var(--tag-bg);
+      }
+      .section-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 22px 24px;
+        margin-bottom: 16px;
+      }
+      .section-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .section-icon {
+        font-size: 18px;
+      }
+      .section-title {
+        font-family: "Lora", serif;
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .section-body {
+        font-size: 14px;
+        line-height: 1.75;
+        color: var(--text);
+      }
+      .subtopics-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .subtopic-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .subtopic-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 16px;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .subtopic-header:hover {
+        background: var(--bg);
+      }
+      .subtopic-icon {
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+      .subtopic-name {
+        flex: 1;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .subtopic-badge {
+        font-size: 10px;
+        font-family: "IBM Plex Mono", monospace;
+        color: var(--accent);
+        background: var(--tag-bg);
+        border-radius: 100px;
+        padding: 2px 8px;
+      }
+      .subtopic-chevron {
+        font-size: 18px;
+        color: var(--muted);
+        transition: transform 0.2s;
+      }
+      .subtopic-chevron.open {
+        transform: rotate(90deg);
+      }
+      .subtopic-body {
+        padding: 14px 16px;
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--text);
+        border-top: 1px solid var(--border);
+      }
+      .tab-bar {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+      .tab-btn {
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        font-family: "Nunito", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .tab-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .tab-btn.active {
+        background: var(--tag-bg);
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .quiz-setup {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 28px;
+        margin-bottom: 20px;
+      }
+      .quiz-setup-title {
+        font-family: "Lora", serif;
+        font-size: 19px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 6px;
+      }
+      .quiz-setup-desc {
+        font-size: 14px;
+        color: var(--muted);
+        margin-bottom: 20px;
+        line-height: 1.55;
+      }
+      .quiz-in-progress {
+        display: none;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px;
+      }
+      .qp-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .qp-counter,
+      .qp-score {
+        font-size: 13px;
+        font-family: "IBM Plex Mono", monospace;
+        color: var(--muted);
+      }
+      .qp-score {
+        color: var(--success);
+      }
+      .qp-progress-wrap {
+        flex: 1;
+        margin: 0 12px;
+        background: var(--border);
+        border-radius: 100px;
+        height: 5px;
+        overflow: hidden;
+      }
+      .qp-progress-bar {
+        height: 100%;
+        background: var(--accent);
+        border-radius: 100px;
+        transition: width 0.3s;
+      }
+      .qp-question-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px;
+        margin-bottom: 16px;
+      }
+      .qp-question-text {
+        font-family: "Lora", serif;
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text);
+        line-height: 1.45;
+      }
+      .qp-options {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+        margin-bottom: 14px;
+      }
+      .qp-option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: 10px;
+        cursor: pointer;
+        text-align: left;
+        font-size: 14px;
+        font-family: "Nunito", sans-serif;
+        font-weight: 600;
+        color: var(--text);
+        transition: all 0.15s;
+        width: 100%;
+      }
+      .qp-option-letter {
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        color: var(--muted);
+        flex-shrink: 0;
+      }
+      .qp-option:hover:not(:disabled) {
+        border-color: var(--accent);
+        background: var(--tag-bg);
+      }
+      .qp-option.correct {
+        border-color: var(--success);
+        background: rgba(22, 163, 74, 0.06);
+      }
+      .qp-option.correct .qp-option-letter {
+        background: var(--success);
+        color: #fff;
+      }
+      .qp-option.wrong {
+        border-color: var(--danger);
+        opacity: 0.7;
+      }
+      .qp-option.wrong .qp-option-letter {
+        background: var(--danger);
+        color: #fff;
+      }
+      .qp-option:disabled {
+        cursor: default;
+      }
+      .qp-explain {
+        background: var(--highlight);
+        border-left: 3px solid var(--accent2);
+        border-radius: 0 8px 8px 0;
+        padding: 12px 14px;
+        font-size: 13px;
+        line-height: 1.6;
+        color: var(--text);
+        display: none;
+        margin-bottom: 12px;
+      }
+      .qp-explain strong {
+        color: var(--accent);
+      }
+      .qp-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+      .reader-header {
+        margin-bottom: 24px;
+      }
+      .reader-icon {
+        font-size: 40px;
+        margin-bottom: 12px;
+      }
+      .reader-title {
+        font-family: "Lora", serif;
+        font-size: clamp(22px, 3.5vw, 32px);
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 8px;
+        line-height: 1.2;
+      }
+      .reader-source {
+        font-size: 12px;
+        color: var(--muted);
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 8px;
+      }
+      .reader-summary {
+        background: var(--highlight);
+        border-left: 3px solid var(--accent2);
+        border-radius: 0 10px 10px 0;
+        padding: 14px 16px;
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--text);
+        margin-bottom: 24px;
+      }
+      .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 20px;
+        font-size: 12px;
+        color: var(--muted);
+        font-family: "IBM Plex Mono", monospace;
+        flex-wrap: wrap;
+      }
+      .breadcrumb a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      .breadcrumb a:hover {
+        text-decoration: underline;
+      }
+      .breadcrumb-sep {
+        color: var(--border);
+      }
+      .highlight-box {
+        background: var(--highlight);
+        border-radius: 8px;
+        padding: 12px 14px;
+        margin-top: 12px;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+      .img-placeholder {
+        background: var(--surface);
+        border: 2px dashed var(--border);
+        border-radius: 10px;
+        padding: 24px;
+        margin: 16px 0;
+        text-align: center;
+        font-size: 13px;
+        color: var(--muted);
+        font-family: "IBM Plex Mono", monospace;
+        line-height: 1.6;
+      }
+      .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 14px;
+        font-size: 13.5px;
+      }
+      .comparison-table th {
+        background: var(--accent);
+        color: #fff;
+        padding: 10px 14px;
+        text-align: left;
+        font-family: "Nunito", sans-serif;
+        font-weight: 700;
+      }
+      .comparison-table td {
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--border);
+        line-height: 1.5;
+        vertical-align: top;
+      }
+      .comparison-table tr:nth-child(even) td {
+        background: var(--bg);
+      }
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-top: 12px;
+      }
+      @media (max-width: 640px) {
+        .two-col {
+          grid-template-columns: 1fr;
+        }
+      }
+      .col-card {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px 16px;
+      }
+      .col-card-title {
+        font-family: "Lora", serif;
+        font-weight: 700;
+        font-size: 14px;
+        color: var(--text);
+        margin-bottom: 8px;
+      }
+      .col-card ul {
+        margin: 0 0 0 18px;
+        line-height: 2;
+        font-size: 13px;
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <nav class="navbar" id="navbar"></nav>
+      <div class="layout">
+        <aside class="sidebar" id="sidebar">
+          <div class="sidebar-header">
+            <div class="brand">
+              <div class="brand-icon">📊</div>
+              <div>
+                <div class="brand-name">STUDY HUB</div>
+                <div class="brand-sub">CS Professional Elective 4</div>
+              </div>
+            </div>
+          </div>
+          <div class="search-box">
+            <span>🔍</span
+            ><input
+              type="text"
+              id="sidebarSearch"
+              placeholder="Search topics..."
+              oninput="filterNav(this.value)"
+            />
+          </div>
+          <div id="sidebarNav"></div>
+        </aside>
+        <div
+          class="sidebar-overlay"
+          id="sidebarOverlay"
+          onclick="closeSidebar()"
+        ></div>
+        <main class="main">
+          <div class="main-inner animate-in">
+            <div class="breadcrumb">
+              <a href="home.html">All Subjects</a>
+              <span class="breadcrumb-sep">›</span>
+              <a href="elec4.html">CS Professional Elective 4</a>
+              <span class="breadcrumb-sep">›</span>
+              <span>Role in Organizations</span>
+            </div>
+            <div class="reader-header">
+              <div class="reader-icon">🏢</div>
+              <h1 class="reader-title">
+                Role of Advanced Analytics in Organizations
+              </h1>
+              <div class="reader-source">
+                <span>📎</span
+                ><span
+                  >Module 01 — Introduction to Advanced Data Analytics · Giralyn
+                  R. Ongco, PhDTM</span
+                >
+              </div>
+            </div>
+            <div class="reader-summary">
+              Advanced analytics in organizations refers to the systematic use
+              of statistical methods, predictive modeling, machine learning, and
+              data-driven strategies to improve operational, tactical, and
+              strategic decisions. It enables organizations to shift from
+              reactive, intuition-based decisions to proactive, evidence-based
+              strategies — making them faster, more efficient, and more
+              competitive.
+            </div>
+
+            <div class="tab-bar">
+              <button
+                class="tab-btn active"
+                onclick="switchTab('reading', this)"
+              >
+                📖 Reading Notes
+              </button>
+              <button class="tab-btn" onclick="switchTab('subtopics', this)">
+                🔗 Sub-Topics
+              </button>
+              <button class="tab-btn" onclick="switchTab('flashcards', this)">
+                🃏 Flashcards
+              </button>
+              <button class="tab-btn" onclick="switchTab('quiz', this)">
+                📝 Quiz
+              </button>
+            </div>
+
+            <!-- TAB: READING -->
+            <div id="tab-reading">
+              <div class="section-block animate-in" style="animation-delay: 0s">
+                <div class="section-header">
+                  <span class="section-icon">🏢</span>
+                  <h3 class="section-title">Definition & Scope</h3>
+                </div>
+                <div class="section-body">
+                  <strong>Advanced analytics in organizations</strong> refers to
+                  the systematic use of statistical methods, predictive
+                  modeling, machine learning, and data-driven strategies to
+                  improve operational, tactical, and strategic decisions. It
+                  goes beyond simple reporting. It includes:
+                  <ul style="margin: 10px 0 0 20px; line-height: 2">
+                    <li>Predictive analytics</li>
+                    <li>Prescriptive analytics</li>
+                    <li>Optimization models</li>
+                    <li>AI-driven systems</li>
+                  </ul>
+                </div>
+              </div>
+              <div
+                class="section-block animate-in"
+                style="animation-delay: 0.05s"
+              >
+                <div class="section-header">
+                  <span class="section-icon">🔄</span>
+                  <h3 class="section-title">
+                    From Traditional to Data-Driven Organizations
+                  </h3>
+                </div>
+                <div class="section-body">
+                  <div class="two-col">
+                    <div class="col-card">
+                      <div class="col-card-title">
+                        🏛️ Traditional Organizations
+                      </div>
+                      <ul>
+                        <li>Rely on experience and intuition</li>
+                        <li>Decisions based on limited reports</li>
+                        <li>Reactive problem-solving</li>
+                        <li>Hierarchical command structure</li>
+                        <li>Centralized authority</li>
+                        <li>Limited cross-functional data integration</li>
+                        <li>Manual workflows</li>
+                        <li>Low automation</li>
+                      </ul>
+                    </div>
+                    <div class="col-card">
+                      <div class="col-card-title">
+                        📊 Data-Driven Organizations
+                      </div>
+                      <ul>
+                        <li>Use analytics for evidence-based decisions</li>
+                        <li>Integrate data across departments</li>
+                        <li>Proactively identify risks and opportunities</li>
+                        <li>Faster decision cycles</li>
+                        <li>Reduced operational risk</li>
+                        <li>Improved resource optimization</li>
+                        <li>Increased transparency</li>
+                        <li>Better compliance and governance alignment</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="highlight-box">
+                    ⚡ Advanced analytics enables organizations to shift from
+                    <strong>reactive to proactive</strong>.
+                  </div>
+                  <div class="image-container">
+                    <img src="images/ADAM1.9.png" alt="brief description" />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="section-block animate-in"
+                style="animation-delay: 0.1s"
+              >
+                <div class="section-header">
+                  <span class="section-icon">📋</span>
+                  <h3 class="section-title">
+                    Comparative Result: Traditional vs Data-Driven
+                  </h3>
+                </div>
+                <div class="section-body">
+                  <table class="comparison-table">
+                    <tr>
+                      <th>Traditional Organization</th>
+                      <th>Data-Driven Organization</th>
+                    </tr>
+                    <tr>
+                      <td>Experience-based</td>
+                      <td>Evidence-based</td>
+                    </tr>
+                    <tr>
+                      <td>Static reports</td>
+                      <td>Real-time dashboards</td>
+                    </tr>
+                    <tr>
+                      <td>Reactive</td>
+                      <td>Predictive &amp; proactive</td>
+                    </tr>
+                    <tr>
+                      <td>Siloed data</td>
+                      <td>Integrated architecture</td>
+                    </tr>
+                    <tr>
+                      <td>Manual analysis</td>
+                      <td>Automated analytics</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div
+                class="section-block animate-in"
+                style="animation-delay: 0.15s"
+              >
+                <div class="section-header">
+                  <span class="section-icon">🔑</span>
+                  <h3 class="section-title">
+                    Key Components of Advanced Analytics in Organizations
+                  </h3>
+                </div>
+                <div class="section-body">
+                  <div class="two-col">
+                    <div class="col-card">
+                      <div class="col-card-title">A. Data Infrastructure</div>
+                      <ul>
+                        <li>Centralized databases</li>
+                        <li>Data warehouses</li>
+                        <li>Cloud storage</li>
+                        <li>Integration systems</li>
+                      </ul>
+                    </div>
+                    <div class="col-card">
+                      <div class="col-card-title">B. Analytical Tools</div>
+                      <ul>
+                        <li>Statistical software</li>
+                        <li>Programming platforms</li>
+                        <li>Machine learning tools</li>
+                        <li>Business intelligence dashboards</li>
+                      </ul>
+                    </div>
+                    <div class="col-card">
+                      <div class="col-card-title">C. Skilled Workforce</div>
+                      <ul>
+                        <li>Data analysts</li>
+                        <li>Data scientists</li>
+                        <li>Engineers</li>
+                        <li>Decision-makers trained in analytics</li>
+                      </ul>
+                    </div>
+                    <div class="col-card">
+                      <div class="col-card-title">
+                        D. Governance &amp; Policies
+                      </div>
+                      <ul>
+                        <li>Data privacy standards</li>
+                        <li>Access controls</li>
+                        <li>Ethical guidelines</li>
+                        <li>Data quality management</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB: SUB-TOPICS -->
+            <div class="tab-section" id="tab-subtopics" style="display: none">
+              <div class="subtopics-list">
+                <div class="subtopic-block">
+                  <div class="subtopic-header" onclick="toggleST(0)">
+                    <span class="subtopic-icon">🤖</span>
+                    <span class="subtopic-name"
+                      >Optimization Models Explained</span
+                    >
+                    <span class="subtopic-badge">Concept</span>
+                    <span class="subtopic-chevron" id="stc-0">›</span>
+                  </div>
+                  <div class="subtopic-body" id="stb-0" style="display: none">
+                    <strong>Optimization Models</strong> are mathematical models
+                    used to determine the best possible decision under a given
+                    set of constraints, objectives, and business rules.
+                    Examples: minimizing delivery costs, maximizing production
+                    output given limited resources, scheduling hospital staff to
+                    minimize overtime while meeting patient coverage
+                    requirements. They are a key tool in prescriptive analytics
+                    within organizations.
+                    <div class="highlight-box">
+                      💡 Optimization models don't just predict — they find the
+                      mathematically best solution within defined constraints.
+                    </div>
+                  </div>
+                </div>
+                <div class="subtopic-block">
+                  <div class="subtopic-header" onclick="toggleST(1)">
+                    <span class="subtopic-icon">🧠</span>
+                    <span class="subtopic-name"
+                      >AI-Driven Systems in Organizations</span
+                    >
+                    <span class="subtopic-badge">AI Role</span>
+                    <span class="subtopic-chevron" id="stc-1">›</span>
+                  </div>
+                  <div class="subtopic-body" id="stb-1" style="display: none">
+                    An <strong>AI-driven system</strong> is a system where AI
+                    models actively influence or automate decision-making,
+                    rather than merely reporting insights. These systems learn
+                    from data, adapt over time, and continuously optimize
+                    outcomes with minimal human intervention. In organizational
+                    contexts, AI-driven systems handle tasks like demand
+                    forecasting, fraud detection, automated customer service
+                    (chatbots), and predictive maintenance. The key distinction:
+                    <em>AI-driven systems predict, decide, and act.</em>
+                    <div class="highlight-box">
+                      💡 Traditional BI tools report. AI-driven systems act. The
+                      difference is automation of decision and execution, not
+                      just insight generation.
+                    </div>
+                  </div>
+                </div>
+                <div class="subtopic-block">
+                  <div class="subtopic-header" onclick="toggleST(2)">
+                    <span class="subtopic-icon">📊</span>
+                    <span class="subtopic-name"
+                      >Levels of Organizational Decision-Making</span
+                    >
+                    <span class="subtopic-badge">Strategy</span>
+                    <span class="subtopic-chevron" id="stc-2">›</span>
+                  </div>
+                  <div class="subtopic-body" id="stb-2" style="display: none">
+                    Advanced analytics supports all three levels:
+                    <strong>Operational decisions</strong> — day-to-day actions
+                    (e.g., inventory replenishment triggers).
+                    <strong>Tactical decisions</strong> — short-term
+                    improvements (e.g., adjusting a marketing campaign
+                    mid-quarter based on conversion data).
+                    <strong>Strategic decisions</strong> — long-term planning
+                    (e.g., deciding which markets to enter based on 5-year
+                    predictive models). Each level requires different analytics
+                    approaches and time horizons.
+                    <div class="highlight-box">
+                      💡 The higher the decision level, the more advanced the
+                      analytics required — operational decisions may use
+                      descriptive analytics, while strategic planning often
+                      relies on predictive and prescriptive models.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB: FLASHCARDS -->
+            <div class="tab-section" id="tab-flashcards" style="display: none">
+              <div class="flashcard-area">
+                <div class="fc-counter" id="fcCounter">1 / 6</div>
+                <div class="flashcard-wrap">
+                  <div class="flashcard" id="fc" onclick="flipCard()">
+                    <div class="fc-face fc-front">
+                      <div class="fc-label">QUESTION</div>
+                      <div class="fc-text" id="fcQ"></div>
+                      <div class="fc-hint">Click to reveal answer</div>
+                    </div>
+                    <div class="fc-face fc-back">
+                      <div class="fc-label">ANSWER</div>
+                      <div class="fc-text" id="fcA"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="fc-nav">
+                  <button class="fc-btn" onclick="prevFC()">← Prev</button>
+                  <button class="fc-btn primary" onclick="flipCard()">
+                    Flip
+                  </button>
+                  <button class="fc-btn" onclick="nextFC()">Next →</button>
+                </div>
+              </div>
+              <script>
+                var _fc = [
+                    {
+                      q: "What is the key shift that advanced analytics enables in organizations?",
+                      a: "It enables organizations to shift from reactive (solving problems after they occur) to proactive (anticipating and preventing problems before they occur).",
+                    },
+                    {
+                      q: "What are the four key components of advanced analytics in organizations?",
+                      a: "A. Data Infrastructure (databases, warehouses, cloud). B. Analytical Tools (statistical software, ML tools, BI dashboards). C. Skilled Workforce (data analysts, scientists, engineers). D. Governance & Policies (privacy, access controls, ethical guidelines).",
+                    },
+                    {
+                      q: "What are the structural characteristics of a traditional organization?",
+                      a: "Hierarchical command structure, centralized authority, limited cross-functional data integration, manual workflows, and low automation.",
+                    },
+                    {
+                      q: "What are the strategic advantages of a data-driven organization?",
+                      a: "Faster decision cycles, reduced operational risk, improved resource optimization, increased transparency, and better compliance and governance alignment.",
+                    },
+                    {
+                      q: "What is an Optimization Model?",
+                      a: "A mathematical model used to determine the best possible decision under a given set of constraints, objectives, and business rules.",
+                    },
+                    {
+                      q: "What is the key difference between traditional BI tools and AI-driven systems?",
+                      a: "Traditional BI tools report insights (descriptive). AI-driven systems predict, decide, and act — they automate decision-making and continuously optimize outcomes with minimal human intervention.",
+                    },
+                  ],
+                  _fi = 0,
+                  _ff = false;
+                function _rc() {
+                  document.getElementById("fcQ").textContent = _fc[_fi].q;
+                  document.getElementById("fcA").textContent = _fc[_fi].a;
+                  document.getElementById("fcCounter").textContent =
+                    _fi + 1 + " / " + _fc.length;
+                  document.getElementById("fc").classList.remove("flipped");
+                  _ff = false;
+                }
+                function flipCard() {
+                  _ff = !_ff;
+                  document
+                    .getElementById("fc")
+                    .classList.toggle("flipped", _ff);
+                }
+                function nextFC() {
+                  _fi = (_fi + 1) % _fc.length;
+                  _rc();
+                }
+                function prevFC() {
+                  _fi = (_fi - 1 + _fc.length) % _fc.length;
+                  _rc();
+                }
+                _rc();
+              </script>
+            </div>
+
+            <!-- TAB: QUIZ -->
+            <div class="tab-section" id="tab-quiz" style="display: none">
+              <div class="quiz-setup" id="qzSetup">
+                <div class="quiz-setup-title">📝 Topic Quiz</div>
+                <div class="quiz-setup-desc">
+                  Test your understanding of how advanced analytics transforms
+                  organizations.
+                </div>
+                <button class="btn-launch-quiz" onclick="startQz()">
+                  Start Quiz →
+                </button>
+              </div>
+              <div class="quiz-in-progress" id="qzProg">
+                <div class="qp-header">
+                  <div class="qp-counter" id="qzCtr">1/5</div>
+                  <div class="qp-progress-wrap">
+                    <div
+                      class="qp-progress-bar"
+                      id="qzBar"
+                      style="width: 0%"
+                    ></div>
+                  </div>
+                  <div class="qp-score" id="qzSc">✓ 0</div>
+                </div>
+                <div class="qp-question-card">
+                  <div class="qp-question-text" id="qzQ"></div>
+                </div>
+                <div class="qp-options" id="qzOpts"></div>
+                <div class="qp-explain" id="qzExp"></div>
+                <div class="qp-nav">
+                  <button class="btn-outline" onclick="resetQz()">✕ Exit</button
+                  ><button
+                    id="qzNxt"
+                    class="btn-launch-quiz"
+                    style="display: none"
+                    onclick="nextQz()"
+                  >
+                    Next →
+                  </button>
+                </div>
+              </div>
+              <script>
+                var _qq = [
+                    {
+                      q: "Advanced analytics enables organizations to shift from:",
+                      options: [
+                        "Manual to digital processes",
+                        "Reactive to proactive decision-making",
+                        "Centralized to decentralized authority",
+                        "Public to private data storage",
+                      ],
+                      answer: 1,
+                      explain:
+                        "The core transformation that advanced analytics enables is shifting organizations from reactive (responding to problems after they happen) to proactive (anticipating and preventing problems, identifying opportunities before they arise).",
+                    },
+                    {
+                      q: "Which of the following is a characteristic of a Traditional Organization (NOT a data-driven one)?",
+                      options: [
+                        "Real-time dashboards",
+                        "Evidence-based decision-making",
+                        "Experience-based and reactive problem-solving",
+                        "Integrated data architecture",
+                      ],
+                      answer: 2,
+                      explain:
+                        "Traditional organizations rely on experience and intuition, use limited static reports, and engage in reactive problem-solving. Data-driven organizations use evidence-based decisions, real-time dashboards, and integrated data architecture.",
+                    },
+                    {
+                      q: "A company uses a system that automatically adjusts factory staffing levels by analyzing production data and predicting peak hours. Which component of advanced analytics does this represent?",
+                      options: [
+                        "Data Infrastructure only",
+                        "Governance & Policies",
+                        "An AI-driven system performing operational decision automation",
+                        "Static reporting dashboards",
+                      ],
+                      answer: 2,
+                      explain:
+                        "This describes an AI-driven system that predicts, decides, and acts — automating an operational decision (staffing) based on data and predictions. AI-driven systems learn from data and continuously optimize outcomes with minimal human intervention.",
+                    },
+                    {
+                      q: "Which of the four key components of advanced analytics includes data warehouses, cloud storage, and integration systems?",
+                      options: [
+                        "Analytical Tools",
+                        "Skilled Workforce",
+                        "Governance & Policies",
+                        "Data Infrastructure",
+                      ],
+                      answer: 3,
+                      explain:
+                        "Data Infrastructure (Component A) includes centralized databases, data warehouses, cloud storage, and integration systems — the physical and technical foundation that stores and connects data across the organization.",
+                    },
+                    {
+                      q: "An organization compares its Traditional vs. Data-Driven structure. Which of the following correctly pairs a characteristic with the right organizational type?",
+                      options: [
+                        "Data-Driven: Siloed data and manual analysis",
+                        "Traditional: Evidence-based and real-time dashboards",
+                        "Data-Driven: Integrated architecture and automated analytics",
+                        "Traditional: Proactive risk identification",
+                      ],
+                      answer: 2,
+                      explain:
+                        "Data-Driven organizations have integrated architecture (all data connected across departments) and automated analytics. Traditional organizations have siloed data, manual analysis, reactive problem-solving, and static reports.",
+                    },
+                  ],
+                  _qi = 0,
+                  _qs = 0,
+                  _qa = false;
+                function startQz() {
+                  _qi = 0;
+                  _qs = 0;
+                  _qa = false;
+                  document.getElementById("qzSetup").style.display = "none";
+                  document.getElementById("qzProg").style.display = "block";
+                  rQz();
+                }
+                function rQz() {
+                  var q = _qq[_qi];
+                  document.getElementById("qzCtr").textContent =
+                    _qi + 1 + "/" + _qq.length;
+                  document.getElementById("qzBar").style.width =
+                    (_qi / _qq.length) * 100 + "%";
+                  document.getElementById("qzSc").textContent = "✓ " + _qs;
+                  document.getElementById("qzQ").textContent = q.q;
+                  document.getElementById("qzExp").style.display = "none";
+                  document.getElementById("qzNxt").style.display = "none";
+                  var o = document.getElementById("qzOpts");
+                  o.innerHTML = "";
+                  _qa = false;
+                  q.options.forEach(function (opt, i) {
+                    var b = document.createElement("button");
+                    b.className = "qp-option";
+                    b.innerHTML =
+                      '<span class="qp-option-letter">' +
+                      "ABCD"[i] +
+                      "</span>" +
+                      opt;
+                    b.onclick = function () {
+                      if (!_qa) aQz(i, b);
+                    };
+                    o.appendChild(b);
+                  });
+                }
+                function aQz(i, btn) {
+                  _qa = true;
+                  var q = _qq[_qi];
+                  var bs = document.querySelectorAll(".qp-option");
+                  bs.forEach(function (b) {
+                    b.disabled = true;
+                  });
+                  if (i === q.answer) {
+                    btn.classList.add("correct");
+                    _qs++;
+                  } else {
+                    btn.classList.add("wrong");
+                    bs[q.answer].classList.add("correct");
+                  }
+                  var e = document.getElementById("qzExp");
+                  e.innerHTML = "<strong>Explanation:</strong> " + q.explain;
+                  e.style.display = "block";
+                  document.getElementById("qzNxt").style.display = "block";
+                  document.getElementById("qzSc").textContent = "✓ " + _qs;
+                }
+                function nextQz() {
+                  _qi++;
+                  if (_qi >= _qq.length) {
+                    document.getElementById("qzProg").innerHTML =
+                      '<div style="text-align:center;padding:40px"><div style="font-size:48px;margin-bottom:16px">' +
+                      (_qs / _qq.length >= 0.8 ? "🎉" : "📚") +
+                      '</div><div style="font-family:Lora,serif;font-size:24px;font-weight:700;margin-bottom:8px">Quiz Complete!</div><div style="color:var(--muted);margin-bottom:24px">You scored ' +
+                      _qs +
+                      " / " +
+                      _qq.length +
+                      '</div><button class="btn-launch-quiz" onclick="resetQz()">Try Again</button></div>';
+                  } else {
+                    rQz();
+                  }
+                }
+                function resetQz() {
+                  location.reload();
+                }
+              </script>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <footer class="site-footer" id="site-footer"></footer>
+    <script src="data.js"></script>
+    <script src="nav.js"></script>
+    <script src="sidebar.js"></script>
+    <script>
+      buildNavbar("elec4");
+      buildFooter();
+      buildElec4TopicPageSidebar("e4-role-in-organizations");
+      buildSidebarToggleBtn();
+      function switchTab(n, btn) {
+        ["reading", "subtopics", "flashcards", "quiz"].forEach(function (id) {
+          var el = document.getElementById("tab-" + id);
+          if (el) el.style.display = "none";
+        });
+        document.querySelectorAll(".tab-btn").forEach(function (b) {
+          b.classList.remove("active");
+        });
+        var el = document.getElementById("tab-" + n);
+        if (el) el.style.display = "block";
+        if (btn) btn.classList.add("active");
+        if (n === "flashcards" && typeof _rc === "function") _rc();
+      }
+      function toggleST(i) {
+        var b = document.getElementById("stb-" + i),
+          c = document.getElementById("stc-" + i);
+        if (!b) return;
+        var open = b.style.display !== "none";
+        b.style.display = open ? "none" : "block";
+        if (c) c.classList.toggle("open", !open);
+      }
+      function filterNav(q) {
+        var ql = q.toLowerCase();
+        document
+          .querySelectorAll("#sidebarNav .nav-item")
+          .forEach(function (item) {
+            var nm = item.querySelector(".nav-item-name");
+            item.style.display =
+              (nm && nm.textContent.toLowerCase().includes(ql)) || !q
+                ? ""
+                : "none";
+          });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Study Hub — Ethics and Responsible Data Use</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .flashcard-area {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 0;
+      }
+      .fc-counter {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 14px;
+      }
+      .flashcard-wrap {
+        width: 100%;
+        max-width: 520px;
+        perspective: 1000px;
+        margin-bottom: 16px;
+      }
+      .flashcard {
+        width: 100%;
+        height: 200px;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.5s;
+        cursor: pointer;
+        border-radius: 16px;
+      }
+      .flashcard.flipped {
+        transform: rotateY(180deg);
+      }
+      .fc-face {
+        position: absolute;
+        inset: 0;
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 28px;
+        text-align: center;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+      }
+      .fc-front {
+        background: var(--surface);
+        border: 2px solid var(--border);
+      }
+      .fc-back {
+        background: linear-gradient(135deg, #1a472a, #2d6a4f);
+        color: #fff;
+        transform: rotateY(180deg);
+      }
+      .fc-label {
+        font-size: 10px;
+        font-family: "IBM Plex Mono", monospace;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+      .fc-back .fc-label {
+        color: rgba(255, 255, 255, 0.6);
+      }
+      .fc-text {
+        font-family: "Lora", serif;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.5;
+        color: var(--text);
+      }
+      .fc-back .fc-text {
+        color: #fff;
+        font-size: 14px;
+      }
+      .fc-hint {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 10px;
+        font-family: "IBM Plex Mono", monospace;
+      }
+      .fc-nav {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+        max-width: 520px;
+      }
+      .fc-btn {
+        flex: 1;
+        padding: 10px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        font-size: 13px;
+        font-family: "Nunito", sans-serif;
+        font-weight: 600;
+        cursor: pointer;
+        color: var(--muted);
+        transition: all 0.15s;
+      }
+      .fc-btn:hover,
+      .fc-btn.primary {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .fc-btn.primary {
+        background: var(--tag-bg);
+      }
+      .section-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 22px 24px;
+        margin-bottom: 16px;
+      }
+      .section-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .section-icon {
+        font-size: 18px;
+      }
+      .section-title {
+        font-family: "Lora", serif;
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .section-body {
+        font-size: 14px;
+        line-height: 1.75;
+        color: var(--text);
+      }
+      .subtopics-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .subtopic-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .subtopic-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 16px;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .subtopic-header:hover {
+        background: var(--bg);
+      }
+      .subtopic-icon {
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+      .subtopic-name {
+        flex: 1;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .subtopic-badge {
+        font-size: 10px;
+        font-family: "IBM Plex Mono", monospace;
+        color: var(--accent);
+        background: var(--tag-bg);
+        border-radius: 100px;
+        padding: 2px 8px;
+      }
+      .subtopic-chevron {
+        font-size: 18px;
+        color: var(--muted);
+        transition: transform 0.2s;
+      }
+      .subtopic-chevron.open {
+        transform: rotate(90deg);
+      }
+      .subtopic-body {
+        padding: 14px 16px;
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--text);
+        border-top: 1px solid var(--border);
+      }
+      .tab-bar {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+      .tab-btn {
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        font-family: "Nunito", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .tab-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .tab-btn.active {
+        background: var(--tag-bg);
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .quiz-setup {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 28px;
+        margin-bottom: 20px;
+      }
+      .quiz-setup-title {
+        font-family: "Lora", serif;
+        font-size: 19px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 6px;
+      }
+      .quiz-setup-desc {
+        font-size: 14px;
+        color: var(--muted);
+        margin-bottom: 20px;
+        line-height: 1.55;
+      }
+      .quiz-in-progress {
+        display: none;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px;
+      }
+      .qp-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .qp-counter,
+      .qp-score {
+        font-size: 13px;
+        font-family: "IBM Plex Mono", monospace;
+        color: var(--muted);
+      }
+      .qp-score {
+        color: var(--success);
+      }
+      .qp-progress-wrap {
+        flex: 1;
+        margin: 0 12px;
+        background: var(--border);
+        border-radius: 100px;
+        height: 5px;
+        overflow: hidden;
+      }
+      .qp-progress-bar {
+        height: 100%;
+        background: var(--accent);
+        border-radius: 100px;
+        transition: width 0.3s;
+      }
+      .qp-question-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px;
+        margin-bottom: 16px;
+      }
+      .qp-question-text {
+        font-family: "Lora", serif;
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text);
+        line-height: 1.45;
+      }
+      .qp-options {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+        margin-bottom: 14px;
+      }
+      .qp-option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: 10px;
+        cursor: pointer;
+        text-align: left;
+        font-size: 14px;
+        font-family: "Nunito", sans-serif;
+        font-weight: 600;
+        color: var(--text);
+        transition: all 0.15s;
+        width: 100%;
+      }
+      .qp-option-letter {
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        color: var(--muted);
+        flex-shrink: 0;
+      }
+      .qp-option:hover:not(:disabled) {
+        border-color: var(--accent);
+        background: var(--tag-bg);
+      }
+      .qp-option.correct {
+        border-color: var(--success);
+        background: rgba(22, 163, 74, 0.06);
+      }
+      .qp-option.correct .qp-option-letter {
+        background: var(--success);
+        color: #fff;
+      }
+      .qp-option.wrong {
+        border-color: var(--danger);
+        opacity: 0.7;
+      }
+      .qp-option.wrong .qp-option-letter {
+        background: var(--danger);
+        color: #fff;
+      }
+      .qp-option:disabled {
+        cursor: default;
+      }
+      .qp-explain {
+        background: var(--highlight);
+        border-left: 3px solid var(--accent2);
+        border-radius: 0 8px 8px 0;
+        padding: 12px 14px;
+        font-size: 13px;
+        line-height: 1.6;
+        color: var(--text);
+        display: none;
+        margin-bottom: 12px;
+      }
+      .qp-explain strong {
+        color: var(--accent);
+      }
+      .qp-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+      .reader-header {
+        margin-bottom: 24px;
+      }
+      .reader-icon {
+        font-size: 40px;
+        margin-bottom: 12px;
+      }
+      .reader-title {
+        font-family: "Lora", serif;
+        font-size: clamp(22px, 3.5vw, 32px);
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 8px;
+        line-height: 1.2;
+      }
+      .reader-source {
+        font-size: 12px;
+        color: var(--muted);
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 8px;
+      }
+      .reader-summary {
+        background: var(--highlight);
+        border-left: 3px solid var(--accent2);
+        border-radius: 0 10px 10px 0;
+        padding: 14px 16px;
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--text);
+        margin-bottom: 24px;
+      }
+      .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 20px;
+        font-size: 12px;
+        color: var(--muted);
+        font-family: "IBM Plex Mono", monospace;
+        flex-wrap: wrap;
+      }
+      .breadcrumb a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      .breadcrumb a:hover {
+        text-decoration: underline;
+      }
+      .breadcrumb-sep {
+        color: var(--border);
+      }
+      .highlight-box {
+        background: var(--highlight);
+        border-radius: 8px;
+        padding: 12px 14px;
+        margin-top: 12px;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+      .img-placeholder {
+        background: var(--surface);
+        border: 2px dashed var(--border);
+        border-radius: 10px;
+        padding: 24px;
+        margin: 16px 0;
+        text-align: center;
+        font-size: 13px;
+        color: var(--muted);
+        font-family: "IBM Plex Mono", monospace;
+        line-height: 1.6;
+      }
+      .ethics-pillar {
+        background: var(--bg);
+        border: 1.5px solid var(--border);
+        border-radius: 12px;
+        padding: 18px 20px;
+        margin-bottom: 14px;
+      }
+      .ep-num {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        font-weight: 700;
+        color: #fff;
+        background: var(--accent);
+        padding: 2px 10px;
+        border-radius: 100px;
+        display: inline-block;
+        margin-bottom: 10px;
+      }
+      .ep-title {
+        font-family: "Lora", serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 6px;
+      }
+      .ep-def {
+        font-size: 13.5px;
+        color: var(--muted);
+        margin-bottom: 10px;
+        line-height: 1.6;
+      }
+      .ep-body {
+        font-size: 13.5px;
+        line-height: 1.75;
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <nav class="navbar" id="navbar"></nav>
+      <div class="layout">
+        <aside class="sidebar" id="sidebar">
+          <div class="sidebar-header">
+            <div class="brand">
+              <div class="brand-icon">📊</div>
+              <div>
+                <div class="brand-name">STUDY HUB</div>
+                <div class="brand-sub">CS Professional Elective 4</div>
+              </div>
+            </div>
+          </div>
+          <div class="search-box">
+            <span>🔍</span
+            ><input
+              type="text"
+              id="sidebarSearch"
+              placeholder="Search topics..."
+              oninput="filterNav(this.value)"
+            />
+          </div>
+          <div id="sidebarNav"></div>
+        </aside>
+        <div
+          class="sidebar-overlay"
+          id="sidebarOverlay"
+          onclick="closeSidebar()"
+        ></div>
+        <main class="main">
+          <div class="main-inner animate-in">
+            <div class="breadcrumb">
+              <a href="home.html">All Subjects</a>
+              <span class="breadcrumb-sep">›</span>
+              <a href="elec4.html">CS Professional Elective 4</a>
+              <span class="breadcrumb-sep">›</span>
+              <span>Ethics &amp; Data Use</span>
+            </div>
+            <div class="reader-header">
+              <div class="reader-icon">⚖️</div>
+              <h1 class="reader-title">Ethics and Responsible Data Use</h1>
+              <div class="reader-source">
+                <span>📎</span
+                ><span
+                  >Module 01 — Introduction to Advanced Data Analytics · Giralyn
+                  R. Ongco, PhDTM</span
+                >
+              </div>
+            </div>
+            <div class="reader-summary">
+              Advanced data analytics influences critical decisions in business,
+              government, healthcare, and education. Because of this power,
+              ethical and responsible data use is essential. The four pillars
+              are: Data Privacy, Data Accuracy, Bias in Analysis, and
+              Responsible Interpretation of Results. Unethical data use can harm
+              individuals, create discrimination, damage institutional
+              reputation, and lead to legal consequences.
+            </div>
+
+            <div class="tab-bar">
+              <button
+                class="tab-btn active"
+                onclick="switchTab('reading', this)"
+              >
+                📖 Reading Notes
+              </button>
+              <button class="tab-btn" onclick="switchTab('subtopics', this)">
+                🔗 Sub-Topics
+              </button>
+              <button class="tab-btn" onclick="switchTab('flashcards', this)">
+                🃏 Flashcards
+              </button>
+              <button class="tab-btn" onclick="switchTab('quiz', this)">
+                📝 Quiz
+              </button>
+            </div>
+
+            <!-- TAB: READING -->
+            <div id="tab-reading">
+              <div class="section-block animate-in" style="animation-delay: 0s">
+                <div class="section-header">
+                  <span class="section-icon">⚠️</span>
+                  <h3 class="section-title">
+                    Why Ethics Matters in Data Analytics
+                  </h3>
+                </div>
+                <div class="section-body">
+                  Advanced data analytics influences critical real-world
+                  outcomes:
+                  <ul style="margin: 10px 0 10px 20px; line-height: 2">
+                    <li>Business decisions</li>
+                    <li>Government policies</li>
+                    <li>Healthcare outcomes</li>
+                    <li>Educational opportunities</li>
+                    <li>Loan approvals &amp; hiring decisions</li>
+                    <li>Medical treatment &amp; security systems</li>
+                  </ul>
+                  Unethical use of data can: harm individuals, create
+                  discrimination, damage institutional reputation, and lead to
+                  legal consequences. Therefore,
+                  <strong>ethical and responsible data use is essential</strong
+                  >.
+                </div>
+              </div>
+              <div
+                class="section-block animate-in"
+                style="animation-delay: 0.05s"
+              >
+                <div class="section-header">
+                  <span class="section-icon">🔒</span>
+                  <h3 class="section-title">1. Data Privacy</h3>
+                </div>
+                <div class="section-body">
+                  <div class="ethics-pillar">
+                    <div class="ep-num">Pillar 1</div>
+                    <div class="ep-title">Data Privacy</div>
+                    <div class="ep-def">
+                      <strong>Definition:</strong> The protection of
+                      individuals' personal and sensitive information from
+                      unauthorized access, misuse, or exposure.
+                    </div>
+                    <div class="ep-body">
+                      <strong>Why It Matters:</strong>
+                      <ul style="margin: 8px 0 0 18px; line-height: 2">
+                        <li>Protects individual rights</li>
+                        <li>Prevents identity theft and fraud</li>
+                        <li>
+                          Builds trust between organizations and stakeholders
+                        </li>
+                        <li>Complies with data protection laws</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="section-block animate-in"
+                style="animation-delay: 0.1s"
+              >
+                <div class="section-header">
+                  <span class="section-icon">✅</span>
+                  <h3 class="section-title">2. Data Accuracy</h3>
+                </div>
+                <div class="section-body">
+                  <div class="ethics-pillar">
+                    <div class="ep-num">Pillar 2</div>
+                    <div class="ep-title">Data Accuracy</div>
+                    <div class="ep-def">
+                      <strong>Definition:</strong> Ensuring that information
+                      used in analysis is correct, complete, and reliable.
+                    </div>
+                    <div class="ep-body">
+                      <strong>Why It Matters:</strong>
+                      <ul style="margin: 8px 0 0 18px; line-height: 2">
+                        <li>Inaccurate data leads to wrong conclusions</li>
+                        <li>
+                          Poor decisions can harm organizations and individuals
+                        </li>
+                        <li>Damages credibility and trust</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="section-block animate-in"
+                style="animation-delay: 0.15s"
+              >
+                <div class="section-header">
+                  <span class="section-icon">⚖️</span>
+                  <h3 class="section-title">3. Bias in Analysis</h3>
+                </div>
+                <div class="section-body">
+                  <div class="ethics-pillar">
+                    <div class="ep-num">Pillar 3</div>
+                    <div class="ep-title">Bias in Analysis</div>
+                    <div class="ep-def">
+                      <strong>Definition:</strong> Bias occurs when data or
+                      analytical methods unfairly favor certain outcomes,
+                      groups, or perspectives.
+                    </div>
+                    <div class="ep-body">
+                      <strong>Why It Matters:</strong>
+                      <ul style="margin: 8px 0 0 18px; line-height: 2">
+                        <li>Can lead to discrimination</li>
+                        <li>Produces unfair or unethical decisions</li>
+                        <li>Undermines trust in analytics systems</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="section-block animate-in"
+                style="animation-delay: 0.2s"
+              >
+                <div class="section-header">
+                  <span class="section-icon">🎯</span>
+                  <h3 class="section-title">
+                    4. Responsible Interpretation of Results
+                  </h3>
+                </div>
+                <div class="section-body">
+                  <div class="ethics-pillar">
+                    <div class="ep-num">Pillar 4</div>
+                    <div class="ep-title">Responsible Interpretation</div>
+                    <div class="ep-def">
+                      <strong>Definition:</strong> Explaining results accurately
+                      without exaggeration, distortion, or misuse.
+                    </div>
+                    <div class="ep-body">
+                      <strong>Common Risks:</strong>
+                      <ul style="margin: 8px 0 0 18px; line-height: 2">
+                        <li>Misleading visualizations</li>
+                        <li>Overstating predictive certainty</li>
+                        <li>Ignoring limitations</li>
+                        <li>Confusing correlation with causation</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="section-block animate-in"
+                style="animation-delay: 0.25s"
+              >
+                <div class="section-header">
+                  <span class="section-icon">👤</span>
+                  <h3 class="section-title">The Ethical Data Professional</h3>
+                </div>
+                <div class="section-body">
+                  A responsible data professional must:
+                  <ul style="margin: 10px 0 0 20px; line-height: 2">
+                    <li>Protect privacy</li>
+                    <li>Ensure accuracy</li>
+                    <li>Avoid bias</li>
+                    <li>Communicate honestly</li>
+                    <li>Respect legal and ethical standards</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB: SUB-TOPICS -->
+            <div class="tab-section" id="tab-subtopics" style="display: none">
+              <div class="subtopics-list">
+                <div class="subtopic-block">
+                  <div class="subtopic-header" onclick="toggleST(0)">
+                    <span class="subtopic-icon">🔍</span>
+                    <span class="subtopic-name"
+                      >Correlation vs. Causation — A Key Misinterpretation
+                      Risk</span
+                    >
+                    <span class="subtopic-badge">Interpretation</span>
+                    <span class="subtopic-chevron" id="stc-0">›</span>
+                  </div>
+                  <div class="subtopic-body" id="stb-0" style="display: none">
+                    <strong>Correlation:</strong> Two variables change together
+                    (e.g., ice cream sales and drowning incidents both increase
+                    in summer). <strong>Causation:</strong> One variable
+                    directly causes the other (e.g., swimming more → more
+                    drowning risk). Confusing correlation with causation is one
+                    of the most common and dangerous analytical errors. Just
+                    because two variables move together doesn't mean one causes
+                    the other — there may be a third confounding variable
+                    (summer heat, in this case).
+                    <div class="highlight-box">
+                      💡 Always ask: Could this correlation be explained by a
+                      third variable? Does the causal mechanism make logical
+                      sense?
+                    </div>
+                  </div>
+                </div>
+                <div class="subtopic-block">
+                  <div class="subtopic-header" onclick="toggleST(1)">
+                    <span class="subtopic-icon">📊</span>
+                    <span class="subtopic-name"
+                      >Types of Bias in Data Analytics</span
+                    >
+                    <span class="subtopic-badge">Bias Types</span>
+                    <span class="subtopic-chevron" id="stc-1">›</span>
+                  </div>
+                  <div class="subtopic-body" id="stb-1" style="display: none">
+                    <strong>Selection Bias:</strong> The sample data doesn't
+                    represent the full population (e.g., using only urban
+                    hospital records to study national health trends).
+                    <strong>Confirmation Bias:</strong> Interpreting data to
+                    support pre-existing beliefs while ignoring contradictory
+                    evidence. <strong>Algorithmic Bias:</strong> ML models
+                    trained on biased historical data reproduce and amplify
+                    those biases (e.g., a hiring algorithm that learns from past
+                    decisions made by biased managers).
+                    <div class="highlight-box">
+                      💡 Bias often enters through the data collection phase —
+                      which is why representative, diverse datasets and rigorous
+                      validation are critical ethical safeguards.
+                    </div>
+                  </div>
+                </div>
+                <div class="subtopic-block">
+                  <div class="subtopic-header" onclick="toggleST(2)">
+                    <span class="subtopic-icon">🌍</span>
+                    <span class="subtopic-name"
+                      >Real-World Consequences of Unethical Data Use</span
+                    >
+                    <span class="subtopic-badge">Impact</span>
+                    <span class="subtopic-chevron" id="stc-2">›</span>
+                  </div>
+                  <div class="subtopic-body" id="stb-2" style="display: none">
+                    Real-world examples of unethical data use:
+                    <strong>Biased hiring algorithms</strong> — Amazon's
+                    experimental AI hiring tool was found to penalize resumes
+                    that included the word "women's" (e.g., women's chess club).
+                    <strong>Discriminatory lending</strong> — algorithmic credit
+                    scoring that disproportionately denied loans to minority
+                    applicants. <strong>Misused health data</strong> — sharing
+                    patient data with third parties without consent. These cases
+                    resulted in legal action, regulatory investigations, and
+                    reputational damage.
+                    <div class="highlight-box">
+                      💡 Ethical data use is not optional — it is increasingly
+                      regulated through laws like GDPR (Europe), PDPA
+                      (Philippines), and CCPA (California).
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB: FLASHCARDS -->
+            <div class="tab-section" id="tab-flashcards" style="display: none">
+              <div class="flashcard-area">
+                <div class="fc-counter" id="fcCounter">1 / 6</div>
+                <div class="flashcard-wrap">
+                  <div class="flashcard" id="fc" onclick="flipCard()">
+                    <div class="fc-face fc-front">
+                      <div class="fc-label">QUESTION</div>
+                      <div class="fc-text" id="fcQ"></div>
+                      <div class="fc-hint">Click to reveal answer</div>
+                    </div>
+                    <div class="fc-face fc-back">
+                      <div class="fc-label">ANSWER</div>
+                      <div class="fc-text" id="fcA"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="fc-nav">
+                  <button class="fc-btn" onclick="prevFC()">← Prev</button>
+                  <button class="fc-btn primary" onclick="flipCard()">
+                    Flip
+                  </button>
+                  <button class="fc-btn" onclick="nextFC()">Next →</button>
+                </div>
+              </div>
+              <script>
+                var _fc = [
+                    {
+                      q: "What is Data Privacy in the context of analytics?",
+                      a: "The protection of individuals' personal and sensitive information from unauthorized access, misuse, or exposure.",
+                    },
+                    {
+                      q: "What are the four pillars of Ethics and Responsible Data Use?",
+                      a: "1. Data Privacy — protect personal information. 2. Data Accuracy — ensure data is correct and reliable. 3. Bias in Analysis — avoid unfair favoritism in data and methods. 4. Responsible Interpretation — explain results accurately without distortion.",
+                    },
+                    {
+                      q: "What is bias in data analytics?",
+                      a: "Bias occurs when data or analytical methods unfairly favor certain outcomes, groups, or perspectives — leading to discrimination, unfair decisions, and undermined trust in analytics systems.",
+                    },
+                    {
+                      q: "What are the four common risks of irresponsible interpretation of results?",
+                      a: "1. Misleading visualizations. 2. Overstating predictive certainty. 3. Ignoring limitations. 4. Confusing correlation with causation.",
+                    },
+                    {
+                      q: "What five responsibilities must an ethical data professional uphold?",
+                      a: "Protect privacy, ensure accuracy, avoid bias, communicate honestly, and respect legal and ethical standards.",
+                    },
+                    {
+                      q: "Why is unethical use of data dangerous?",
+                      a: "It can harm individuals, create discrimination, damage institutional reputation, and lead to legal consequences — especially in contexts like loan approvals, hiring, medical treatment, and public policy.",
+                    },
+                  ],
+                  _fi = 0,
+                  _ff = false;
+                function _rc() {
+                  document.getElementById("fcQ").textContent = _fc[_fi].q;
+                  document.getElementById("fcA").textContent = _fc[_fi].a;
+                  document.getElementById("fcCounter").textContent =
+                    _fi + 1 + " / " + _fc.length;
+                  document.getElementById("fc").classList.remove("flipped");
+                  _ff = false;
+                }
+                function flipCard() {
+                  _ff = !_ff;
+                  document
+                    .getElementById("fc")
+                    .classList.toggle("flipped", _ff);
+                }
+                function nextFC() {
+                  _fi = (_fi + 1) % _fc.length;
+                  _rc();
+                }
+                function prevFC() {
+                  _fi = (_fi - 1 + _fc.length) % _fc.length;
+                  _rc();
+                }
+                _rc();
+              </script>
+            </div>
+
+            <!-- TAB: QUIZ -->
+            <div class="tab-section" id="tab-quiz" style="display: none">
+              <div class="quiz-setup" id="qzSetup">
+                <div class="quiz-setup-title">📝 Topic Quiz</div>
+                <div class="quiz-setup-desc">
+                  Test your understanding of ethical and responsible data use.
+                </div>
+                <button class="btn-launch-quiz" onclick="startQz()">
+                  Start Quiz →
+                </button>
+              </div>
+              <div class="quiz-in-progress" id="qzProg">
+                <div class="qp-header">
+                  <div class="qp-counter" id="qzCtr">1/5</div>
+                  <div class="qp-progress-wrap">
+                    <div
+                      class="qp-progress-bar"
+                      id="qzBar"
+                      style="width: 0%"
+                    ></div>
+                  </div>
+                  <div class="qp-score" id="qzSc">✓ 0</div>
+                </div>
+                <div class="qp-question-card">
+                  <div class="qp-question-text" id="qzQ"></div>
+                </div>
+                <div class="qp-options" id="qzOpts"></div>
+                <div class="qp-explain" id="qzExp"></div>
+                <div class="qp-nav">
+                  <button class="btn-outline" onclick="resetQz()">✕ Exit</button
+                  ><button
+                    id="qzNxt"
+                    class="btn-launch-quiz"
+                    style="display: none"
+                    onclick="nextQz()"
+                  >
+                    Next →
+                  </button>
+                </div>
+              </div>
+              <script>
+                var _qq = [
+                    {
+                      q: "A hospital's AI system denies treatment recommendations for a specific ethnic group at higher rates than others, despite similar medical profiles. This is an example of:",
+                      options: [
+                        "Data Privacy violation",
+                        "Responsible Interpretation failure",
+                        "Bias in Analysis",
+                        "Data Accuracy problem",
+                      ],
+                      answer: 2,
+                      explain:
+                        "This is a classic example of Bias in Analysis — when data or analytical methods unfairly favor certain outcomes or groups. The model likely learned from historically biased decisions in its training data, and those biases are now being reproduced and amplified in its recommendations.",
+                    },
+                    {
+                      q: "Which of the following is NOT a common risk of irresponsible interpretation of results?",
+                      options: [
+                        "Misleading visualizations",
+                        "Confusing correlation with causation",
+                        "Storing data in the cloud",
+                        "Overstating predictive certainty",
+                      ],
+                      answer: 2,
+                      explain:
+                        "The four common risks of irresponsible interpretation are: misleading visualizations, overstating predictive certainty, ignoring limitations, and confusing correlation with causation. Storing data in the cloud is a data infrastructure concern, not an interpretation risk.",
+                    },
+                    {
+                      q: "A company's analyst creates a bar chart that cuts the y-axis at a high value, making a small difference in sales appear like a massive gap. This violates which principle?",
+                      options: [
+                        "Data Privacy",
+                        "Data Accuracy",
+                        "Bias in Analysis",
+                        "Responsible Interpretation — specifically, misleading visualizations",
+                      ],
+                      answer: 3,
+                      explain:
+                        "This is a Responsible Interpretation failure — specifically, misleading visualizations. Truncating a y-axis can make small differences appear dramatic, manipulating how viewers interpret the data. A responsible analyst presents data honestly without visual distortion.",
+                    },
+                    {
+                      q: "Why is Data Accuracy considered an ethical issue in data analytics?",
+                      options: [
+                        "Accurate data takes longer to collect",
+                        "Inaccurate data leads to wrong conclusions and decisions that can harm individuals and organizations",
+                        "Accuracy is only important for financial data",
+                        "Data accuracy is only relevant to government agencies",
+                      ],
+                      answer: 1,
+                      explain:
+                        "Data Accuracy is an ethical issue because inaccurate data leads to wrong conclusions, poor decisions that can harm individuals and organizations, and damages credibility and trust. When analytics guides high-stakes decisions (healthcare, lending, hiring), inaccurate data can cause serious harm.",
+                    },
+                    {
+                      q: "An analytics team notices that their predictive model performs well overall but poorly for rural communities. Rather than reporting this limitation, they present only the overall accuracy. This is unethical because:",
+                      options: [
+                        "The model should be faster",
+                        "It violates Data Privacy rules",
+                        "It is irresponsible interpretation — specifically, ignoring limitations of the model",
+                        "Rural communities are not important stakeholders",
+                      ],
+                      answer: 2,
+                      explain:
+                        "Hiding or ignoring limitations is a form of irresponsible interpretation. Stakeholders making decisions based on this model would not know it performs poorly for rural communities, leading to potentially harmful decisions for that group. A responsible analyst must transparently communicate model limitations.",
+                    },
+                  ],
+                  _qi = 0,
+                  _qs = 0,
+                  _qa = false;
+                function startQz() {
+                  _qi = 0;
+                  _qs = 0;
+                  _qa = false;
+                  document.getElementById("qzSetup").style.display = "none";
+                  document.getElementById("qzProg").style.display = "block";
+                  rQz();
+                }
+                function rQz() {
+                  var q = _qq[_qi];
+                  document.getElementById("qzCtr").textContent =
+                    _qi + 1 + "/" + _qq.length;
+                  document.getElementById("qzBar").style.width =
+                    (_qi / _qq.length) * 100 + "%";
+                  document.getElementById("qzSc").textContent = "✓ " + _qs;
+                  document.getElementById("qzQ").textContent = q.q;
+                  document.getElementById("qzExp").style.display = "none";
+                  document.getElementById("qzNxt").style.display = "none";
+                  var o = document.getElementById("qzOpts");
+                  o.innerHTML = "";
+                  _qa = false;
+                  q.options.forEach(function (opt, i) {
+                    var b = document.createElement("button");
+                    b.className = "qp-option";
+                    b.innerHTML =
+                      '<span class="qp-option-letter">' +
+                      "ABCD"[i] +
+                      "</span>" +
+                      opt;
+                    b.onclick = function () {
+                      if (!_qa) aQz(i, b);
+                    };
+                    o.appendChild(b);
+                  });
+                }
+                function aQz(i, btn) {
+                  _qa = true;
+                  var q = _qq[_qi];
+                  var bs = document.querySelectorAll(".qp-option");
+                  bs.forEach(function (b) {
+                    b.disabled = true;
+                  });
+                  if (i === q.answer) {
+                    btn.classList.add("correct");
+                    _qs++;
+                  } else {
+                    btn.classList.add("wrong");
+                    bs[q.answer].classList.add("correct");
+                  }
+                  var e = document.getElementById("qzExp");
+                  e.innerHTML = "<strong>Explanation:</strong> " + q.explain;
+                  e.style.display = "block";
+                  document.getElementById("qzNxt").style.display = "block";
+                  document.getElementById("qzSc").textContent = "✓ " + _qs;
+                }
+                function nextQz() {
+                  _qi++;
+                  if (_qi >= _qq.length) {
+                    document.getElementById("qzProg").innerHTML =
+                      '<div style="text-align:center;padding:40px"><div style="font-size:48px;margin-bottom:16px">' +
+                      (_qs / _qq.length >= 0.8 ? "🎉" : "📚") +
+                      '</div><div style="font-family:Lora,serif;font-size:24px;font-weight:700;margin-bottom:8px">Quiz Complete!</div><div style="color:var(--muted);margin-bottom:24px">You scored ' +
+                      _qs +
+                      " / " +
+                      _qq.length +
+                      '</div><button class="btn-launch-quiz" onclick="resetQz()">Try Again</button></div>';
+                  } else {
+                    rQz();
+                  }
+                }
+                function resetQz() {
+                  location.reload();
+                }
+              </script>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <footer class="site-footer" id="site-footer"></footer>
+    <script src="data.js"></script>
+    <script src="nav.js"></script>
+    <script src="sidebar.js"></script>
+    <script>
+      buildNavbar("elec4");
+      buildFooter();
+      buildElec4TopicPageSidebar("e4-ethics-data-use");
+      buildSidebarToggleBtn();
+      function switchTab(n, btn) {
+        ["reading", "subtopics", "flashcards", "quiz"].forEach(function (id) {
+          var el = document.getElementById("tab-" + id);
+          if (el) el.style.display = "none";
+        });
+        document.querySelectorAll(".tab-btn").forEach(function (b) {
+          b.classList.remove("active");
+        });
+        var el = document.getElementById("tab-" + n);
+        if (el) el.style.display = "block";
+        if (btn) btn.classList.add("active");
+        if (n === "flashcards" && typeof _rc === "function") _rc();
+      }
+      function toggleST(i) {
+        var b = document.getElementById("stb-" + i),
+          c = document.getElementById("stc-" + i);
+        if (!b) return;
+        var open = b.style.display !== "none";
+        b.style.display = open ? "none" : "block";
+        if (c) c.classList.toggle("open", !open);
+      }
+      function filterNav(q) {
+        var ql = q.toLowerCase();
+        document
+          .querySelectorAll("#sidebarNav .nav-item")
+          .forEach(function (item) {
+            var nm = item.querySelector(".nav-item-name");
+            item.style.display =
+              (nm && nm.textContent.toLowerCase().includes(ql)) || !q
+                ? ""
+                : "none";
+          });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Study Hub — Types of Data Analytics</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .flashcard-area {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 0;
+      }
+      .fc-counter {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 14px;
+      }
+      .flashcard-wrap {
+        width: 100%;
+        max-width: 520px;
+        perspective: 1000px;
+        margin-bottom: 16px;
+      }
+      .flashcard {
+        width: 100%;
+        height: 200px;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.5s;
+        cursor: pointer;
+        border-radius: 16px;
+      }
+      .flashcard.flipped {
+        transform: rotateY(180deg);
+      }
+      .fc-face {
+        position: absolute;
+        inset: 0;
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 28px;
+        text-align: center;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+      }
+      .fc-front {
+        background: var(--surface);
+        border: 2px solid var(--border);
+      }
+      .fc-back {
+        background: linear-gradient(135deg, #1a472a, #2d6a4f);
+        color: #fff;
+        transform: rotateY(180deg);
+      }
+      .fc-label {
+        font-size: 10px;
+        font-family: "IBM Plex Mono", monospace;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+      .fc-back .fc-label {
+        color: rgba(255, 255, 255, 0.6);
+      }
+      .fc-text {
+        font-family: "Lora", serif;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.5;
+        color: var(--text);
+      }
+      .fc-back .fc-text {
+        color: #fff;
+        font-size: 14px;
+      }
+      .fc-hint {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 10px;
+        font-family: "IBM Plex Mono", monospace;
+      }
+      .fc-nav {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+        max-width: 520px;
+      }
+      .fc-btn {
+        flex: 1;
+        padding: 10px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        font-size: 13px;
+        font-family: "Nunito", sans-serif;
+        font-weight: 600;
+        cursor: pointer;
+        color: var(--muted);
+        transition: all 0.15s;
+      }
+      .fc-btn:hover,
+      .fc-btn.primary {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .fc-btn.primary {
+        background: var(--tag-bg);
+      }
+      .section-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 22px 24px;
+        margin-bottom: 16px;
+      }
+      .section-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .section-icon {
+        font-size: 18px;
+      }
+      .section-title {
+        font-family: "Lora", serif;
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .section-body {
+        font-size: 14px;
+        line-height: 1.75;
+        color: var(--text);
+      }
+      .subtopics-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .subtopic-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .subtopic-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 16px;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .subtopic-header:hover {
+        background: var(--bg);
+      }
+      .subtopic-icon {
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+      .subtopic-name {
+        flex: 1;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .subtopic-badge {
+        font-size: 10px;
+        font-family: "IBM Plex Mono", monospace;
+        color: var(--accent);
+        background: var(--tag-bg);
+        border-radius: 100px;
+        padding: 2px 8px;
+      }
+      .subtopic-chevron {
+        font-size: 18px;
+        color: var(--muted);
+        transition: transform 0.2s;
+      }
+      .subtopic-chevron.open {
+        transform: rotate(90deg);
+      }
+      .subtopic-body {
+        padding: 14px 16px;
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--text);
+        border-top: 1px solid var(--border);
+      }
+      .tab-bar {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+      .tab-btn {
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        font-family: "Nunito", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .tab-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .tab-btn.active {
+        background: var(--tag-bg);
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .quiz-setup {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 28px;
+        margin-bottom: 20px;
+      }
+      .quiz-setup-title {
+        font-family: "Lora", serif;
+        font-size: 19px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 6px;
+      }
+      .quiz-setup-desc {
+        font-size: 14px;
+        color: var(--muted);
+        margin-bottom: 20px;
+        line-height: 1.55;
+      }
+      .quiz-in-progress {
+        display: none;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px;
+      }
+      .qp-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .qp-counter,
+      .qp-score {
+        font-size: 13px;
+        font-family: "IBM Plex Mono", monospace;
+        color: var(--muted);
+      }
+      .qp-score {
+        color: var(--success);
+      }
+      .qp-progress-wrap {
+        flex: 1;
+        margin: 0 12px;
+        background: var(--border);
+        border-radius: 100px;
+        height: 5px;
+        overflow: hidden;
+      }
+      .qp-progress-bar {
+        height: 100%;
+        background: var(--accent);
+        border-radius: 100px;
+        transition: width 0.3s;
+      }
+      .qp-question-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px;
+        margin-bottom: 16px;
+      }
+      .qp-question-text {
+        font-family: "Lora", serif;
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text);
+        line-height: 1.45;
+      }
+      .qp-options {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+        margin-bottom: 14px;
+      }
+      .qp-option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: 10px;
+        cursor: pointer;
+        text-align: left;
+        font-size: 14px;
+        font-family: "Nunito", sans-serif;
+        font-weight: 600;
+        color: var(--text);
+        transition: all 0.15s;
+        width: 100%;
+      }
+      .qp-option-letter {
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        color: var(--muted);
+        flex-shrink: 0;
+      }
+      .qp-option:hover:not(:disabled) {
+        border-color: var(--accent);
+        background: var(--tag-bg);
+      }
+      .qp-option.correct {
+        border-color: var(--success);
+        background: rgba(22, 163, 74, 0.06);
+      }
+      .qp-option.correct .qp-option-letter {
+        background: var(--success);
+        color: #fff;
+      }
+      .qp-option.wrong {
+        border-color: var(--danger);
+        opacity: 0.7;
+      }
+      .qp-option.wrong .qp-option-letter {
+        background: var(--danger);
+        color: #fff;
+      }
+      .qp-option:disabled {
+        cursor: default;
+      }
+      .qp-explain {
+        background: var(--highlight);
+        border-left: 3px solid var(--accent2);
+        border-radius: 0 8px 8px 0;
+        padding: 12px 14px;
+        font-size: 13px;
+        line-height: 1.6;
+        color: var(--text);
+        display: none;
+        margin-bottom: 12px;
+      }
+      .qp-explain strong {
+        color: var(--accent);
+      }
+      .qp-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+      .reader-header {
+        margin-bottom: 24px;
+      }
+      .reader-icon {
+        font-size: 40px;
+        margin-bottom: 12px;
+      }
+      .reader-title {
+        font-family: "Lora", serif;
+        font-size: clamp(22px, 3.5vw, 32px);
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 8px;
+        line-height: 1.2;
+      }
+      .reader-source {
+        font-size: 12px;
+        color: var(--muted);
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 8px;
+      }
+      .reader-summary {
+        background: var(--highlight);
+        border-left: 3px solid var(--accent2);
+        border-radius: 0 10px 10px 0;
+        padding: 14px 16px;
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--text);
+        margin-bottom: 24px;
+      }
+      .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 20px;
+        font-size: 12px;
+        color: var(--muted);
+        font-family: "IBM Plex Mono", monospace;
+        flex-wrap: wrap;
+      }
+      .breadcrumb a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      .breadcrumb a:hover {
+        text-decoration: underline;
+      }
+      .breadcrumb-sep {
+        color: var(--border);
+      }
+      .highlight-box {
+        background: var(--highlight);
+        border-radius: 8px;
+        padding: 12px 14px;
+        margin-top: 12px;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+      .img-placeholder {
+        background: var(--surface);
+        border: 2px dashed var(--border);
+        border-radius: 10px;
+        padding: 24px;
+        margin: 16px 0;
+        text-align: center;
+        font-size: 13px;
+        color: var(--muted);
+        font-family: "IBM Plex Mono", monospace;
+        line-height: 1.6;
+      }
+      .type-card {
+        background: var(--bg);
+        border: 1.5px solid var(--border);
+        border-radius: 12px;
+        padding: 18px 20px;
+        margin-bottom: 14px;
+      }
+      .type-num {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        font-weight: 700;
+        color: #fff;
+        background: var(--accent);
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+      }
+      .type-name {
+        font-family: "Lora", serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 6px;
+      }
+      .type-def {
+        font-size: 13.5px;
+        color: var(--muted);
+        margin-bottom: 10px;
+        line-height: 1.6;
+      }
+      .type-sub {
+        font-size: 13px;
+        line-height: 1.75;
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <nav class="navbar" id="navbar"></nav>
+      <div class="layout">
+        <aside class="sidebar" id="sidebar">
+          <div class="sidebar-header">
+            <div class="brand">
+              <div class="brand-icon">📊</div>
+              <div>
+                <div class="brand-name">STUDY HUB</div>
+                <div class="brand-sub">CS Professional Elective 4</div>
+              </div>
+            </div>
+          </div>
+          <div class="search-box">
+            <span>🔍</span
+            ><input
+              type="text"
+              id="sidebarSearch"
+              placeholder="Search topics..."
+              oninput="filterNav(this.value)"
+            />
+          </div>
+          <div id="sidebarNav"></div>
+        </aside>
+        <div
+          class="sidebar-overlay"
+          id="sidebarOverlay"
+          onclick="closeSidebar()"
+        ></div>
+        <main class="main">
+          <div class="main-inner animate-in">
+            <div class="breadcrumb">
+              <a href="home.html">All Subjects</a>
+              <span class="breadcrumb-sep">›</span>
+              <a href="elec4.html">CS Professional Elective 4</a>
+              <span class="breadcrumb-sep">›</span>
+              <span>Types of Data Analytics</span>
+            </div>
+            <div class="reader-header">
+              <div class="reader-icon">🔍</div>
+              <h1 class="reader-title">Types of Data Analytics</h1>
+              <div class="reader-source">
+                <span>📎</span
+                ><span
+                  >Module 01 — Introduction to Advanced Data Analytics · Giralyn
+                  R. Ongco, PhDTM</span
+                >
+              </div>
+            </div>
+            <div class="reader-summary">
+              There are four types of data analytics — each answering a
+              progressively deeper question: Descriptive (what happened?),
+              Diagnostic (why did it happen?), Predictive (what will happen?),
+              and Prescriptive (what should we do?). Together they form a
+              spectrum from simple reporting to fully automated, AI-driven
+              decision support.
+            </div>
+
+            <div class="tab-bar">
+              <button
+                class="tab-btn active"
+                onclick="switchTab('reading', this)"
+              >
+                📖 Reading Notes
+              </button>
+              <button class="tab-btn" onclick="switchTab('subtopics', this)">
+                🔗 Sub-Topics
+              </button>
+              <button class="tab-btn" onclick="switchTab('flashcards', this)">
+                🃏 Flashcards
+              </button>
+              <button class="tab-btn" onclick="switchTab('quiz', this)">
+                📝 Quiz
+              </button>
+            </div>
+
+            <!-- TAB: READING -->
+            <div id="tab-reading">
+              <div class="section-block animate-in" style="animation-delay: 0s">
+                <div class="section-header">
+                  <span class="section-icon">1️⃣</span>
+                  <h3 class="section-title">
+                    Descriptive Analytics — What Happened?
+                  </h3>
+                </div>
+                <div class="section-body">
+                  <div class="type-card">
+                    <div class="type-num">01</div>
+                    <div class="type-name">Descriptive Analytics</div>
+                    <div class="type-def">
+                      <strong>Definition:</strong> A type of data analytics that
+                      summarizes historical data to understand what has already
+                      happened.
+                    </div>
+                    <div class="type-sub">
+                      <strong>What it Does:</strong>
+                      <ul style="margin: 8px 0 8px 18px; line-height: 2">
+                        <li>
+                          Collects and organizes historical data into meaningful
+                          formats
+                        </li>
+                        <li>
+                          Presents results using tables, charts, graphs, and
+                          dashboards
+                        </li>
+                        <li>Shows trends, totals, averages, and percentages</li>
+                      </ul>
+                      <strong>Common Techniques:</strong> Counts and totals ·
+                      Averages and percentages · Frequency distributions ·
+                      Time-series summaries · Basic data visualization (bar
+                      charts, line graphs, pie charts)
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="section-block animate-in"
+                style="animation-delay: 0.05s"
+              >
+                <div class="section-header">
+                  <span class="section-icon">2️⃣</span>
+                  <h3 class="section-title">
+                    Diagnostic Analytics — Why Did It Happen?
+                  </h3>
+                </div>
+                <div class="section-body">
+                  <div class="type-card">
+                    <div class="type-num">02</div>
+                    <div class="type-name">Diagnostic Analytics</div>
+                    <div class="type-def">
+                      <strong>Definition:</strong> A type of data analytics that
+                      focuses on examining data to understand why something
+                      happened.
+                    </div>
+                    <div class="type-sub">
+                      <strong>What it Does:</strong>
+                      <ul style="margin: 8px 0 8px 18px; line-height: 2">
+                        <li>Investigates relationships between variables</li>
+                        <li>
+                          Identifies patterns, correlations, and anomalies
+                        </li>
+                        <li>
+                          Breaks data down into smaller parts (drill-down)
+                        </li>
+                        <li>Performs root cause analysis</li>
+                      </ul>
+                      <strong>Common Techniques:</strong> Data comparison
+                      (before vs. after) · Correlation analysis · Trend analysis
+                      · Drill-down and slice-and-dice · Root cause tools:
+                      Fishbone (Ishikawa) diagram, Pareto analysis, Variance
+                      analysis
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="section-block animate-in"
+                style="animation-delay: 0.1s"
+              >
+                <div class="section-header">
+                  <span class="section-icon">3️⃣</span>
+                  <h3 class="section-title">
+                    Predictive Analytics — What Will Happen?
+                  </h3>
+                </div>
+                <div class="section-body">
+                  <div class="type-card">
+                    <div class="type-num">03</div>
+                    <div class="type-name">Predictive Analytics</div>
+                    <div class="type-def">
+                      <strong>Definition:</strong> A type of data analytics that
+                      uses historical data, statistical techniques, and machine
+                      learning models to predict future outcomes.
+                    </div>
+                    <div class="type-sub">
+                      <strong>How it Works:</strong> Looks for patterns in past
+                      data → builds predictive models → forecasts future events.
+                      <ol style="margin: 8px 0 8px 18px; line-height: 2">
+                        <li>Collect historical data</li>
+                        <li>Identify patterns and trends</li>
+                        <li>Build predictive models</li>
+                        <li>Test and validate results</li>
+                        <li>Use the model to make predictions</li>
+                      </ol>
+                      <strong>Common Techniques:</strong> Regression analysis ·
+                      Time-series forecasting · Classification models · Machine
+                      learning algorithms · Statistical modeling
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="section-block animate-in"
+                style="animation-delay: 0.15s"
+              >
+                <div class="section-header">
+                  <span class="section-icon">4️⃣</span>
+                  <h3 class="section-title">
+                    Prescriptive Analytics — What Should We Do?
+                  </h3>
+                </div>
+                <div class="section-body">
+                  <div class="type-card">
+                    <div class="type-num">04</div>
+                    <div class="type-name">Prescriptive Analytics</div>
+                    <div class="type-def">
+                      <strong>Definition:</strong> A type of data analytics that
+                      recommends actions to take in order to achieve the best
+                      possible outcome, based on data, predictions, and
+                      constraints.
+                    </div>
+                    <div class="type-sub">
+                      <strong>How it Works:</strong> Combines Descriptive +
+                      Diagnostic + Predictive, then:
+                      <ol style="margin: 8px 0 8px 18px; line-height: 2">
+                        <li>Evaluates possible decisions</li>
+                        <li>
+                          Considers constraints (time, cost, resources,
+                          policies)
+                        </li>
+                        <li>Recommends the <strong>optimal action</strong></li>
+                      </ol>
+                      <strong>Common Techniques:</strong> Optimization models ·
+                      Decision trees · Simulation · Rules engines · AI-driven
+                      recommendation systems
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB: SUB-TOPICS -->
+            <div class="tab-section" id="tab-subtopics" style="display: none">
+              <div class="subtopics-list">
+                <div class="subtopic-block">
+                  <div class="subtopic-header" onclick="toggleST(0)">
+                    <span class="subtopic-icon">📈</span>
+                    <span class="subtopic-name"
+                      >The Analytics Spectrum — From Simple to Complex</span
+                    >
+                    <span class="subtopic-badge">Progression</span>
+                    <span class="subtopic-chevron" id="stc-0">›</span>
+                  </div>
+                  <div class="subtopic-body" id="stb-0" style="display: none">
+                    The four types form a progression:
+                    <strong
+                      >Descriptive → Diagnostic → Predictive →
+                      Prescriptive</strong
+                    >. Each level adds more complexity and more value.
+                    Descriptive is the simplest (what happened). Prescriptive is
+                    the most sophisticated (what to do). Most organizations
+                    start with descriptive analytics and evolve toward
+                    prescriptive as they mature their data capabilities.
+                    <div class="highlight-box">
+                      💡 Think of it as a ladder: you must build up from
+                      descriptive before you can prescribe optimal actions. Each
+                      rung depends on the one below it.
+                    </div>
+                  </div>
+                </div>
+                <div class="subtopic-block">
+                  <div class="subtopic-header" onclick="toggleST(1)">
+                    <span class="subtopic-icon">🔧</span>
+                    <span class="subtopic-name"
+                      >Root Cause Analysis Tools in Diagnostic Analytics</span
+                    >
+                    <span class="subtopic-badge">Techniques</span>
+                    <span class="subtopic-chevron" id="stc-1">›</span>
+                  </div>
+                  <div class="subtopic-body" id="stb-1" style="display: none">
+                    <strong>Fishbone (Ishikawa) Diagram:</strong> Visualizes the
+                    causes of a specific problem — structured as a fish skeleton
+                    where each bone represents a category of cause (people,
+                    process, equipment, etc.).
+                    <strong>Pareto Analysis:</strong> Based on the 80/20 rule —
+                    identifies the 20% of causes responsible for 80% of
+                    problems. <strong>Variance Analysis:</strong> Compares
+                    actual vs. expected outcomes to identify deviations and
+                    understand why they occurred.
+                    <div class="highlight-box">
+                      💡 These tools are used in quality management, healthcare,
+                      manufacturing, and business process improvement.
+                    </div>
+                  </div>
+                </div>
+                <div class="subtopic-block">
+                  <div class="subtopic-header" onclick="toggleST(2)">
+                    <span class="subtopic-icon">🤖</span>
+                    <span class="subtopic-name"
+                      >Machine Learning in Predictive Analytics</span
+                    >
+                    <span class="subtopic-badge">ML Techniques</span>
+                    <span class="subtopic-chevron" id="stc-2">›</span>
+                  </div>
+                  <div class="subtopic-body" id="stb-2" style="display: none">
+                    <strong>Regression Analysis:</strong> Predicts a continuous
+                    value (e.g., predicting next month's sales).
+                    <strong>Classification Models:</strong> Predicts a category
+                    (e.g., will this customer churn — yes/no?).
+                    <strong>Time-Series Forecasting:</strong> Predicts values
+                    over time using historical sequential data (e.g., stock
+                    prices, weather). ML algorithms like Random Forest, Neural
+                    Networks, and Support Vector Machines are common in advanced
+                    predictive models.
+                    <div class="highlight-box">
+                      💡 Predictive analytics is the foundation for most
+                      business intelligence tools today — from CRM churn
+                      prediction to supply chain forecasting.
+                    </div>
+                  </div>
+                </div>
+                <div class="subtopic-block">
+                  <div class="subtopic-header" onclick="toggleST(3)">
+                    <span class="subtopic-icon">⚙️</span>
+                    <span class="subtopic-name"
+                      >Optimization Models in Prescriptive Analytics</span
+                    >
+                    <span class="subtopic-badge">Optimization</span>
+                    <span class="subtopic-chevron" id="stc-3">›</span>
+                  </div>
+                  <div class="subtopic-body" id="stb-3" style="display: none">
+                    <strong>Optimization Models</strong> are mathematical models
+                    used to determine the best possible decision under a given
+                    set of constraints, objectives, and business rules.
+                    Examples: airline route optimization, hospital staffing
+                    schedules, supply chain routing.
+                    <strong>Simulation</strong> models "what-if" scenarios —
+                    testing many possible futures before committing to an
+                    action. <strong>Decision Trees</strong> model branching
+                    decisions and their consequences, helping select the option
+                    with the best expected outcome.
+                    <div class="highlight-box">
+                      💡 Prescriptive analytics is the highest level — it
+                      doesn't just tell you what will happen but tells you what
+                      to do about it.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB: FLASHCARDS -->
+            <div class="tab-section" id="tab-flashcards" style="display: none">
+              <div class="flashcard-area">
+                <div class="fc-counter" id="fcCounter">1 / 6</div>
+                <div class="flashcard-wrap">
+                  <div class="flashcard" id="fc" onclick="flipCard()">
+                    <div class="fc-face fc-front">
+                      <div class="fc-label">QUESTION</div>
+                      <div class="fc-text" id="fcQ"></div>
+                      <div class="fc-hint">Click to reveal answer</div>
+                    </div>
+                    <div class="fc-face fc-back">
+                      <div class="fc-label">ANSWER</div>
+                      <div class="fc-text" id="fcA"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="fc-nav">
+                  <button class="fc-btn" onclick="prevFC()">← Prev</button>
+                  <button class="fc-btn primary" onclick="flipCard()">
+                    Flip
+                  </button>
+                  <button class="fc-btn" onclick="nextFC()">Next →</button>
+                </div>
+              </div>
+              <script>
+                var _fc = [
+                    {
+                      q: "What question does Descriptive Analytics answer?",
+                      a: "'What happened?' — It summarizes historical data to understand past events using reports, charts, dashboards, and averages.",
+                    },
+                    {
+                      q: "What question does Diagnostic Analytics answer?",
+                      a: "'Why did it happen?' — It investigates relationships, patterns, and root causes using drill-down, correlation analysis, and tools like the Fishbone diagram.",
+                    },
+                    {
+                      q: "What question does Predictive Analytics answer?",
+                      a: "'What will happen next?' — It uses historical data, statistical techniques, and machine learning to forecast future outcomes.",
+                    },
+                    {
+                      q: "What question does Prescriptive Analytics answer?",
+                      a: "'What is the best action to take?' — It recommends optimal actions based on predictions, constraints, and objectives using optimization models and simulation.",
+                    },
+                    {
+                      q: "What are the common techniques used in Diagnostic Analytics?",
+                      a: "Correlation analysis, data comparison (before vs. after), trend analysis, drill-down, Fishbone (Ishikawa) diagram, Pareto analysis, and variance analysis.",
+                    },
+                    {
+                      q: "How does Prescriptive Analytics build on the other three types?",
+                      a: "Prescriptive combines Descriptive (what happened), Diagnostic (why), and Predictive (what will happen), then evaluates possible decisions under constraints to recommend the optimal action.",
+                    },
+                  ],
+                  _fi = 0,
+                  _ff = false;
+                function _rc() {
+                  document.getElementById("fcQ").textContent = _fc[_fi].q;
+                  document.getElementById("fcA").textContent = _fc[_fi].a;
+                  document.getElementById("fcCounter").textContent =
+                    _fi + 1 + " / " + _fc.length;
+                  document.getElementById("fc").classList.remove("flipped");
+                  _ff = false;
+                }
+                function flipCard() {
+                  _ff = !_ff;
+                  document
+                    .getElementById("fc")
+                    .classList.toggle("flipped", _ff);
+                }
+                function nextFC() {
+                  _fi = (_fi + 1) % _fc.length;
+                  _rc();
+                }
+                function prevFC() {
+                  _fi = (_fi - 1 + _fc.length) % _fc.length;
+                  _rc();
+                }
+                _rc();
+              </script>
+            </div>
+
+            <!-- TAB: QUIZ -->
+            <div class="tab-section" id="tab-quiz" style="display: none">
+              <div class="quiz-setup" id="qzSetup">
+                <div class="quiz-setup-title">📝 Topic Quiz</div>
+                <div class="quiz-setup-desc">
+                  Test your knowledge of the 4 types of data analytics with 5
+                  questions.
+                </div>
+                <button class="btn-launch-quiz" onclick="startQz()">
+                  Start Quiz →
+                </button>
+              </div>
+              <div class="quiz-in-progress" id="qzProg">
+                <div class="qp-header">
+                  <div class="qp-counter" id="qzCtr">1/5</div>
+                  <div class="qp-progress-wrap">
+                    <div
+                      class="qp-progress-bar"
+                      id="qzBar"
+                      style="width: 0%"
+                    ></div>
+                  </div>
+                  <div class="qp-score" id="qzSc">✓ 0</div>
+                </div>
+                <div class="qp-question-card">
+                  <div class="qp-question-text" id="qzQ"></div>
+                </div>
+                <div class="qp-options" id="qzOpts"></div>
+                <div class="qp-explain" id="qzExp"></div>
+                <div class="qp-nav">
+                  <button class="btn-outline" onclick="resetQz()">✕ Exit</button
+                  ><button
+                    id="qzNxt"
+                    class="btn-launch-quiz"
+                    style="display: none"
+                    onclick="nextQz()"
+                  >
+                    Next →
+                  </button>
+                </div>
+              </div>
+              <script>
+                var _qq = [
+                    {
+                      q: "A retail company reviews last month's total sales figures and creates a bar chart showing revenue by region. This is an example of:",
+                      options: [
+                        "Predictive Analytics",
+                        "Diagnostic Analytics",
+                        "Descriptive Analytics",
+                        "Prescriptive Analytics",
+                      ],
+                      answer: 2,
+                      explain:
+                        "Descriptive Analytics summarizes historical data to understand what has already happened — exactly what reviewing past sales figures and creating charts does. It answers 'What happened?'",
+                    },
+                    {
+                      q: "A hospital wants to understand why patient readmission rates spiked last quarter. They drill down into patient data and identify a correlation with post-discharge follow-up gaps. This is:",
+                      options: [
+                        "Descriptive Analytics",
+                        "Diagnostic Analytics",
+                        "Predictive Analytics",
+                        "Prescriptive Analytics",
+                      ],
+                      answer: 1,
+                      explain:
+                        "Diagnostic Analytics investigates WHY something happened. It involves drilling down, root cause analysis, and correlation analysis — exactly what the hospital is doing to understand the spike in readmission rates.",
+                    },
+                    {
+                      q: "Which analytics type uses machine learning models and historical data to forecast future customer churn?",
+                      options: [
+                        "Descriptive Analytics",
+                        "Diagnostic Analytics",
+                        "Predictive Analytics",
+                        "Prescriptive Analytics",
+                      ],
+                      answer: 2,
+                      explain:
+                        "Predictive Analytics uses historical data, statistical techniques, and machine learning models to predict future outcomes — including customer churn prediction, which is one of its most common applications.",
+                    },
+                    {
+                      q: "An airline's system automatically adjusts seat prices in real-time based on demand, available seats, and booking trends to maximize revenue. This is an example of:",
+                      options: [
+                        "Descriptive Analytics",
+                        "Diagnostic Analytics",
+                        "Predictive Analytics",
+                        "Prescriptive Analytics",
+                      ],
+                      answer: 3,
+                      explain:
+                        "Prescriptive Analytics recommends and implements optimal actions based on predictions and constraints. Dynamic pricing that automatically recommends the best price to maximize revenue — considering demand, inventory, and policies — is a classic prescriptive analytics application.",
+                    },
+                    {
+                      q: "Which of the following correctly describes the Fishbone (Ishikawa) diagram in the context of analytics?",
+                      options: [
+                        "A chart used to visualize sales trends over time",
+                        "A model for predicting future demand",
+                        "A root cause analysis tool that visualizes the causes contributing to a specific problem",
+                        "A machine learning algorithm for classification",
+                      ],
+                      answer: 2,
+                      explain:
+                        "The Fishbone (Ishikawa) diagram is a root cause analysis tool used in Diagnostic Analytics. It visually structures the possible causes of a problem (organized into categories like People, Process, Equipment) to help identify WHY something happened.",
+                    },
+                  ],
+                  _qi = 0,
+                  _qs = 0,
+                  _qa = false;
+                function startQz() {
+                  _qi = 0;
+                  _qs = 0;
+                  _qa = false;
+                  document.getElementById("qzSetup").style.display = "none";
+                  document.getElementById("qzProg").style.display = "block";
+                  rQz();
+                }
+                function rQz() {
+                  var q = _qq[_qi];
+                  document.getElementById("qzCtr").textContent =
+                    _qi + 1 + "/" + _qq.length;
+                  document.getElementById("qzBar").style.width =
+                    (_qi / _qq.length) * 100 + "%";
+                  document.getElementById("qzSc").textContent = "✓ " + _qs;
+                  document.getElementById("qzQ").textContent = q.q;
+                  document.getElementById("qzExp").style.display = "none";
+                  document.getElementById("qzNxt").style.display = "none";
+                  var o = document.getElementById("qzOpts");
+                  o.innerHTML = "";
+                  _qa = false;
+                  q.options.forEach(function (opt, i) {
+                    var b = document.createElement("button");
+                    b.className = "qp-option";
+                    b.innerHTML =
+                      '<span class="qp-option-letter">' +
+                      "ABCD"[i] +
+                      "</span>" +
+                      opt;
+                    b.onclick = function () {
+                      if (!_qa) aQz(i, b);
+                    };
+                    o.appendChild(b);
+                  });
+                }
+                function aQz(i, btn) {
+                  _qa = true;
+                  var q = _qq[_qi];
+                  var bs = document.querySelectorAll(".qp-option");
+                  bs.forEach(function (b) {
+                    b.disabled = true;
+                  });
+                  if (i === q.answer) {
+                    btn.classList.add("correct");
+                    _qs++;
+                  } else {
+                    btn.classList.add("wrong");
+                    bs[q.answer].classList.add("correct");
+                  }
+                  var e = document.getElementById("qzExp");
+                  e.innerHTML = "<strong>Explanation:</strong> " + q.explain;
+                  e.style.display = "block";
+                  document.getElementById("qzNxt").style.display = "block";
+                  document.getElementById("qzSc").textContent = "✓ " + _qs;
+                }
+                function nextQz() {
+                  _qi++;
+                  if (_qi >= _qq.length) {
+                    document.getElementById("qzProg").innerHTML =
+                      '<div style="text-align:center;padding:40px"><div style="font-size:48px;margin-bottom:16px">' +
+                      (_qs / _qq.length >= 0.8 ? "🎉" : "📚") +
+                      '</div><div style="font-family:Lora,serif;font-size:24px;font-weight:700;margin-bottom:8px">Quiz Complete!</div><div style="color:var(--muted);margin-bottom:24px">You scored ' +
+                      _qs +
+                      " / " +
+                      _qq.length +
+                      '</div><button class="btn-launch-quiz" onclick="resetQz()">Try Again</button></div>';
+                  } else {
+                    rQz();
+                  }
+                }
+                function resetQz() {
+                  location.reload();
+                }
+              </script>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <footer class="site-footer" id="site-footer"></footer>
+    <script src="data.js"></script>
+    <script src="nav.js"></script>
+    <script src="sidebar.js"></script>
+    <script>
+      buildNavbar("elec4");
+      buildFooter();
+      buildElec4TopicPageSidebar("e4-types-of-data-analytics");
+      buildSidebarToggleBtn();
+      function switchTab(n, btn) {
+        ["reading", "subtopics", "flashcards", "quiz"].forEach(function (id) {
+          var el = document.getElementById("tab-" + id);
+          if (el) el.style.display = "none";
+        });
+        document.querySelectorAll(".tab-btn").forEach(function (b) {
+          b.classList.remove("active");
+        });
+        var el = document.getElementById("tab-" + n);
+        if (el) el.style.display = "block";
+        if (btn) btn.classList.add("active");
+        if (n === "flashcards" && typeof _rc === "function") _rc();
+      }
+      function toggleST(i) {
+        var b = document.getElementById("stb-" + i),
+          c = document.getElementById("stc-" + i);
+        if (!b) return;
+        var open = b.style.display !== "none";
+        b.style.display = open ? "none" : "block";
+        if (c) c.classList.toggle("open", !open);
+      }
+      function filterNav(q) {
+        var ql = q.toLowerCase();
+        document
+          .querySelectorAll("#sidebarNav .nav-item")
+          .forEach(function (item) {
+            var nm = item.querySelector(".nav-item-name");
+            item.style.display =
+              (nm && nm.textContent.toLowerCase().includes(ql)) || !q
+                ? ""
+                : "none";
+          });
+      }
+    </script>
+  </body>
+</html>
