@@ -294,11 +294,11 @@ function buildTopicPageSidebar(activeTopicId) {
   overviewSec.appendChild(quizBtn);
   c.appendChild(overviewSec);
 
-  // GfG12 Topics
+  // All AI Topics (GfG12 + Finals Reference together)
   var topicsSec = document.createElement('div');
   topicsSec.className = 'nav-section';
-  topicsSec.innerHTML = '<div class="nav-section-label">GfG12 Topics</div>';
-  topics.filter(function(t){ return t.id !== 'finals-reference'; }).forEach(function(t) {
+  topicsSec.innerHTML = '<div class="nav-section-label">AI Topics</div>';
+  topics.forEach(function(t) {
     var a = document.createElement('a');
     a.className = 'nav-item' + (t.id === activeTopicId ? ' active' : '');
     a.href = t.url || ('topic-' + t.id + '.html');
@@ -306,15 +306,97 @@ function buildTopicPageSidebar(activeTopicId) {
     topicsSec.appendChild(a);
   });
   c.appendChild(topicsSec);
+}
 
-  // Finals Reference
-  var finalsSec = document.createElement('div');
-  finalsSec.className = 'nav-section';
-  finalsSec.innerHTML = '<div class="nav-section-label">Reference</div>';
-  var finalsA = document.createElement('a');
-  finalsA.className = 'nav-item' + ('finals-reference' === activeTopicId ? ' active' : '');
-  finalsA.href = 'topic-finals-reference.html';
-  finalsA.innerHTML = '<span class="nav-item-icon">📄</span><span class="nav-item-name">Finals Reference</span>';
-  finalsSec.appendChild(finalsA);
-  c.appendChild(finalsSec);
+// ---- Elec4 Subject Sidebar (for elec4.html) ----
+function buildElec4SubjectSidebar() {
+  var c = document.getElementById('sidebarNav');
+  if (!c || typeof elec4Topics === 'undefined') return;
+  c.innerHTML = '';
+
+  var overviewSec = document.createElement('div');
+  overviewSec.className = 'nav-section';
+  overviewSec.innerHTML = '<div class="nav-section-label">Overview</div>';
+  var allA = document.createElement('a');
+  allA.className = 'nav-item active';
+  allA.href = 'elec4.html';
+  allA.innerHTML = '<span class="nav-item-icon">📋</span><span class="nav-item-name">All Topics</span>';
+  overviewSec.appendChild(allA);
+  c.appendChild(overviewSec);
+
+  var backSec = document.createElement('div');
+  backSec.className = 'nav-section';
+  var backA = document.createElement('a');
+  backA.className = 'nav-item';
+  backA.href = 'home.html';
+  backA.innerHTML = '<span class="nav-item-icon">←</span><span class="nav-item-name">All Subjects</span>';
+  backSec.appendChild(backA);
+  c.appendChild(backSec);
+
+  // Group by module
+  var modules = {};
+  elec4Topics.forEach(function(t) {
+    if (!modules[t.module]) modules[t.module] = [];
+    modules[t.module].push(t);
+  });
+
+  Object.keys(modules).forEach(function(mod) {
+    var sec = document.createElement('div');
+    sec.className = 'nav-section';
+    sec.innerHTML = '<div class="nav-section-label">' + mod + '</div>';
+    modules[mod].forEach(function(t) {
+      var a = document.createElement('a');
+      a.className = 'nav-item';
+      a.href = t.url;
+      a.innerHTML = '<span class="nav-item-icon">' + t.icon + '</span><span class="nav-item-name">' + t.shortName + '</span>';
+      sec.appendChild(a);
+    });
+    c.appendChild(sec);
+  });
+}
+
+// ---- Elec4 Topic Page Sidebar ----
+function buildElec4TopicPageSidebar(activeTopicId) {
+  var c = document.getElementById('sidebarNav');
+  if (!c || typeof elec4Topics === 'undefined') return;
+  c.innerHTML = '';
+
+  var backSec = document.createElement('div');
+  backSec.className = 'nav-section';
+  var backA = document.createElement('a');
+  backA.className = 'nav-item';
+  backA.href = 'elec4.html';
+  backA.innerHTML = '<span class="nav-item-icon">←</span><span class="nav-item-name">Elec4 Subject Home</span>';
+  backSec.appendChild(backA);
+  c.appendChild(backSec);
+
+  var overviewSec = document.createElement('div');
+  overviewSec.className = 'nav-section';
+  overviewSec.innerHTML = '<div class="nav-section-label">Overview</div>';
+  var allA = document.createElement('a');
+  allA.className = 'nav-item';
+  allA.href = 'elec4.html';
+  allA.innerHTML = '<span class="nav-item-icon">📋</span><span class="nav-item-name">All Topics</span>';
+  overviewSec.appendChild(allA);
+  c.appendChild(overviewSec);
+
+  var modules = {};
+  elec4Topics.forEach(function(t) {
+    if (!modules[t.module]) modules[t.module] = [];
+    modules[t.module].push(t);
+  });
+
+  Object.keys(modules).forEach(function(mod) {
+    var sec = document.createElement('div');
+    sec.className = 'nav-section';
+    sec.innerHTML = '<div class="nav-section-label">' + mod + '</div>';
+    modules[mod].forEach(function(t) {
+      var a = document.createElement('a');
+      a.className = 'nav-item' + (t.id === activeTopicId ? ' active' : '');
+      a.href = t.url;
+      a.innerHTML = '<span class="nav-item-icon">' + t.icon + '</span><span class="nav-item-name">' + t.shortName + '</span>';
+      sec.appendChild(a);
+    });
+    c.appendChild(sec);
+  });
 }
