@@ -2338,7 +2338,7 @@
             {
               icon: "⚙️",
               title: "How AI Works — 5 Steps",
-              body: `AI operates through a core cycle: <strong>1. Data Collection</strong> — gathering images, text, or sensor readings. <strong>2. Processing</strong> — sorting data and recognizing patterns. <strong>3. Outcomes</strong> — using patterns to predict results. <strong>4. Adjustments</strong> — learning from failures and repeating under new conditions. <strong>5. Assessments</strong> — continuously improving through feedback loops. Machine Learning (ML) forms the backbone — algorithms learn from data without being explicitly programmed.`,
+              body: `AI operates through a core cycle: <strong>1. Input</strong> — gathering raw data such as images, text, or sensor readings. <strong>2. Processing</strong> — sorting data and recognizing patterns. <strong>3. Outcomes</strong> — using patterns to predict results. <strong>4. Adjustments</strong> — learning from failures and repeating under new conditions. <strong>5. Assessments</strong> — continuously improving through feedback loops. Machine Learning (ML) forms the backbone — algorithms learn from data without being explicitly programmed.`,
               concepts: [
                 {
                   term: "Machine Learning (ML)",
@@ -2366,7 +2366,7 @@
             {
               icon: "🏭",
               title: "Applications Across Industries",
-              body: `AI is transforming: <strong>Healthcare</strong> — early diagnosis via medical image analysis. <strong>Finance</strong> — fraud detection and algorithmic trading. <strong>Education</strong> — personalized learning and smart content. <strong>Transportation</strong> — self-driving vehicles and route optimization. <strong>E-commerce</strong> — recommendation systems and customer engagement.`,
+              body: `AI is transforming: <strong>Healthcare</strong> — early diagnosis via medical image analysis. <strong>Finance</strong> — fraud detection and algorithmic trading. <strong>Education</strong> — personalized learning and smart content. <strong>Transportation</strong> — self-driving vehicles and route optimization. <strong>Retail / E-commerce</strong> — recommendation systems and customer engagement. <strong>Manufacturing</strong> — predictive maintenance and quality control automation.`,
             },
             {
               icon: "📅",
@@ -2411,7 +2411,7 @@
             },
             {
               q: "What are the 5 steps of how AI works?",
-              a: "1. Data Collection → 2. Processing → 3. Outcomes → 4. Adjustments (learning from failures) → 5. Assessments (continuous improvement).",
+              a: "1. Input (gathering data) → 2. Processing (pattern recognition) → 3. Outcomes (predictions) → 4. Adjustments (learning from failures) → 5. Assessments (continuous improvement).",
             },
             {
               q: 'What are "AI Winters"?',
@@ -2837,86 +2837,127 @@
             {
               icon: "📝",
               title: "What is NLP?",
-              body: `Natural Language Processing (NLP) is a field of AI focused on the interaction between computers and human language. The goal is for machines to understand, interpret, and generate meaningful natural language — bridging human communication and computer processing. NLP underpins voice assistants, search engines, chatbots, translation tools, and content moderation.`,
+              body: `Natural Language Processing (NLP) is a branch of AI that gives machines the ability to understand and process human languages — in both text and audio form. It combines computer science, AI, and linguistics to bridge human communication and computer processing. NLP underpins voice assistants (Siri, Alexa), search engines (Google), chatbots, translation tools (Google Translate), text summarization, and content moderation.`,
             },
             {
               icon: "🔧",
               title: "Core Preprocessing Techniques",
-              body: `Text preparation steps: <strong>Tokenization</strong> — splitting text into words/sentences. <strong>Stopword Removal</strong> — removing common words (and, the, is). <strong>Stemming</strong> — reducing to root form (running → run). <strong>Lemmatization</strong> — reducing to dictionary base form. <strong>POS Tagging</strong> — assigning grammatical roles (noun, verb) to each word.`,
+              body: `Raw text must be cleaned and prepared before any NLP model can use it. The standard preprocessing pipeline includes: <strong>Tokenization</strong> — splitting text into words or sentences (always the first step). <strong>Lowercasing</strong> — converting all text to lowercase so "Apple" and "apple" are treated the same. <strong>Stopword Removal</strong> — removing common words (and, the, is) that carry little semantic meaning. <strong>Punctuation Removal</strong> — stripping punctuation marks. <strong>Stemming</strong> — reducing words to root form by cutting suffixes (running → run, fairly → fairli). <strong>Lemmatization</strong> — more accurate than stemming; uses lexical knowledge to find the true dictionary base form (better → good, played → play). <strong>POS Tagging</strong> — assigning grammatical parts of speech (noun, verb, adjective) to each word. <strong>Named Entity Recognition (NER)</strong> — identifying people, organizations, locations, and dates in text.`,
               concepts: [
                 {
                   term: "Tokenization",
-                  def: "Splitting text into smaller units (tokens: words, subwords, sentences) for processing.",
+                  def: "Splitting text into smaller units (tokens: words, subwords, or sentences). Always the first step in any NLP pipeline.",
+                },
+                {
+                  term: "Lowercasing",
+                  def: "Converting all text to lowercase to ensure 'Apple' and 'apple' are treated as the same token.",
                 },
                 {
                   term: "Stemming",
-                  def: "Reducing words to their base/root form by removing suffixes (runs → run, running → run).",
+                  def: "Reducing words to root form by removing suffixes using heuristic rules (running → run). Fast but can produce non-words (fairly → fairli).",
                 },
                 {
                   term: "Lemmatization",
-                  def: "More sophisticated than stemming — reduces words to their dictionary base form considering context (better → good).",
+                  def: "More accurate than stemming — uses lexical knowledge bases to find the true dictionary form (better → good, played → play).",
                 },
                 {
                   term: "POS Tagging",
-                  def: "Assigning grammatical parts of speech (noun, verb, adjective) to each word in a sentence.",
+                  def: "Assigning grammatical parts of speech (noun, verb, adjective) to each word. Example: 'reading' → Verb (VBG).",
                 },
                 {
                   term: "NER (Named Entity Recognition)",
-                  def: "Identifies and classifies named entities (people, organizations, locations, dates) in text.",
+                  def: "Identifies and classifies named entities: People (B-PER), Locations (B-LOC), Organizations (B-ORG), Dates.",
+                },
+              ],
+            },
+            {
+              icon: "📊",
+              title: "Text Representation (Feature Engineering)",
+              body: `NLP models require text to be converted into numerical vectors. Two main approaches: <strong>Traditional (Sparse):</strong> <em>Bag of Words (BoW)</em> — represents text as a vocabulary of unique words with frequency counts; ignores grammar and word order. <em>TF-IDF (Term Frequency–Inverse Document Frequency)</em> — weights words by their importance in a document relative to the entire collection; rare words score higher, common words score lower. <strong>Modern (Dense):</strong> <em>Word Embeddings (Word2Vec, GloVe)</em> — represent words as dense vectors in a lower-dimensional space, capturing semantic meaning (king − man + woman ≈ queen). <em>Contextual Embeddings (BERT, GPT)</em> — dynamic vectors that change based on surrounding context — the same word gets different vectors in different sentences.`,
+              concepts: [
+                {
+                  term: "Bag of Words (BoW)",
+                  def: "Represents text as a collection of word frequencies; simple but ignores word order and context.",
+                },
+                {
+                  term: "TF-IDF",
+                  def: "Term Frequency × Inverse Document Frequency — gives higher weight to words that are frequent in a document but rare across the corpus.",
+                },
+                {
+                  term: "Word Embeddings (Word2Vec, GloVe)",
+                  def: "Dense vector representations that capture semantic similarity — similar words have similar vectors.",
+                },
+                {
+                  term: "Contextual Embeddings (BERT, GPT)",
+                  def: "Dynamic word vectors that change based on context — 'bank' gets different vectors in 'river bank' vs. 'bank account'.",
                 },
               ],
             },
             {
               icon: "🔬",
-              title: "NLP Tasks & Applications",
-              body: `Key NLP tasks: <strong>Text Classification</strong> — categorizing text (spam detection, sentiment). <strong>NER</strong> — identifying entities (Google → Organization; London → Location). <strong>Machine Translation</strong> — translating between languages. <strong>Question Answering</strong> — answering based on context. <strong>Sentiment Analysis</strong> — emotional tone detection. <strong>Speech Recognition</strong> — converting spoken words to text (ASR).`,
+              title: "Core NLP Tasks & Applications",
+              body: `Key NLP tasks: <strong>Text Classification</strong> — categorizing text (spam detection, sentiment analysis, topic labeling). <strong>Named Entity Recognition (NER)</strong> — identifying entities: "John lives in New York" → John: Person, New York: Location. <strong>POS Tagging</strong> — labeling each word's grammatical role. <strong>Dependency Parsing</strong> — analyzing grammatical structure to find relationships between words. <strong>Sentiment Analysis</strong> — detecting emotional tone (positive, negative, neutral). <strong>Machine Translation</strong> — translating between languages (Google Translate). <strong>Question Answering</strong> — answering questions from context. <strong>Text Summarization</strong> — condensing long documents. <strong>Speech Recognition (ASR)</strong> — converting spoken words to text.`,
             },
             {
               icon: "⚡",
               title: "Modern NLP: Transformer Models",
-              body: `The 2017 <strong>Transformer architecture</strong> (Attention Is All You Need) revolutionized NLP. <strong>BERT</strong> — Google's bidirectional model for NER, classification, QA. <strong>GPT</strong> — OpenAI's autoregressive generative models. <strong>T5</strong> — frames all NLP tasks as text-to-text transformations. These models are pre-trained on massive text corpora and fine-tuned for specific tasks.`,
+              body: `The 2017 <strong>Transformer architecture</strong> ("Attention Is All You Need" — Vaswani et al.) revolutionized NLP by processing entire sequences in parallel using <strong>self-attention</strong> rather than step-by-step as RNNs did. Key models: <strong>BERT</strong> (Google) — bidirectional; reads text left-to-right AND right-to-left simultaneously; pre-trained on Masked Language Modeling (MLM) and Next Sentence Prediction (NSP); fine-tuned for NER, classification, QA. <strong>GPT</strong> (OpenAI) — autoregressive; generates text left-to-right; backbone of ChatGPT. <strong>T5</strong> (Google) — frames all NLP tasks as text-to-text transformations. Popular NLP libraries: <strong>NLTK</strong>, <strong>spaCy</strong>, <strong>TextBlob</strong>, <strong>Hugging Face Transformers</strong>, <strong>Gensim</strong>.`,
             },
           ],
           subtopics: [
             {
+              icon: "📊",
+              name: "BoW & TF-IDF — Traditional Text Representation",
+              badge: "Feature Engineering",
+              content: `<strong>Bag of Words (BoW):</strong> Builds a vocabulary of unique words across all documents and represents each document as a vector of word counts. Simple and fast, but ignores word order and context. Example: "I love NLP" → {I:1, love:1, NLP:1, ...}. <strong>TF-IDF</strong> improves on BoW by down-weighting common words: TF (how often a term appears in a document) × IDF (how rare the term is across all documents). Common words like "the" get low IDF; rare domain-specific words get high IDF. Used in: search engines, document classification, information retrieval.<div class="highlight-box">💡 TF-IDF is still widely used for document retrieval and keyword extraction even in the era of Transformers.</div>`,
+            },
+            {
               icon: "🔤",
               name: "BERT — Bidirectional Encoder Representations",
               badge: "Transformer Model",
-              content: `BERT reads text bidirectionally — left and right context simultaneously. Pre-trained on: <strong>Masked Language Modeling (MLM)</strong> — predicting masked words, and <strong>Next Sentence Prediction (NSP)</strong>. Fine-tuned for Sentiment Analysis (classification on [CLS] token), NER (token-level classification), and QA (predicting answer start/end positions). BERT BASE has 12 transformer layers; BERT LARGE has 24.`,
+              content: `BERT reads text bidirectionally — left and right context simultaneously — unlike earlier models (GPT) that read only left-to-right. Pre-trained on two tasks: <strong>Masked Language Modeling (MLM)</strong> — randomly masks words and trains BERT to predict them using both left and right context. <strong>Next Sentence Prediction (NSP)</strong> — trains BERT to predict whether two sentences appear consecutively. After pre-training on massive text corpora, BERT is fine-tuned for: Sentiment Analysis (uses [CLS] token), NER (token-level classification), QA (predicts answer start/end positions). BERT BASE: 12 transformer layers, 110M parameters. BERT LARGE: 24 layers, 340M parameters.`,
             },
             {
               icon: "🗂️",
               name: "NER — Named Entity Recognition",
               badge: "NLP Task",
-              content: `NER classifies named entities: People (B-PER), Locations (B-LOC), Organizations (B-ORG), Dates. Uses <strong>BIO tagging</strong>: B=Beginning, I=Inside, O=Outside. Modern NER uses BERT contextual embeddings that resolve ambiguity (e.g., "Apple" = company vs. fruit based on context). Tools: spaCy, NLTK, Hugging Face Transformers.<div class="highlight-box">Example: "John lives in New York" → John: B-PER, New: B-LOC, York: I-LOC</div>`,
+              content: `NER identifies and classifies named entities in text. Entity types: People (B-PER), Locations (B-LOC), Organizations (B-ORG), Dates (B-DATE). Uses <strong>BIO tagging scheme</strong>: B = Beginning of entity, I = Inside entity, O = Outside (non-entity). Modern NER uses contextual embeddings (BERT) that resolve ambiguity — "Apple" in "Apple released the iPhone" → Organization; "apple" in "I ate an apple" → no entity. Tools: spaCy, NLTK, Hugging Face Transformers.<div class="highlight-box">Example: "John lives in New York" → John: B-PER, New: B-LOC, York: I-LOC</div>`,
             },
             {
-              icon: "🔧",
-              name: "NLP Libraries & Tools",
+              icon: "📚",
+              name: "NLP Libraries",
               badge: "Tools",
-              content: `Key NLP libraries: <strong>NLTK</strong> — foundational Python library for tokenization, stemming, POS tagging. <strong>spaCy</strong> — industrial-strength NLP with fast pre-built pipelines. <strong>Hugging Face Transformers</strong> — the go-to library for BERT, GPT, T5, and hundreds of pre-trained models. <strong>Gensim</strong> — topic modeling and Word2Vec embeddings. <strong>Stanford CoreNLP</strong> — Java-based toolkit for parsing, NER, sentiment, coreference.`,
+              content: `Key NLP libraries: <strong>NLTK (Natural Language Toolkit)</strong> — Python's foundational NLP library; tokenization, stemming, POS tagging, NER, WordNet integration. <strong>spaCy</strong> — industrial-strength NLP; fast, production-ready NER, dependency parsing, POS tagging. <strong>TextBlob</strong> — simple API for sentiment analysis and basic NLP tasks. <strong>Hugging Face Transformers</strong> — the standard library for loading and fine-tuning BERT, GPT, T5, and 50,000+ pre-trained models. <strong>Gensim</strong> — topic modeling (LDA) and word embeddings (Word2Vec, FastText). <strong>OpenNLP / CoreNLP</strong> — Java-based NLP toolkits from Apache and Stanford.`,
             },
           ],
           flashcards: [
             {
               q: "What is NLP?",
-              a: "Natural Language Processing — the field of AI that enables computers to understand, interpret, and generate human language.",
+              a: "A branch of AI that gives machines the ability to understand and process human languages in text and audio form — used in voice assistants, chatbots, translation, and search engines.",
             },
             {
-              q: "What is Tokenization?",
-              a: "Splitting text into smaller units (tokens: words, subwords, or sentences) as the first step in NLP processing.",
+              q: "What is Tokenization and why is it the first step in NLP?",
+              a: "Tokenization splits text into smaller units (tokens: words, subwords, or sentences). It is always the first step because all subsequent NLP steps operate on these tokens.",
             },
             {
               q: "What is the difference between Stemming and Lemmatization?",
-              a: "Stemming crudely cuts word suffixes to a root. Lemmatization more accurately reduces to dictionary base form using linguistic knowledge.",
+              a: "Stemming cuts suffixes using heuristic rules — fast but can produce non-words (fairly → fairli). Lemmatization uses lexical knowledge to find the true dictionary base form (better → good, played → play). Lemmatization is slower but more accurate.",
             },
             {
-              q: "What makes BERT bidirectional?",
-              a: "BERT reads text in both left and right context simultaneously (unlike GPT which is unidirectional). This gives it deeper contextual understanding.",
+              q: "What is the difference between Bag of Words and TF-IDF?",
+              a: "BoW represents text as word frequency counts — simple but treats all words equally. TF-IDF weights words by frequency in a document × rarity across the corpus — rare, important words score higher; common words score lower.",
             },
             {
-              q: "What is Named Entity Recognition (NER)?",
-              a: "An NLP task that identifies and classifies named entities in text: people, organizations, locations, dates, etc.",
+              q: "What makes BERT bidirectional and what tasks is it used for?",
+              a: "BERT reads text left-to-right AND right-to-left simultaneously. Pre-trained on MLM and NSP. Fine-tuned for NER (token classification), Sentiment Analysis ([CLS] token), and QA (start/end position prediction).",
+            },
+            {
+              q: "What is Named Entity Recognition (NER) and what is BIO tagging?",
+              a: "NER identifies named entities in text (people, locations, organizations, dates). BIO tagging: B=Beginning of entity, I=Inside entity, O=Outside (not an entity). Example: 'New York' → New: B-LOC, York: I-LOC.",
+            },
+            {
+              q: "Name four popular NLP libraries.",
+              a: "NLTK (foundational Python NLP), spaCy (production-ready, fast), Hugging Face Transformers (BERT/GPT fine-tuning), Gensim (topic modeling and Word2Vec).",
             },
           ],
           questions: [
@@ -2930,55 +2971,79 @@
               ],
               answer: 1,
               explain:
-                "NLP stands for Natural Language Processing — a field of AI focused on how computers understand, interpret, and generate human language.",
+                "NLP stands for Natural Language Processing — a branch of AI that gives machines the ability to understand and process human languages in text and audio form.",
             },
             {
-              q: "Which is a common preprocessing step in NLP?",
+              q: "Which of the following is always the FIRST step in an NLP preprocessing pipeline?",
               options: [
-                "Pixel filtering",
-                "Tokenization — splitting text into words or sentences",
-                "Voltage normalization",
-                "Model deployment",
-              ],
-              answer: 1,
-              explain:
-                "Tokenization is a fundamental NLP preprocessing step — it splits text into smaller units like words or sentences for further processing.",
-            },
-            {
-              q: "What makes BERT different from earlier NLP models?",
-              options: [
-                "It is a traditional rule-based system",
-                "It reads text bidirectionally for richer contextual understanding",
-                "It can only process English text",
-                "It requires no training data",
-              ],
-              answer: 1,
-              explain:
-                "BERT (Bidirectional Encoder Representations from Transformers) reads text in both directions simultaneously — giving it deeper contextual understanding than previous unidirectional models.",
-            },
-            {
-              q: "Sentiment Analysis in NLP is used to:",
-              options: [
-                "Detect malware in code",
-                "Identify emotions or opinions expressed in text (positive/negative/neutral)",
-                "Convert speech to text only",
-                "Sort numerical data",
-              ],
-              answer: 1,
-              explain:
-                "Sentiment Analysis determines whether text expresses positive, negative, or neutral emotion — used for product reviews, social media monitoring, and brand analysis.",
-            },
-            {
-              q: "Which NLP library provides tools for tokenization, stemming, and POS tagging in Python?",
-              options: [
-                "Pandas",
-                "Scikit-learn",
-                "NLTK (Natural Language Toolkit)",
-                "NumPy",
+                "Stemming",
+                "POS Tagging",
+                "Tokenization",
+                "Stopword Removal",
               ],
               answer: 2,
               explain:
-                "NLTK (Natural Language Toolkit) is a popular open-source Python library that provides tools for NLP tasks such as tokenization, stemming, and part-of-speech tagging.",
+                "Tokenization — splitting text into individual tokens (words or sentences) — is always the first step. All subsequent preprocessing steps operate on these tokens.",
+            },
+            {
+              q: "What is the key difference between Stemming and Lemmatization?",
+              options: [
+                "Stemming is slower and more accurate",
+                "Stemming cuts suffixes with rules; Lemmatization uses lexical knowledge for the true dictionary base form",
+                "Lemmatization removes stop words; Stemming adds suffixes",
+                "They are identical processes",
+              ],
+              answer: 1,
+              explain:
+                "Stemming uses heuristic rules to cut suffixes — fast but can produce non-words (fairly → fairli). Lemmatization uses lexical knowledge bases to find the true dictionary form (better → good), making it more accurate but slower.",
+            },
+            {
+              q: "TF-IDF improves on Bag of Words by:",
+              options: [
+                "Using neural networks to represent words",
+                "Adding word order to the representation",
+                "Weighting words by their frequency in a document relative to their rarity across all documents",
+                "Removing all punctuation from text",
+              ],
+              answer: 2,
+              explain:
+                "TF-IDF (Term Frequency × Inverse Document Frequency) weights words by how often they appear in a document multiplied by how rare they are across the corpus — giving higher scores to important, rare words and lower scores to common words like 'the'.",
+            },
+            {
+              q: "BERT differs from GPT in that BERT is:",
+              options: [
+                "Unidirectional — reads left to right only",
+                "Bidirectional — reads both left and right context simultaneously",
+                "Only used for image generation",
+                "Trained only on code data",
+              ],
+              answer: 1,
+              explain:
+                "BERT is bidirectional — it reads text in both directions simultaneously using Masked Language Modeling (MLM), giving it richer contextual understanding. GPT is autoregressive and reads only left-to-right.",
+            },
+            {
+              q: "In NER with BIO tagging, what does 'B' stand for?",
+              options: [
+                "Base form of a word",
+                "Binary classification label",
+                "Beginning of a named entity",
+                "Backward chaining token",
+              ],
+              answer: 2,
+              explain:
+                "BIO tagging: B = Beginning of a named entity, I = Inside (continuation) of an entity, O = Outside (not an entity). Example: 'New York' → New: B-LOC, York: I-LOC.",
+            },
+            {
+              q: "Which NLP library is best known for production-ready, fast Named Entity Recognition and dependency parsing?",
+              options: [
+                "NLTK",
+                "Gensim",
+                "spaCy",
+                "TextBlob",
+              ],
+              answer: 2,
+              explain:
+                "spaCy is the industry-standard library for production-ready NLP — it provides fast, accurate NER, POS tagging, and dependency parsing. NLTK is more educational, Gensim focuses on topic modeling, and TextBlob is for simple tasks.",
             },
           ],
           links: [
@@ -3001,80 +3066,117 @@
             {
               icon: "🏥",
               title: "What are Expert Systems?",
-              body: `Expert Systems are AI programs designed to simulate the decision-making abilities of a <strong>human expert</strong> in a specific domain. They encode specialist knowledge as <em>if-then rules</em> and use an inference engine to apply those rules to new situations. Classic examples: <strong>MYCIN</strong> (medical diagnosis) and <strong>XCON</strong> (computer configuration). They were a major AI achievement of the 1970s–1990s.`,
+              body: `Expert Systems are AI programs designed to simulate the decision-making abilities of a <strong>human expert</strong> in a specific domain. They encode specialist knowledge as <em>if-then rules</em> and use an inference engine to apply those rules to new situations. Expert systems were first developed in the <strong>1970s</strong> by computer scientist <strong>Edward Feigenbaum</strong> and others. A famous early example is <strong>MYCIN</strong> — developed at Stanford in the 1970s to diagnose bacterial infections and recommend treatments, though it was never deployed clinically due to ethical concerns. Another is <strong>XCON (R1)</strong> — used by DEC to configure computer orders. They were among the first truly successful forms of AI software and a major AI milestone of the 1970s–1990s.`,
             },
             {
               icon: "🏗️",
-              title: "Core Components",
-              body: `Two core components: <strong>1. Knowledge Base</strong> — stores domain-specific knowledge as facts and if-then rules (e.g., "IF fever > 38.5°C AND cough THEN possible influenza"). Built by Knowledge Engineers who interview domain experts. <strong>2. Inference Engine</strong> — applies rules to user input using <em>Forward Chaining</em> (data-driven, from facts to conclusion) or <em>Backward Chaining</em> (goal-driven, from hypothesis backward to facts).`,
+              title: "Five Core Components",
+              body: `An expert system is made of five connected parts that work together: <strong>1. Knowledge Base</strong> — the core repository storing domain-specific knowledge as facts and if-then rules (e.g., "IF fever > 38.5°C AND cough THEN possible influenza"). Built by knowledge engineers interviewing domain experts. <strong>2. Inference Engine</strong> — the brain of the system; applies rules to user inputs using Forward Chaining or Backward Chaining to derive conclusions or recommendations. <strong>3. User Interface</strong> — bridges interaction between the user and the system; designed to be user-friendly so even non-experts can operate it efficiently and receive advice. <strong>4. Explanation Module</strong> — provides a clear, step-by-step explanation of the system's reasoning — answering "Why did it reach this conclusion?" This transparency is a key advantage over black-box ML. <strong>5. Knowledge Acquisition Module</strong> — allows the knowledge base to be updated and expanded with recent data and trends, keeping the system's expertise current.`,
               concepts: [
                 {
                   term: "Knowledge Base",
-                  def: "Stores domain expertise as facts and if-then rules.",
+                  def: "Stores all domain expertise as facts and if-then rules. Built by knowledge engineers interviewing domain experts.",
                 },
                 {
                   term: "Inference Engine",
-                  def: "Applies knowledge base rules to user inputs to derive conclusions.",
+                  def: "The brain — applies rules from the knowledge base to inputs using Forward or Backward Chaining to reach conclusions.",
                 },
                 {
                   term: "Forward Chaining",
-                  def: "Data-driven reasoning — starts from known facts and applies rules until a conclusion is reached.",
+                  def: "Data-driven reasoning — starts from known facts and applies rules forward until a conclusion is reached. Answers: 'What can I conclude from these facts?'",
                 },
                 {
                   term: "Backward Chaining",
-                  def: "Goal-driven reasoning — starts from a hypothesis and works backward to verify it against facts.",
+                  def: "Goal-driven reasoning — starts from a hypothesis (goal) and works backward to find facts that support it. Answers: 'Why did this happen?' or 'Is this diagnosis supported?'",
                 },
                 {
-                  term: "Knowledge Engineer",
-                  def: "Specialist who translates domain expert knowledge into formal rules for the knowledge base.",
+                  term: "User Interface",
+                  def: "The interaction layer — makes the system accessible to non-experts who need expert-level guidance.",
+                },
+                {
+                  term: "Explanation Module",
+                  def: "Explains the system's step-by-step reasoning — providing transparency that black-box ML models lack.",
+                },
+                {
+                  term: "Knowledge Acquisition Module",
+                  def: "Mechanism for updating and expanding the knowledge base — ensuring the system stays current with domain developments.",
                 },
               ],
             },
             {
+              icon: "🗂️",
+              title: "Five Types of Expert Systems",
+              body: `There are five main types: <strong>1. Rule-Based Systems</strong> — the most common; use IF-THEN rules to derive conclusions. Simple to construct but time-consuming to search. Example: medical diagnosis system with symptom rules. <strong>2. Frame-Based Systems</strong> — store knowledge in structured units called <em>frames</em> (similar to objects in programming). Each frame has slots (attributes) with values — e.g., a frame representing a Car has slots for Color, Make, Model, Year. Useful for representing complex objects and hierarchical relationships. <strong>3. Fuzzy Expert Systems</strong> — handle uncertainty and vagueness using fuzzy logic; values between 0 and 1 rather than strict true/false. Example: a weather prediction system giving "0.7 chance of rain" rather than yes/no. <strong>4. Neural Expert Systems</strong> — combine traditional expert systems with artificial neural networks; learn from data for tasks like fraud detection and predictive maintenance. <strong>5. Neuro-Fuzzy Expert Systems</strong> — combine fuzzy logic with neural networks; can reason with uncertainty AND learn from data; can adapt and tune their own rules unlike standard fuzzy systems.`,
+            },
+            {
               icon: "🌐",
               title: "Applications",
-              body: `Used in: <strong>Medical Diagnosis</strong> — MYCIN; modern radiology AI. <strong>Financial Planning</strong> — loan approval, credit risk, fraud detection rules. <strong>Customer Service</strong> — rule-based chatbots and troubleshooting. <strong>Legal Research</strong> — retrieving relevant case law. <strong>Engineering</strong> — design and configuration (XCON).`,
+              body: `Used in: <strong>Medical Diagnosis</strong> — MYCIN diagnosed bacterial infections; modern radiology AI flags tumors. <strong>Financial Planning</strong> — loan approval, credit risk scoring, fraud detection rule engines. <strong>Customer Service</strong> — rule-based chatbots and troubleshooting systems. <strong>Legal Research</strong> — retrieving and applying relevant case law. <strong>Engineering</strong> — design and configuration (XCON configured DEC computer orders). <strong>Industrial Control</strong> — fuzzy logic systems control washing machines, air conditioners, and chemical processes.`,
             },
             {
               icon: "⚖️",
               title: "Advantages & Limitations",
-              body: `<strong>Advantages:</strong> Consistent decisions; 24/7 availability; documented knowledge; no human fatigue. <strong>Limitations:</strong> Cannot learn from new data (unlike ML); knowledge acquisition is labor-intensive; brittle outside predefined scope; difficult to maintain as domain knowledge evolves.`,
+              body: `<strong>Advantages:</strong> Consistent, repeatable decisions; 24/7 availability; preserves expertise digitally even after experts retire; transparent reasoning through the Explanation Module; better decision support in well-defined domains. <strong>Limitations:</strong> Cannot learn from new data (unlike ML) — only knows what was manually programmed; knowledge acquisition is labor-intensive and a bottleneck; brittle outside predefined scope; difficult and expensive to maintain as domain knowledge evolves.`,
             },
           ],
           subtopics: [
             {
-              icon: "🔗",
-              name: "Expert Systems vs. Machine Learning",
-              badge: "Comparison",
-              content: `Expert Systems encode human-crafted rules explicitly — they don't learn. ML systems learn rules implicitly from data. Modern AI often combines both: a neural network makes a diagnosis, while a rule-based system ensures clinical safety constraints. Expert Systems excel where rules are well-defined and explainability is paramount — unlike black-box neural networks.`,
+              icon: "🔄",
+              name: "Forward vs. Backward Chaining — When to Use Each",
+              badge: "Inference Strategies",
+              content: `<strong>Forward Chaining</strong> (data-driven): starts with all available facts and applies rules to generate new facts until a goal is reached. Best used when: all input data is known upfront, and the system needs to determine what conclusions can be drawn. Example: "Patient has fever AND cough → diagnose respiratory infection." Used in planning and monitoring systems. <strong>Backward Chaining</strong> (goal-driven): starts with a goal (hypothesis) and works backward to find facts that support it. Best used when: there is a specific question to answer and you want to verify supporting evidence. Example: "Goal: diagnose diabetes → check for high blood sugar AND frequent urination." Used in diagnosis and classification systems. <strong>Hybrid Systems</strong> combine both — forward chaining for data exploration and backward chaining for verification.`,
+            },
+            {
+              icon: "🗂️",
+              name: "Frame-Based Systems — Knowledge Representation",
+              badge: "System Type",
+              content: `Frame-based expert systems represent knowledge as structured units called <strong>frames</strong> — similar to objects in object-oriented programming. Each frame represents a concept (e.g., Car, Disease, Employee) and contains <em>slots</em> (attributes) with values. Example frame for "Car": { Make: Toyota, Model: Corolla, Year: 2023, Color: Blue }. Frames can inherit properties from parent frames (hierarchical representation). This makes them useful for domains with complex, interrelated entities — unlike rule-based systems which are better for procedural reasoning. Frame-based systems are commonly used in natural language processing and knowledge representation tasks.`,
             },
             {
               icon: "🌀",
-              name: "Fuzzy Logic in Expert Systems",
-              badge: "Extension",
-              content: `Traditional Expert Systems use crisp binary rules (true/false). <strong>Fuzzy Logic</strong> extends this with degrees of truth (e.g., temperature is "slightly high"). This handles uncertainty better, mirroring human reasoning. Applications: industrial control systems, medical diagnosis with ambiguous symptoms, and financial risk assessment.`,
+              name: "Fuzzy, Neural & Neuro-Fuzzy Expert Systems",
+              badge: "Advanced Types",
+              content: `<strong>Fuzzy Expert Systems</strong> use fuzzy logic rather than crisp true/false — inputs can have partial membership (e.g., temperature is "slightly high" = 0.7 truth value). The four components of a fuzzy system: Fuzzification (crisp → fuzzy), Rule Base, Inference Engine, Defuzzification (fuzzy → crisp output). Applications: washing machine load control, air conditioning, medical diagnosis with vague symptoms. <strong>Neural Expert Systems</strong> replace the traditional knowledge base with an artificial neural network — knowledge is stored as weights. Used where conventional rules fail: image recognition, speech, fraud detection. <strong>Neuro-Fuzzy Systems</strong> combine both — can reason with uncertainty (fuzzy) AND learn from data (neural). Unlike standard fuzzy systems where rules are hand-defined, neuro-fuzzy systems can adapt and tune their own rules automatically.`,
+            },
+            {
+              icon: "🔗",
+              name: "Expert Systems vs. Machine Learning",
+              badge: "Comparison",
+              content: `<strong>Expert Systems</strong> encode human-crafted rules explicitly — they reason transparently but cannot learn or update without manual intervention. <strong>Machine Learning</strong> learns rules implicitly from data — highly flexible but often a "black box." Key differences: Expert Systems require knowledge engineers; ML requires labeled training data. Expert Systems are explainable; most ML is not. Expert Systems are brittle at domain boundaries; ML generalizes better. <strong>Modern hybrid AI</strong> combines both: a neural network flags anomalies, while a rule-based expert system enforces clinical or legal safety constraints — giving both accuracy and explainability.<div class="highlight-box">💡 Expert Systems excel where rules are well-defined, explainability is required by law or ethics (medical, legal, finance), and labeled training data is scarce.</div>`,
             },
           ],
           flashcards: [
             {
               q: "What is an Expert System?",
-              a: "An AI program that simulates human expert decision-making using a knowledge base of if-then rules and an inference engine.",
+              a: "An AI program that simulates the decision-making abilities of a human expert using a knowledge base of if-then rules and an inference engine. First developed in the 1970s by Edward Feigenbaum.",
             },
             {
-              q: "What are the two core components of an Expert System?",
-              a: "Knowledge Base (rules and facts) and Inference Engine (applies rules to derive conclusions).",
+              q: "What are the five core components of an Expert System?",
+              a: "1. Knowledge Base (rules and facts). 2. Inference Engine (applies rules). 3. User Interface (user interaction layer). 4. Explanation Module (explains reasoning step-by-step). 5. Knowledge Acquisition Module (updates the knowledge base).",
             },
             {
               q: "What is Forward Chaining?",
-              a: "Data-driven reasoning — starts from known facts and applies rules forward until reaching a conclusion.",
+              a: "Data-driven reasoning — starts from known facts and applies rules forward until a conclusion is reached. Answers: 'What can I conclude from these facts?'",
             },
             {
               q: "What is Backward Chaining?",
-              a: "Goal-driven reasoning — starts from a hypothesis and works backward to check if supporting facts exist.",
+              a: "Goal-driven reasoning — starts from a hypothesis and works backward to find supporting facts. Answers: 'Why did this happen?' or 'Is this diagnosis supported?'",
+            },
+            {
+              q: "What are the five types of Expert Systems?",
+              a: "1. Rule-Based (IF-THEN rules). 2. Frame-Based (structured frames with slots). 3. Fuzzy (handles uncertainty, degrees of truth 0–1). 4. Neural (uses ANNs for learning). 5. Neuro-Fuzzy (combines fuzzy logic + neural networks for both uncertainty and learning).",
+            },
+            {
+              q: "What does the Explanation Module do in an Expert System?",
+              a: "Provides a clear, step-by-step explanation of the system's reasoning — answering why it reached a particular conclusion. This transparency is a key advantage over black-box ML models.",
+            },
+            {
+              q: "What was MYCIN?",
+              a: "An expert system developed at Stanford in the 1970s to diagnose bacterial infections and recommend treatments. Though never deployed clinically, it proved computers could assist with medical diagnosis.",
             },
             {
               q: "What is a major limitation of Expert Systems compared to ML?",
-              a: "Expert Systems cannot learn from new data — they only know what was manually programmed into the knowledge base.",
+              a: "Expert Systems cannot learn from new data — they only know what was manually programmed. Knowledge acquisition is slow, labor-intensive, and they are brittle outside their predefined scope.",
             },
           ],
           questions: [
@@ -3082,49 +3184,97 @@
               q: "What is an Expert System?",
               options: [
                 "A computer built by experts",
-                "An AI program that simulates the decision-making ability of human experts using rules and knowledge",
+                "An AI program that simulates the decision-making ability of human experts using a knowledge base and inference engine",
                 "A search engine for technical manuals",
-                "A type of neural network",
+                "A type of deep learning neural network",
               ],
               answer: 1,
               explain:
-                "Expert Systems are AI programs that simulate the decision-making abilities of a human expert, using a knowledge base and inference engine with if-then rules.",
+                "Expert Systems are AI programs that simulate the decision-making abilities of a human expert — using a knowledge base of if-then rules and an inference engine to derive conclusions. First developed in the 1970s by Edward Feigenbaum.",
             },
             {
-              q: "What two core components make up an Expert System?",
+              q: "An Expert System has five components. Which of these is NOT one of them?",
               options: [
-                "Mouse and Keyboard",
-                "Knowledge Base and Inference Engine",
-                "RAM and ROM",
-                "GPU and CPU",
+                "Knowledge Base",
+                "Inference Engine",
+                "Explanation Module",
+                "Training Dataset",
               ],
-              answer: 1,
+              answer: 3,
               explain:
-                "An Expert System is built from a Knowledge Base (human expertise encoded as rules) and an Inference Engine (logical processing to reach conclusions).",
+                "The five components are: Knowledge Base, Inference Engine, User Interface, Explanation Module, and Knowledge Acquisition Module. Expert Systems do NOT use training datasets — they use manually coded rules, unlike ML systems.",
             },
             {
               q: "What is Forward Chaining in Expert Systems?",
               options: [
-                "Reasoning backward from a goal",
-                "Data-driven reasoning that starts from facts and works toward a conclusion",
+                "Goal-driven reasoning that starts from a hypothesis",
+                "Data-driven reasoning that starts from known facts and works toward a conclusion",
                 "A technique to compress knowledge bases",
                 "A method for training ML models",
               ],
               answer: 1,
               explain:
-                "Forward Chaining is data-driven reasoning — it starts from known facts and applies rules forward until a conclusion is reached.",
+                "Forward Chaining is data-driven — it starts from known facts and applies rules forward until a conclusion is reached. It answers: 'What can I conclude from these facts?' Backward Chaining is the opposite: goal-driven.",
             },
             {
-              q: "What is a major limitation of Expert Systems?",
+              q: "What does Backward Chaining do in an Expert System?",
               options: [
-                "They run too slowly",
-                "They cannot learn from new data — only know what was manually programmed",
-                "They require internet connection",
-                "They only work in English",
+                "Runs rules in reverse alphabetical order",
+                "Starts from a goal and works backward to find supporting facts",
+                "Compresses the knowledge base for faster queries",
+                "Converts fuzzy logic back to crisp values",
               ],
               answer: 1,
               explain:
-                "Expert Systems cannot learn from new data — their knowledge is entirely determined by what was manually programmed into the knowledge base by knowledge engineers.",
+                "Backward Chaining is goal-driven — it starts from a hypothesis (goal) and works backward to verify it against facts. It answers: 'Why did this happen?' or 'Is this diagnosis supported?'",
+            },
+            {
+              q: "A Frame-Based Expert System differs from a Rule-Based one in that:",
+              options: [
+                "It uses neural networks instead of rules",
+                "It represents knowledge as structured frames with slots and values, rather than IF-THEN rules",
+                "It only handles numerical data",
+                "It cannot reason about uncertainty",
+              ],
+              answer: 1,
+              explain:
+                "Frame-based systems store knowledge as structured frames (like objects with attributes/slots). This is better for representing complex, hierarchical entities (e.g., Car, Disease) than IF-THEN rules, which are better for procedural reasoning.",
+            },
+            {
+              q: "What is the role of the Explanation Module in an Expert System?",
+              options: [
+                "To train the knowledge base from data",
+                "To provide step-by-step reasoning for how the system reached its conclusion",
+                "To handle user login and authentication",
+                "To compress the inference engine",
+              ],
+              answer: 1,
+              explain:
+                "The Explanation Module explains why the system reached a particular conclusion — step by step. This transparency is a key advantage of Expert Systems over black-box ML models, especially in medical, legal, and financial applications.",
+            },
+            {
+              q: "A Neuro-Fuzzy Expert System combines:",
+              options: [
+                "Knowledge bases and training datasets",
+                "Fuzzy logic and neural networks — enabling both uncertainty reasoning and learning from data",
+                "Forward and backward chaining only",
+                "Rule-based and frame-based representations only",
+              ],
+              answer: 1,
+              explain:
+                "Neuro-Fuzzy systems combine fuzzy logic (handles uncertainty with degrees of truth 0–1) and neural networks (learn from data). Unlike standard fuzzy systems where rules are hand-defined, neuro-fuzzy systems can adapt and tune their own rules.",
+            },
+            {
+              q: "What is a major limitation of Expert Systems compared to ML?",
+              options: [
+                "They run too slowly for real-time use",
+                "They cannot learn from new data — only know what was manually programmed",
+                "They require internet connection to function",
+                "They only work for image recognition tasks",
+              ],
+              answer: 1,
+              explain:
+                "Expert Systems cannot learn from new data — their knowledge is entirely determined by what was manually programmed. Knowledge acquisition is labor-intensive, and they are brittle outside their predefined domain.",
             },
           ],
           links: ["what-is-ai", "narrow-ai", "ai-models"],
@@ -3530,13 +3680,8 @@
           sections: [
             {
               icon: "🗺️",
-              title: "Model Selection Framework",
-              body: `Choosing the right AI model depends on: <strong>Data type</strong> (image, text, time series, tabular), <strong>Task type</strong> (classification, generation, clustering, regression), <strong>Computational resources</strong>, and <strong>Labeled data availability</strong>. Traditional models work well for structured data; deep learning excels for unstructured data at scale.`,
-            },
-            {
-              icon: "🖼️",
-              title: "CNNs — Convolutional Neural Networks",
-              body: `Best for: <strong>image and video processing</strong>. CNNs use convolutional filters that slide across images to detect local features (edges, textures, objects). Multiple layers hierarchically combine simple features into complex representations. Applications: image classification (ImageNet), object detection (YOLO), medical imaging, facial recognition.`,
+              title: "How to Choose the Right AI Model",
+              body: `Selecting the right model is one of the most important decisions in AI development. The key decision factors are: <strong>Data type</strong> — is your data images, text, tabular numbers, time series? <strong>Task type</strong> — classification, regression, generation, clustering? <strong>Data size</strong> — small datasets favor traditional ML; large datasets favor deep learning. <strong>Interpretability needs</strong> — if you must explain decisions (healthcare, finance, law), linear models and decision trees are preferred. <strong>Computational resources</strong> — deep learning requires significant compute; traditional ML is lightweight. General rule: for structured/tabular data, tree-based methods (XGBoost, Random Forest) often outperform deep learning. For unstructured data (images, text, audio), deep learning is dominant.`,
               concepts: [
                 {
                   term: "CNN (Convolutional Neural Network)",
@@ -3554,17 +3699,30 @@
                   term: "GAN (Generative Adversarial Network)",
                   def: "Best for generating synthetic data — generator creates samples; discriminator evaluates them.",
                 },
+                {
+                  term: "VAE (Variational Autoencoder)",
+                  def: "Generative model that learns a probabilistic latent space — used for data generation and anomaly detection.",
+                },
+                {
+                  term: "XGBoost / Random Forest",
+                  def: "Tree-based ensemble models — best for structured/tabular data; often outperform deep learning on such tasks.",
+                },
               ],
             },
             {
-              icon: "📈",
-              title: "RNNs, LSTMs — Sequential Models",
-              body: `Best for: <strong>sequential data</strong> — time series forecasting, speech recognition, natural language. RNNs maintain a hidden state capturing sequential context. <strong>LSTMs</strong> (Long Short-Term Memory) solve the vanishing gradient problem with gated memory cells. Applications: stock price prediction, machine translation, text generation.`,
+              icon: "📋",
+              title: "Traditional ML Models — When to Use",
+              body: `When to use traditional ML: labeled data is available, dataset is structured/tabular, interpretability matters, and compute is limited. Key models: <strong>Linear Regression</strong> — use when predicting continuous numeric values with a roughly linear relationship (e.g., real estate pricing, salary prediction, temperature forecasting). Simple, fast, and highly interpretable — coefficients show exactly how each feature influences the output. <strong>Logistic Regression</strong> — use for binary or multi-class classification when the relationship is roughly linear and you need probability outputs (e.g., disease diagnosis: yes/no, loan approval). <strong>Decision Trees</strong> — use when you need transparent, human-readable rules; handles both classification and regression; robust to missing data and mixed feature types (e.g., customer churn, loan risk). <strong>Random Forest</strong> — use when accuracy matters more than interpretability; combines many decision trees to reduce overfitting; handles high-dimensional data well. <strong>SVM (Support Vector Machine)</strong> — use for classification in high-dimensional spaces (e.g., text classification, image recognition on small datasets). <strong>K-Nearest Neighbors (KNN)</strong> — use for simple classification tasks where local patterns matter.`,
             },
             {
-              icon: "⚡",
-              title: "Transformers & GANs",
-              body: `<strong>Transformers</strong> process entire sequences simultaneously using self-attention — enabling massive parallelization and long-range dependency capture. They form the backbone of BERT, GPT, ViT. <strong>GANs</strong> use a Generator (creates synthetic data) vs. Discriminator (detects fakes) in adversarial training — used for image synthesis, data augmentation.`,
+              icon: "🖼️",
+              title: "Deep Learning Models — When to Use",
+              body: `When to use deep learning: unstructured data (images, text, audio), very large datasets, and sufficient compute. <strong>CNNs (Convolutional Neural Networks)</strong> — use for image and video tasks. Sliding convolutional filters detect local features (edges → textures → objects) hierarchically. Applications: image classification (ImageNet), object detection (YOLO), medical imaging, facial recognition. <strong>RNNs / LSTMs</strong> — use for sequential data. RNNs maintain a hidden state; LSTMs solve the vanishing gradient problem with gated memory cells. Applications: time series forecasting, stock price prediction, machine translation. <strong>Transformers</strong> — use for NLP and multimodal tasks. Process entire sequences in parallel using self-attention — capturing long-range dependencies. Backbone of BERT, GPT, ViT. <strong>Autoencoders</strong> — use for dimensionality reduction, feature learning, anomaly detection.`,
+            },
+            {
+              icon: "✨",
+              title: "Generative Models & Hybrid Models",
+              body: `<strong>Generative Models</strong> — use when you need to create, augment, or synthesize new data. <em>GANs (Generative Adversarial Networks)</em>: Generator creates synthetic samples; Discriminator evaluates them as real or fake — adversarial training drives both to improve. Applications: image generation (StyleGAN), data augmentation, deepfake detection. <em>VAEs (Variational Autoencoders)</em>: Learn a probabilistic latent representation — generate new samples by sampling the latent space. Applications: synthetic data generation, anomaly detection, drug discovery. <strong>NLP Models</strong> — BERT for classification/NER/QA; GPT family for text generation; T5 for text-to-text tasks. <strong>Hybrid Models</strong> — combine multiple architectures to leverage strengths. Example: CNN + RNN for video captioning (CNN processes frames, RNN sequences them); ensemble methods (XGBoost + Neural Net) for fraud detection. Use hybrids when: problem requires both visual and sequential reasoning, or when robustness beyond a single model is needed.`,
             },
           ],
           subtopics: [
@@ -3572,76 +3730,124 @@
               icon: "🔄",
               name: "Model Selection Guide by Task",
               badge: "Quick Reference",
-              content: `<ul class="sub-list"><li><strong>Image Classification:</strong> CNN (ResNet, EfficientNet, ViT)</li><li><strong>Object Detection:</strong> YOLO, Faster R-CNN</li><li><strong>Text Classification/NER:</strong> BERT, DistilBERT</li><li><strong>Text Generation:</strong> GPT-3/4, LLaMA, Mistral</li><li><strong>Time Series:</strong> LSTM, Temporal Fusion Transformer</li><li><strong>Image Generation:</strong> Stable Diffusion, StyleGAN</li><li><strong>Tabular Data:</strong> XGBoost, LightGBM, Random Forest</li></ul><div class="highlight-box">💡 Rule of thumb: For structured/tabular data, tree-based methods (XGBoost) often outperform deep learning. For unstructured data, deep learning is dominant.</div>`,
+              content: `<ul class="sub-list"><li><strong>Predict continuous value (house price, salary):</strong> Linear Regression</li><li><strong>Binary/multi-class classification (spam, loan approval):</strong> Logistic Regression, SVM, Decision Tree</li><li><strong>Structured/tabular data (transactions, HR data):</strong> XGBoost, LightGBM, Random Forest</li><li><strong>Image Classification:</strong> CNN (ResNet, EfficientNet, ViT)</li><li><strong>Object Detection:</strong> YOLO, Faster R-CNN</li><li><strong>Text Classification/NER:</strong> BERT, DistilBERT</li><li><strong>Text Generation:</strong> GPT-3/4, LLaMA, Mistral</li><li><strong>Time Series Forecasting:</strong> LSTM, Temporal Fusion Transformer</li><li><strong>Image/Data Generation:</strong> GAN (StyleGAN), Stable Diffusion</li><li><strong>Anomaly Detection / Latent Space:</strong> VAE (Variational Autoencoder)</li><li><strong>Multi-modal (vision + language):</strong> Hybrid CNN + RNN, or Transformer-based (CLIP, Flamingo)</li></ul><div class="highlight-box">💡 Rule of thumb: For structured/tabular data, tree-based methods (XGBoost) often outperform deep learning. For unstructured data (images, text, audio), deep learning dominates.</div>`,
             },
             {
               icon: "🏗️",
               name: "Foundation Models & Transfer Learning",
               badge: "Modern Approach",
-              content: `Foundation Models are large models pre-trained on massive datasets (internet-scale text, image-text pairs) that can be fine-tuned for many downstream tasks. Examples: GPT-4, BERT, CLIP, SAM. This paradigm has largely replaced training specialized models from scratch — dramatically lowering compute and data requirements for new AI applications.`,
+              content: `<strong>Foundation Models</strong> are large models pre-trained on massive internet-scale datasets (text, image-text pairs) that can be fine-tuned for many downstream tasks. Examples: GPT-4 (text generation), BERT (NLP understanding), CLIP (image-text matching), SAM (image segmentation). This paradigm has largely replaced training specialized models from scratch — dramatically reducing compute and data requirements. <strong>Transfer Learning</strong> is the mechanism: take a pre-trained foundation model and fine-tune on a smaller domain-specific dataset (e.g., fine-tuning BERT on legal documents). For most real-world tasks, fine-tuning a foundation model outperforms training from scratch, even with much less data.<div class="highlight-box">💡 With parameter-efficient fine-tuning (LoRA, QLoRA), foundation models can be adapted with minimal GPU memory — making AI accessible even on consumer hardware.</div>`,
             },
           ],
           flashcards: [
             {
+              q: "What are the key factors for choosing the right AI model?",
+              a: "Data type (image, text, tabular, time series), task type (classification, regression, generation, clustering), data size, interpretability needs, and available computational resources.",
+            },
+            {
+              q: "When should you use Linear Regression vs. Logistic Regression?",
+              a: "Linear Regression: predicting continuous numeric values (house price, salary). Logistic Regression: binary or multi-class classification with probability outputs (disease diagnosis, loan approval).",
+            },
+            {
+              q: "When should you use Decision Trees vs. Random Forest?",
+              a: "Decision Trees: when you need transparent, human-readable rules and interpretability. Random Forest: when accuracy matters more than interpretability — combines many trees to reduce overfitting.",
+            },
+            {
               q: "Which model architecture is best for image classification?",
-              a: "Convolutional Neural Networks (CNNs) — they use sliding filter kernels to detect hierarchical image features. Modern variants: ResNet, EfficientNet, ViT.",
+              a: "Convolutional Neural Networks (CNNs) — sliding filter kernels detect hierarchical visual features (edges → textures → objects). Modern variants: ResNet, EfficientNet, ViT.",
             },
             {
               q: "When should you use an LSTM over a standard RNN?",
-              a: "For long sequences with long-term dependencies — LSTMs use gated memory cells to selectively retain or forget information, solving the vanishing gradient problem.",
+              a: "For long sequences with long-term dependencies — LSTMs use gated memory cells to selectively retain or forget information, solving the vanishing gradient problem that plagues standard RNNs.",
             },
             {
               q: "What makes Transformers better than RNNs for NLP?",
-              a: "Transformers process entire sequences simultaneously using self-attention, capturing long-range dependencies and enabling massive parallelization.",
+              a: "Transformers process entire sequences simultaneously using self-attention — capturing long-range dependencies and enabling massive parallelization. RNNs process step-by-step, limiting parallelism.",
             },
             {
-              q: "How does a GAN work?",
-              a: "A Generator creates synthetic data while a Discriminator tries to tell real from fake. Through adversarial training, the Generator improves until it creates realistic outputs.",
+              q: "How does a GAN differ from a VAE?",
+              a: "GAN: Generator vs. Discriminator in adversarial training — produces sharp, realistic outputs. VAE: learns a probabilistic latent space and generates by sampling it — better for controlled generation and anomaly detection.",
             },
             {
               q: "For tabular/structured data, what model family typically outperforms deep learning?",
-              a: "Tree-based methods — XGBoost, LightGBM, Random Forest — consistently outperform deep learning on tabular/structured datasets.",
+              a: "Tree-based methods — XGBoost, LightGBM, Random Forest — consistently outperform deep learning on structured/tabular data because they handle heterogeneous features and mixed data types better.",
             },
           ],
           questions: [
             {
-              q: "Convolutional Neural Networks (CNNs) are primarily used for:",
+              q: "For real estate price prediction (a continuous numeric value), which model is most appropriate?",
               options: [
-                "Sequential text data",
-                "Processing images, video, and other 2D data",
-                "Financial forecasting only",
-                "Reinforcement learning tasks",
+                "Convolutional Neural Network (CNN)",
+                "Linear Regression",
+                "GAN (Generative Adversarial Network)",
+                "Recurrent Neural Network (RNN)",
               ],
               answer: 1,
               explain:
-                "CNNs are dominant in processing images and video — they use sliding filter kernels to detect hierarchical visual features, ideal for image classification and computer vision tasks.",
+                "Linear Regression is designed for predicting continuous numeric values. The GfG source explicitly uses real estate pricing as a use case — the model predicts home prices based on size, location, and rooms.",
             },
             {
-              q: "When should you use a Recurrent Neural Network (RNN) or LSTM?",
+              q: "A company wants to predict whether a loan applicant will default (Yes/No). Which model should they use?",
               options: [
-                "For static image classification",
-                "For sequential data such as time series, speech, or natural language",
-                "For clustering unlabeled images",
-                "For rule-based expert systems",
+                "Linear Regression",
+                "Logistic Regression",
+                "CNN",
+                "GAN",
               ],
               answer: 1,
               explain:
-                "RNNs and LSTMs are effective for sequential data such as time series or natural language — they maintain memory of previous inputs, ideal for speech and text processing.",
+                "Logistic Regression is designed for binary classification tasks — predicting categorical outcomes (Yes/No, approved/denied). Despite its name, it is a classification algorithm that outputs probabilities.",
+            },
+            {
+              q: "Convolutional Neural Networks (CNNs) are primarily used for:",
+              options: [
+                "Sequential text data and NLP",
+                "Processing images, video, and other 2D spatial data",
+                "Financial forecasting with time series",
+                "Generating probabilistic latent representations",
+              ],
+              answer: 1,
+              explain:
+                "CNNs use sliding convolutional filters to detect hierarchical visual features (edges → textures → objects) — making them dominant for image classification, object detection, and medical imaging.",
+            },
+            {
+              q: "When should you use an LSTM over a standard RNN?",
+              options: [
+                "For static image data",
+                "For short, simple sequences with no long-term dependencies",
+                "For long sequences — LSTMs use gated memory cells to solve the vanishing gradient problem",
+                "For tabular data with many features",
+              ],
+              answer: 2,
+              explain:
+                "LSTMs use gated memory cells (input, forget, output gates) to selectively retain or discard information over long sequences — solving the vanishing gradient problem that causes standard RNNs to forget early context.",
+            },
+            {
+              q: "What is the purpose of a VAE (Variational Autoencoder)?",
+              options: [
+                "To classify images using convolutional filters",
+                "To learn a probabilistic latent space — used for generating new samples and anomaly detection",
+                "To train sequential models on time series",
+                "To replace the transformer architecture in NLP",
+              ],
+              answer: 1,
+              explain:
+                "VAEs learn a probabilistic latent representation of data — new samples are generated by sampling the latent space. Used for synthetic data generation, anomaly detection, and tasks like generating new clothing designs.",
             },
             {
               q: "What is the purpose of Generative Adversarial Networks (GANs)?",
               options: [
                 "To classify existing data only",
-                "To generate new, realistic data samples using a generator-discriminator architecture",
-                "To compress databases",
+                "To generate new, realistic data using a generator-discriminator architecture",
+                "To compress databases for storage efficiency",
                 "To replace supervised learning entirely",
               ],
               answer: 1,
               explain:
-                "GANs use a dual-network architecture: a generator creates synthetic data while a discriminator evaluates it. They're used for data augmentation, image generation, and creative content.",
+                "GANs pit a Generator (creates synthetic data) against a Discriminator (detects fakes) — adversarial training drives both to improve. Used for image generation (StyleGAN), data augmentation, and creative content.",
             },
             {
-              q: "For tabular structured data, which model family typically outperforms deep learning?",
+              q: "For tabular/structured data (e.g., customer transactions), which model typically outperforms deep learning?",
               options: [
                 "Transformers",
                 "CNNs",
@@ -3650,7 +3856,19 @@
               ],
               answer: 2,
               explain:
-                "Tree-based methods like XGBoost, LightGBM, and Random Forest consistently outperform deep learning on structured/tabular data — they handle heterogeneous features better.",
+                "Tree-based ensemble methods (XGBoost, LightGBM, Random Forest) consistently outperform deep learning on structured/tabular data — they natively handle heterogeneous features, mixed data types, and are computationally efficient.",
+            },
+            {
+              q: "A Hybrid AI Model combining CNN and RNN would be most suitable for:",
+              options: [
+                "Simple spam classification",
+                "Video captioning — where CNN processes frames and RNN sequences them into language",
+                "Clustering customer segments",
+                "Predicting house prices from numerical features",
+              ],
+              answer: 1,
+              explain:
+                "Hybrid models combine architectures. CNN + RNN is the classic combination for video captioning: CNN extracts visual features from each frame, while RNN sequences those features into a natural language description.",
             },
           ],
           links: [
@@ -3871,35 +4089,49 @@
               icon: "📍",
               name: "K-Means Clustering — Step by Step",
               badge: "Algorithm Detail",
-              content: `K-Means process: 1. Choose k (number of clusters). 2. Initialize k random centroids. 3. Assign each point to its nearest centroid. 4. Recalculate centroids as the mean of assigned points. 5. Repeat until convergence. Choosing k: use the <strong>Elbow Method</strong> — plot inertia vs. k; find where adding clusters gives diminishing returns. K-Means assumes spherical clusters — use DBSCAN for non-convex shapes.`,
+              content: `K-Means process: <strong>1.</strong> Choose k (number of clusters). <strong>2.</strong> Initialize k random centroids. <strong>3.</strong> Assign each point to its nearest centroid (using Euclidean distance). <strong>4.</strong> Recalculate centroids as the mean of all points assigned to each cluster. <strong>5.</strong> Repeat steps 3–4 until convergence (centroids stop moving). Choosing k: use the <strong>Elbow Method</strong> — plot inertia (within-cluster sum of squares) vs. k; the "elbow" is where adding more clusters gives diminishing returns. Limitation: K-Means assumes spherical clusters of similar size — use <strong>DBSCAN</strong> for non-convex or irregularly-shaped clusters.`,
             },
             {
               icon: "📉",
               name: "PCA — Principal Component Analysis",
               badge: "Dimensionality Reduction",
-              content: `PCA reduces features while preserving maximum variance: 1. Standardize data. 2. Compute covariance matrix. 3. Extract eigenvectors and eigenvalues. 4. Select top-k principal components. 5. Project data onto these components. Used to: speed up ML models, reduce noise, enable 2D/3D visualization, combat the curse of dimensionality.`,
+              content: `PCA reduces features while preserving maximum variance: <strong>1.</strong> Standardize data (mean=0, variance=1). <strong>2.</strong> Compute the covariance matrix. <strong>3.</strong> Extract eigenvectors (principal components) and eigenvalues (variance explained). <strong>4.</strong> Select the top-k principal components that explain the most variance. <strong>5.</strong> Project all data points onto these components. Uses: speed up downstream ML models, reduce noise, enable 2D/3D data visualization, combat the curse of dimensionality. Unlike t-SNE/UMAP, PCA is a linear transformation and preserves global structure.`,
+            },
+            {
+              icon: "🛒",
+              name: "Association Rule Mining — Support, Confidence & Lift",
+              badge: "Algorithm Detail",
+              content: `Association Rule Mining discovers frequent IF-THEN patterns in transaction datasets. Classic example: "Customers who buy bread also buy butter." The <strong>Apriori Algorithm</strong> (Agrawal & Srikant, 1994) is the standard method — it uses breadth-first search and prunes item sets that fall below a minimum support threshold. Rules are evaluated using three metrics: <strong>Support</strong> — how frequently an item or item set appears across all transactions. Formula: Support(A) = (transactions containing A) ÷ (total transactions). <strong>Confidence</strong> — given A is purchased, how likely is B also purchased? Formula: Confidence(A → B) = Support(A ∪ B) ÷ Support(A). <strong>Lift</strong> — how much more likely A and B are bought together compared to independently. Lift > 1 = positive association; Lift = 1 = independent; Lift < 1 = negative association. Applications: Market basket analysis (supermarket shelf layout), e-commerce recommendations (frequently bought together), streaming service suggestions (movies often watched together).<div class="highlight-box">Example: If bread appears in 20% of transactions (Support=0.2), butter appears in 15%, and together in 10%: Confidence(bread→butter) = 0.10/0.20 = 50%. Lift = 0.10/(0.20×0.15) = 3.33 — they are 3.33× more likely bought together than by chance.</div>`,
             },
           ],
           flashcards: [
             {
               q: "What is Unsupervised Learning?",
-              a: "ML with unlabeled data — the algorithm independently discovers hidden patterns, clusters, or associations without predefined answers.",
+              a: "ML with unlabeled data — the algorithm independently discovers hidden patterns, clusters, or associations without predefined answers or labels.",
             },
             {
               q: "Name the three categories of Unsupervised Learning.",
-              a: "1. Clustering (grouping similar data). 2. Dimensionality Reduction (simplifying features). 3. Association Rule Mining (finding item co-occurrence patterns).",
+              a: "1. Clustering — grouping similar data points (K-Means, DBSCAN). 2. Dimensionality Reduction — simplifying features while retaining variance (PCA, t-SNE). 3. Association Rule Mining — finding item co-occurrence patterns (Apriori algorithm).",
             },
             {
               q: "How does K-Means Clustering work?",
-              a: "Choose k centroids, assign each point to nearest centroid, recalculate centroids from assignments, repeat until convergence.",
-            },
-            {
-              q: "What is PCA used for?",
-              a: "Reducing data dimensions while preserving maximum variance — useful for visualization, noise reduction, and speeding up downstream ML.",
+              a: "1. Choose k centroids. 2. Assign each point to nearest centroid. 3. Recalculate centroids as the mean of assigned points. 4. Repeat until convergence. Use the Elbow Method to choose the right k.",
             },
             {
               q: "What is the Elbow Method?",
-              a: 'A method to choose k in K-Means — plot inertia vs. k and find the "elbow" point where adding clusters gives diminishing returns.',
+              a: "A method to choose k in K-Means — plot inertia (within-cluster sum of squares) vs. k; the 'elbow' is where adding more clusters gives diminishing returns.",
+            },
+            {
+              q: "What is PCA used for?",
+              a: "Reducing data dimensions while preserving maximum variance — useful for visualization, noise reduction, speeding up downstream ML, and combating the curse of dimensionality.",
+            },
+            {
+              q: "In Association Rule Mining, what do Support, Confidence, and Lift measure?",
+              a: "Support: how frequently an item set appears in all transactions. Confidence: given item A is bought, how likely is item B also bought? Lift: how much more likely A and B are bought together vs. independently. Lift > 1 = positive association.",
+            },
+            {
+              q: "What algorithm is used for Association Rule Mining and who invented it?",
+              a: "The Apriori Algorithm — introduced by Agrawal and Srikant in 1994. It uses breadth-first search and prunes item sets below a minimum support threshold to efficiently find frequent patterns.",
             },
           ],
           questions: [
@@ -3913,7 +4145,7 @@
               ],
               answer: 1,
               explain:
-                "Unsupervised learning works with unlabeled data. The model identifies patterns, clusters, or associations independently without predefined outputs.",
+                "Unsupervised learning works with unlabeled data. The model identifies patterns, clusters, or associations independently without predefined outputs or correct labels.",
             },
             {
               q: "Which technique groups similar data points together without predefined categories?",
@@ -3921,35 +4153,71 @@
                 "Linear Regression",
                 "Clustering (e.g., K-Means)",
                 "Logistic Regression",
-                "Random Forest",
+                "Supervised Random Forest",
               ],
               answer: 1,
               explain:
-                "Clustering algorithms like K-Means group similar data points together based on their features — without using labeled data or predefined classes.",
+                "Clustering algorithms (K-Means, DBSCAN) group similar data points together based on their features — without labeled data or predefined classes. Used for customer segmentation, anomaly detection, and document grouping.",
+            },
+            {
+              q: "What is the Elbow Method used for in K-Means Clustering?",
+              options: [
+                "To measure how far clusters are from each other",
+                "To choose the optimal number of clusters (k) by finding where inertia stops improving significantly",
+                "To select the best distance metric for the algorithm",
+                "To determine whether to use DBSCAN instead",
+              ],
+              answer: 1,
+              explain:
+                "The Elbow Method plots inertia (within-cluster sum of squares) against different values of k. The 'elbow' — where the curve bends and improvement diminishes — is the optimal k.",
             },
             {
               q: "What is Dimensionality Reduction used for in unsupervised learning?",
               options: [
                 "Increasing the number of model features",
-                "Simplifying large datasets while retaining key information",
+                "Reducing features while preserving maximum variance — for visualization, noise reduction, and speeding up ML",
                 "Labeling data automatically",
                 "Training reinforcement learning agents",
               ],
               answer: 1,
               explain:
-                "Dimensionality Reduction techniques reduce the number of features while preserving important information — useful for simplifying large, high-dimensional datasets.",
+                "Dimensionality Reduction (PCA, t-SNE, UMAP) reduces the number of features while keeping important structure — useful for visualization, speeding up models, reducing noise, and combating the curse of dimensionality.",
             },
             {
-              q: "Customer segmentation in marketing is best handled by which unsupervised technique?",
+              q: "In Association Rule Mining, what does the 'Support' metric measure?",
               options: [
-                "Supervised classification",
-                "Clustering algorithms to group customers with similar behaviors",
-                "Regression analysis",
-                "Expert system rules",
+                "How likely item B is bought when item A is bought",
+                "How much more likely two items are bought together compared to independently",
+                "How frequently an item or item set appears across all transactions",
+                "The total number of items in the dataset",
               ],
-              answer: 1,
+              answer: 2,
               explain:
-                "Businesses use clustering (unsupervised learning) to group customers with similar purchasing behaviors — enabling targeted marketing strategies.",
+                "Support measures frequency — how often a specific item or item set appears across all transactions. Formula: Support(A) = transactions containing A ÷ total transactions. It identifies which items are commonly purchased.",
+            },
+            {
+              q: "An Association Rule has Lift = 3.5. This means:",
+              options: [
+                "The two items have a negative association",
+                "The items are independent of each other",
+                "The two items are 3.5× more likely to be bought together than if they were independent",
+                "The confidence of the rule is 3.5%",
+              ],
+              answer: 2,
+              explain:
+                "Lift > 1 indicates a positive association — the items co-occur more than chance. Lift = 3.5 means they are 3.5× more likely to appear together than expected if purchased independently. Lift = 1 means independent; Lift < 1 means negative association.",
+            },
+            {
+              q: "Market basket analysis (e.g., 'customers who buy bread also buy butter') uses which unsupervised technique?",
+              options: [
+                "K-Means Clustering",
+                "PCA (Principal Component Analysis)",
+                "Association Rule Mining (Apriori algorithm)",
+                "Logistic Regression",
+              ],
+              answer: 2,
+              explain:
+                "Association Rule Mining (specifically the Apriori algorithm) discovers frequent IF-THEN patterns in transaction data. Market basket analysis is its classic application — finding items that are frequently purchased together.",
             },
           ],
           links: [
