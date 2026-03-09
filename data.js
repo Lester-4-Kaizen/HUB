@@ -15,7 +15,7 @@ const subjects = [
   { id: "elec3",
           url: "topic-elec3.html", icon: "💡", name: "CS Professional Elective 3", desc: "Specialized elective topics. Content will be added once available.", available: false, topics: 0, url: "elec3.html" },
   { id: "elec4",
-          url: "topic-elec4.html", icon: "💡", name: "CS Professional Elective 4", desc: "Specialized elective topics. Content will be added once available.", available: false, topics: 0, url: "elec4.html" },
+          url: "elec4.html", icon: "📊", name: "CS Professional Elective 4", desc: "Advanced Data Analytics — types, lifecycle, organizational roles, and ethical data use.", available: true, topics: 5, url: "elec4.html" },
 ];
 
       const topics = [
@@ -1761,3 +1761,59 @@ const subjects = [
           questions: []
         }
       ];
+
+// ============================
+// ELEC4 — Advanced Data Analytics Topics
+// ============================
+const elec4Topics = [
+  {
+    id: "e4-what-is-data-analytics",
+    url: "topic-e4-what-is-data-analytics.html",
+    icon: "📊",
+    name: "What is Data Analytics?",
+    shortName: "What is Data Analytics?",
+    source: "Module 01 — Introduction to Advanced Data Analytics (Giralyn R. Ongco, PhDTM)",
+    summary: "Data Analytics is the systematic process of collecting, cleaning, analyzing, and interpreting data to extract meaningful insights for decision-making. Advanced analytics goes beyond basic reporting — using statistical models, AI, and automation to handle large, complex datasets and forecast future outcomes.",
+    module: "Module 01"
+  },
+  {
+    id: "e4-types-of-data-analytics",
+    url: "topic-e4-types-of-data-analytics.html",
+    icon: "🔍",
+    name: "Types of Data Analytics",
+    shortName: "Types of Data Analytics",
+    source: "Module 01 — Introduction to Advanced Data Analytics (Giralyn R. Ongco, PhDTM)",
+    summary: "There are four types of data analytics: Descriptive (what happened), Diagnostic (why it happened), Predictive (what will happen), and Prescriptive (what action to take). Each builds on the previous, progressing from basic reporting to AI-driven decision optimization.",
+    module: "Module 01"
+  },
+  {
+    id: "e4-role-in-organizations",
+    url: "topic-e4-role-in-organizations.html",
+    icon: "🏢",
+    name: "Role of Advanced Analytics in Organizations",
+    shortName: "Role in Organizations",
+    source: "Module 01 — Introduction to Advanced Data Analytics (Giralyn R. Ongco, PhDTM)",
+    summary: "Advanced analytics enables organizations to shift from reactive to proactive decision-making. Data-driven organizations integrate analytics across departments, leveraging predictive models, AI-driven systems, and optimization models.",
+    module: "Module 01"
+  },
+  {
+    id: "e4-ethics-data-use",
+    url: "topic-e4-ethics-data-use.html",
+    icon: "⚖️",
+    name: "Ethics and Responsible Data Use",
+    shortName: "Ethics & Data Use",
+    source: "Module 01 — Introduction to Advanced Data Analytics (Giralyn R. Ongco, PhDTM)",
+    summary: "Ethical data professionals must protect privacy, ensure accuracy, avoid bias, communicate honestly, and respect legal standards. Unethical use of data can lead to discrimination, harm, and legal consequences.",
+    module: "Module 01"
+  },
+  {
+    id: "e4-data-analytics-lifecycle",
+    url: "topic-e4-data-analytics-lifecycle.html",
+    icon: "🔄",
+    name: "Data Analytics Lifecycle",
+    shortName: "Data Analytics Lifecycle",
+    source: "Module 02 — Data Analytics (Giralyn R. Ongco, PhDTM)",
+    summary: "The Data Analytics Lifecycle is a structured, iterative 6-step process: Problem Definition, Data Collection, Data Cleaning & Preparation, Data Analysis & Modeling, Visualization & Interpretation, and Decision-Making & Action.",
+    module: "Module 02"
+  }
+];
