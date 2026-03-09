@@ -88,7 +88,6 @@
       .breadcrumb-sep {
         color: var(--border);
       }
-      /* Content blocks */
       .fr-block {
         background: var(--surface);
         border: 1px solid var(--border);
@@ -279,6 +278,97 @@
       .pdf-notice strong {
         color: var(--accent);
       }
+      .example-block {
+        background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+        border: 1px solid #7dd3fc;
+        border-radius: 12px;
+        padding: 18px 20px;
+        margin: 16px 0;
+      }
+      .example-tag {
+        font-size: 10px;
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 700;
+        color: #0369a1;
+        background: #e0f2fe;
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 100px;
+        margin-bottom: 10px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      .example-title {
+        font-family: "Lora", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 8px;
+      }
+      .example-body {
+        font-size: 13.5px;
+        line-height: 1.65;
+        color: var(--text);
+      }
+      .example-body p {
+        font-size: 13.5px;
+        margin-bottom: 8px;
+      }
+      .example-body ol,
+      .example-body ul {
+        padding-left: 20px;
+        margin-bottom: 10px;
+      }
+      .example-body li {
+        font-size: 13.5px;
+        line-height: 1.65;
+        color: var(--text);
+        margin-bottom: 4px;
+      }
+      .pillars-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+        gap: 10px;
+        margin: 14px 0;
+      }
+      .pillar-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px;
+      }
+      .pillar-label {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 6px;
+      }
+      .pillar-body {
+        font-size: 13px;
+        color: var(--text);
+        line-height: 1.55;
+      }
+      .quote-block {
+        border-left: 4px solid var(--accent);
+        background: var(--surface);
+        border-radius: 0 10px 10px 0;
+        padding: 14px 18px;
+        margin: 14px 0;
+        font-style: italic;
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--text);
+      }
+      .quote-attribution {
+        font-style: normal;
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 8px;
+        font-family: "IBM Plex Mono", monospace;
+      }
     </style>
   </head>
   <body>
@@ -329,27 +419,25 @@
               <div class="reader-source">
                 <span>📎</span>
                 <span
-                  >Confluent Inc., 2025 — A Guide to Event-Driven Design for
-                  Agents and Multi-Agent Systems</span
+                  >Confluent Inc., 2025 — "A Guide to Event-Driven Design for
+                  Agents and Multi-Agent Systems" by Sean Falconer, AI
+                  Entrepreneur in Residence, Confluent</span
                 >
               </div>
             </div>
 
             <div class="reader-summary">
-              The Finals reference document covering Event-Driven Architecture
-              (EDA) for AI agents and multi-agent systems. Covers the evolution
-              of AI (Predictive → Generative → Agentic), agent anatomy, EDA
-              design patterns (Orchestrator-Worker, Hierarchical, Blackboard,
-              Market-Based), and real-world applications. This document serves
-              as the primary guide for building AI agentic projects.
-            </div>
-
-            <div class="pdf-notice">
-              ⚠️ <strong>PDF not yet uploaded.</strong> The content below is
-              structured from the topic summary and description. Please
-              re-upload the PDF file so the full lecture and laboratory content
-              can be extracted. Image placeholders are marked with
-              <code>[IMAGE: ...]</code> labels throughout.
+              A comprehensive guide to Event-Driven Design for Agents and
+              Multi-Agent Systems by Sean Falconer (AI Entrepreneur in
+              Residence, Confluent). Covers: the three-wave evolution of AI
+              (Predictive → Generative → Agentic), Compound AI and RAG as a
+              bridge, the anatomy of an agent (9 core components: Persona,
+              Perception, Reasoning, Memory, Planning, Action, Learning,
+              Coordination, Tool Interface), why EDA is essential for agents,
+              four multi-agent design patterns and their event-driven
+              implementations using Confluent's Data Streaming Platform (Stream
+              / Connect / Process / Govern), and real-world applications from
+              Reworkd, Airy, and Agent Taskflow.
             </div>
 
             <div class="tab-bar">
@@ -369,73 +457,247 @@
 
             <!-- ===== LECTURE NOTES ===== -->
             <div id="tab-lecture">
+              <!-- PART I -->
               <div class="fr-block">
-                <h2>Part 1 — The Evolution of AI</h2>
+                <h2>Part I — Understanding the Evolution of AI</h2>
                 <p>
-                  The reference document grounds everything in the three-phase
-                  evolution of AI systems — each phase building on the last,
-                  requiring new architectural approaches as AI becomes more
-                  autonomous.
+                  AI has evolved through <strong>three distinct waves</strong>,
+                  each unlocking new capabilities while introducing its own
+                  limitations. The document grounds everything in this
+                  progression because each wave requires a fundamentally
+                  different infrastructure approach — culminating in
+                  Event-Driven Architecture as the necessary foundation for the
+                  third wave.
                 </p>
 
-                <h3>Phase 1 — Predictive AI</h3>
+                <h3>The First Wave: Predictive AI</h3>
                 <p>
-                  Traditional machine learning systems trained on historical
-                  data to predict future outcomes. These systems operate within
-                  fixed problem scopes: classify this image, predict this price,
-                  detect this fraud. They are <strong>reactive</strong> and
-                  <strong>narrowly scoped</strong> — they answer specific
-                  questions with statistical models. Examples: fraud detection
-                  models, recommendation engines, demand forecasting pipelines.
+                  The first wave revolved around
+                  <strong>traditional machine learning</strong>, focusing on
+                  predictive capabilities for narrowly defined tasks. Building
+                  these models required significant expertise — they were
+                  crafted specifically for individual use cases. They were
+                  <strong>domain-specific</strong>, with that specificity
+                  embedded in the training data, making them rigid and tough to
+                  repurpose. Adapting a model to a new domain often meant
+                  starting from scratch — an approach that
+                  <strong>lacked scalability</strong> and
+                  <strong>slowed adoption</strong>.
                 </p>
                 <p>
-                  Key characteristic: <em>given input X, produce output Y</em>.
-                  The model does not plan, reason across steps, or take actions
-                  in the world. It simply maps inputs to outputs based on
-                  learned patterns.
-                </p>
-
-                <h3>Phase 2 — Generative AI</h3>
-                <p>
-                  Foundation models (LLMs, diffusion models) that generate novel
-                  content — text, images, code, audio. Examples: ChatGPT,
-                  DALL·E, Stable Diffusion, GitHub Copilot. Generative AI
-                  expanded AI's role from <em>prediction</em> to
-                  <em>creation</em>, but still required human orchestration for
-                  complex multi-step tasks.
-                </p>
-                <p>
-                  Key characteristic:
-                  <em
-                    >given a prompt, produce creative or informative content</em
-                  >. The human remained in the loop to decompose goals, connect
-                  results, and decide next steps.
+                  The workflow was a batch process: specific input (once) →
+                  feature engineering → bespoke model → app, with a separate
+                  stream of app-specific data engineering feeding into the
+                  model.
                 </p>
 
-                <h3>Phase 3 — Agentic AI</h3>
+                <img
+                  src="images/Figure1.png"
+                  alt="Agent anatomy diagram showing all components"
+                  style="width: 100%; border-radius: 10px; margin: 16px 0"
+                />
+
+                <h3>The Second Wave: Generative AI</h3>
                 <p>
-                  Autonomous systems that
-                  <strong>plan, reason, act, and self-correct</strong> to
-                  achieve goals over time. Unlike Generative AI (which responds
-                  to prompts), Agentic AI can:
+                  Generative AI, driven by deep learning, marked a turning
+                  point. Instead of being confined to single domains, generative
+                  models were trained on vast, diverse datasets — giving them
+                  the ability to generalize across a variety of contexts. They
+                  could generate text, images, and even videos, opening up
+                  exciting new applications.
+                </p>
+                <p>
+                  Whereas Predictive AI relies on batch-based statistical models
+                  to solve specific problems, Generative AI uses
+                  <strong>foundation models like LLMs</strong> that are broadly
+                  capable and reusable. The workflow shifted to: general input
+                  (once) → deep learning → reusable model, plus a continuous
+                  specific input feed → prompt assembly → app, both supported by
+                  app-specific data engineering.
+                </p>
+
+                <img
+                  src="images/Figure2.png"
+                  alt="Agent anatomy diagram showing all components"
+                  style="width: 100%; border-radius: 10px; margin: 16px 0"
+                />
+
+                <p>
+                  However, this wave came with its own challenges. Generative
+                  models are <strong>fixed in time</strong> — unable to
+                  incorporate new or dynamic information — and are
+                  <strong>difficult to adapt</strong>. Fine-tuning can address
+                  domain-specific needs, but it is expensive and error-prone. It
+                  requires vast data, significant computational resources, and
+                  ML expertise — making it impractical for many situations.
+                  Since LLMs are trained on publicly available data, they also
+                  lack access to domain-specific information, limiting accuracy
+                  for context-dependent questions.
+                </p>
+
+                <div class="callout">
+                  <strong>Example — Insurance Recommendation:</strong> Ask a
+                  generative model to recommend an insurance policy tailored to
+                  a user's personal health history, location, and financial
+                  goals. You prompt the LLM and it generates a response — but it
+                  cannot deliver accurate recommendations because it lacks
+                  access to the relevant user data. Without it, the response
+                  will either be generic or flat-out wrong.
+                </div>
+
+                <img
+                  src="images/Figure3.png"
+                  alt="Agent anatomy diagram showing all components"
+                  style="width: 100%; border-radius: 10px; margin: 16px 0"
+                />
+
+                <h3>Compound AI — Bridging the Gap</h3>
+                <p>
+                  To overcome these limitations,
+                  <strong>Compound AI</strong> systems integrate generative
+                  models with other components like programmatic logic, data
+                  retrieval mechanisms, and validation layers. This modular
+                  design allows AI to combine tools, fetch relevant data, and
+                  tailor outputs in a way that static models cannot.
+                </p>
+                <p>For the insurance example, Compound AI works like this:</p>
+                <ol>
+                  <li>
+                    A retrieval mechanism pulls the user's health and financial
+                    data from a secure database.
+                  </li>
+                  <li>
+                    This data is added to the context provided to the LLM during
+                    prompt assembly.
+                  </li>
+                  <li>
+                    The LLM uses the assembled prompt to generate an accurate
+                    response.
+                  </li>
+                </ol>
+                <p>
+                  This process is known as
+                  <strong>Retrieval-Augmented Generation (RAG)</strong> — it
+                  bridges the gap between static AI and real-world needs by
+                  dynamically incorporating relevant data into the model's
+                  workflow.
+                </p>
+                <p>
+                  While RAG effectively handles tasks like this, it relies on
+                  <strong>fixed workflows</strong> — every interaction and
+                  execution path must be predefined. This rigidity makes it
+                  impractical for more complex or dynamic tasks where workflows
+                  cannot be exhaustively encoded. Encoding all possible
+                  execution paths manually is labor-intensive and ultimately
+                  limiting. These limitations led to the rise of the third wave.
+                </p>
+
+                <img
+                  src="images/Figure4.png"
+                  alt="Agent anatomy diagram showing all components"
+                  style="width: 100%; border-radius: 10px; margin: 16px 0"
+                />
+
+                <h3>The Third Wave: Agentic AI</h3>
+
+                <div class="quote-block">
+                  "Agents are the new apps."
+                  <div class="quote-attribution">
+                    — Dharmesh Shah, CTO of HubSpot
+                  </div>
+                </div>
+                <div class="quote-block">
+                  The future of AI lies with autonomous agents — systems that
+                  can think, adapt, and act independently.
+                  <div class="quote-attribution">
+                    — Marc Benioff, CEO of Salesforce (Wall Street Journal
+                    "Future of Everything" podcast)
+                  </div>
+                </div>
+
+                <p>
+                  Agents bring something fundamentally new:
+                  <strong>dynamic, context-driven workflows</strong>. Unlike
+                  traditional AI models that follow predefined paths, agentic
+                  systems determine the best course of action on the fly,
+                  adapting in real time to the challenges they face. This makes
+                  them particularly well-suited for solving complex,
+                  interconnected problems in enterprise environments.
+                </p>
+                <p>
+                  Agents flip traditional control logic on its head. Instead of
+                  rigid programs dictating every move, agents use LLMs to drive
+                  decisions. They can reason, use tools, and access memory — all
+                  dynamically. This flexibility allows for workflows that evolve
+                  in real time, making agents far more powerful than anything
+                  built on fixed logic.
+                </p>
+                <p>
+                  The control logic spectrum runs from
+                  <strong>Programmatic</strong> (Fixed Flow, low autonomy) on
+                  one end to <strong>Agentic</strong> (Variable Flow, high
+                  autonomy) on the other.
+                </p>
+
+                <img
+                  src="images/Figure5.png"
+                  alt="Agent anatomy diagram showing all components"
+                  style="width: 100%; border-radius: 10px; margin: 16px 0"
+                />
+
+                <p>
+                  The agent architecture (inspired by the Generative Agents
+                  paper, arxiv.org/pdf/2304.03442) shows the core loop:
+                  <strong
+                    >Perceive → Memory Stream → Retrieve → Retrieved Memories →
+                    Act</strong
+                  >, with <strong>Plan</strong> at the top and
+                  <strong>Reflect</strong> at the bottom operating above and
+                  below the memory system. This foundational loop is what all
+                  modern agents implement in some form.
+                </p>
+
+                <img
+                  src="images/Figure6.png"
+                  alt="Agent anatomy diagram showing all components"
+                  style="width: 100%; border-radius: 10px; margin: 16px 0"
+                />
+
+                <h3>The Power of Singular Agent Systems</h3>
+                <p>
+                  A single agent can be powerful when designed correctly.
+                  Effective AI agents share three key characteristics:
                 </p>
                 <ul>
-                  <li>Break complex goals into sequences of sub-tasks</li>
                   <li>
-                    Invoke external tools — APIs, databases, code interpreters,
-                    web search
+                    <strong>Autonomy:</strong> They operate without constant
+                    human intervention.
                   </li>
                   <li>
-                    Maintain memory and context across multiple interactions
+                    <strong>Adaptability:</strong> They adjust to new data and
+                    changing conditions.
                   </li>
                   <li>
-                    Evaluate outcomes and revise plans when things go wrong
-                  </li>
-                  <li>
-                    Coordinate with other agents to divide and conquer large
-                    tasks
+                    <strong>Decision-Making:</strong> They evaluate multiple
+                    options and select the best course of action.
                   </li>
                 </ul>
+                <p>
+                  However, traditional architectures make deploying such agents
+                  challenging. AI systems struggle with
+                  <strong>data freshness</strong>,
+                  <strong>integration complexity</strong>,
+                  <strong>security</strong>, <strong>governance</strong>, and
+                  <strong>real-time responsiveness</strong>. Many still rely on
+                  batch-based processing, leading to decisions made on stale
+                  data, while fragmented data landscapes make it difficult to
+                  establish contextualized and trustworthy data. These
+                  challenges create a "data mess" where agents lack the
+                  reliable, real-time inputs needed to make effective decisions
+                  — highlighting the need for an event-driven foundation powered
+                  by a data streaming platform.
+                </p>
+
                 <div class="callout">
                   <strong>The Core Shift:</strong> Predictive AI
                   <em>classifies</em>. Generative AI <em>creates</em>. Agentic
@@ -444,241 +706,1219 @@
                   agents need infrastructure that supports asynchronous,
                   coordinated, long-running workflows.
                 </div>
-                <div class="img-placeholder">
-                  <strong>[IMAGE — Figure 1]</strong>
-                  <span
-                    >Insert image here — Progression diagram: Predictive AI →
-                    Generative AI → Agentic AI, showing key capabilities and
-                    transitions at each phase</span
-                  >
+              </div>
+
+              <!-- PART II -->
+              <div class="fr-block">
+                <h2>Part II — The Anatomy of an AI Agent</h2>
+                <p>
+                  In AI, agents have a long history — from early theoretical
+                  considerations by Alan Turing and John McCarthy, to rule-based
+                  reasoning agents in the 1960s. Today, the emergence of
+                  foundation models has transformed what is possible. Just like
+                  humans, agents solve problems by combining their senses,
+                  memory, reasoning, and ability to act. But before diving into
+                  these mechanics, there is one foundational element that
+                  underpins everything: their <strong>persona</strong>.
+                </p>
+
+                <img
+                  src="images/Figure7.png"
+                  alt="Agent anatomy diagram showing all components"
+                  style="width: 100%; border-radius: 10px; margin: 16px 0"
+                />
+
+                <h3>The 9 Core Components</h3>
+                <div class="def-grid">
+                  <div class="def-card">
+                    <div class="def-term">🪪 1. Persona (Job Function)</div>
+                    <div class="def-body">
+                      Defines the agent's job function and expertise — like a
+                      detailed job description embedded in the system prompt.
+                      Shapes the agent's behavior by influencing the model's
+                      probability distribution over tokens to align outputs with
+                      the defined role.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">👁️ 2. Perception (Sensing)</div>
+                    <div class="def-body">
+                      How the agent gathers data from the world — its sensory
+                      input. Humans use eyes, ears, and touch; agents use APIs,
+                      sensors, and user inputs. The first step to solving any
+                      problem is understanding the environment.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">
+                      🧠 3. Reasoning &amp; Decision-Making
+                    </div>
+                    <div class="def-body">
+                      The agent's ability to analyze data, derive insights, and
+                      decide what to do next. For humans this happens in the
+                      brain; for agents it is powered by models like LLMs, which
+                      dynamically adapt to inputs and contexts.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">💾 4. Memory</div>
+                    <div class="def-body">
+                      <strong>Short-term:</strong> tracks immediate context
+                      within a conversation, stored in memory buffers during the
+                      session. <strong>Long-term:</strong> stores historical
+                      data such as user preferences and past interactions —
+                      typically in a vector database (MongoDB, Elasticsearch,
+                      Pinecone) enabling semantic search via embeddings.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">📋 5. Planning</div>
+                    <div class="def-body">
+                      Once the agent knows what needs to be done, it devises a
+                      plan to achieve its goal — mirroring how humans strategize
+                      by breaking a problem into smaller steps and prioritizing
+                      actions.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">⚡ 6. Action</div>
+                    <div class="def-body">
+                      Where agents interact with the world — sending a message,
+                      controlling a device, updating a database. The agent's
+                      execution handlers ensure these actions are performed
+                      accurately and validate the outcomes.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">📈 7. Learning</div>
+                    <div class="def-body">
+                      Agents improve by learning from mistakes and adapting to
+                      new information. May involve adjusting the agent's context
+                      dynamically during prompt assembly (situational feedback
+                      without permanent model weight changes), or through
+                      reinforcement learning where decision-making is optimized
+                      using rewards or penalties. Adapting context provides a
+                      flexible, efficient improvement method without the
+                      overhead of fine-tuning.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">
+                      🤝 8. Coordination &amp; Collaboration
+                    </div>
+                    <div class="def-body">
+                      In multi-agent systems, coordination enables agents to
+                      collaborate, share knowledge, and divide tasks — working
+                      together to achieve shared goals, just as humans rarely
+                      work alone.
+                    </div>
+                  </div>
+                  <div class="def-card">
+                    <div class="def-term">🔧 9. Tool Interface</div>
+                    <div class="def-body">
+                      The agent's bridge to specialized capabilities — allows
+                      them to extend their reach and operate effectively in the
+                      real world. Often relies on modular API handlers or plugin
+                      architectures, allowing the agent to extend its
+                      functionality dynamically and efficiently.
+                    </div>
+                  </div>
+                </div>
+
+                <h3>Why Event-Driven Matters for Agents</h3>
+                <p>
+                  Agents, at their core, function much like
+                  <strong>microservices</strong> — as modular, independent units
+                  that execute specific tasks. However, unlike traditional
+                  microservices, agents do not just process requests; they
+                  reason, plan, and take actions based on stateful information.
+                  Without proper coordination, this complexity can quickly
+                  spiral out of control.
+                </p>
+                <p>
+                  Imagine deploying hundreds of microservices without guardrails
+                  — without standardized communication, state synchronization,
+                  or failure recovery mechanisms. The result would be chaos. The
+                  same applies to multi-agent systems: without a structured
+                  framework, agents become fragmented, inefficient, and
+                  unreliable.
+                </p>
+                <p>
+                  Microservices architecture evolved to solve similar challenges
+                  by shifting from tightly coupled, request/response-based
+                  communication to event-driven design. Early monolithic
+                  applications struggled to scale because every component had
+                  direct dependencies on others. Microservices addressed this by
+                  decoupling services. But managing interservice communication
+                  through APIs still introduced bottlenecks. The breakthrough
+                  came with <strong>Event-Driven Architectures (EDA)</strong> —
+                  where services could react to changes asynchronously, enabling
+                  real-time responsiveness and scalability.
+                </p>
+
+                <img
+                  src="images/Figure8.png"
+                  alt="Agent anatomy diagram showing all components"
+                  style="width: 100%; border-radius: 10px; margin: 16px 0"
+                />
+
+                <p>
+                  Agents need the same shift. Instead of rigid, API-driven
+                  interactions, they should operate in an event-driven
+                  ecosystem. EDA provides the necessary foundation for scalable,
+                  adaptive agents by ensuring:
+                </p>
+                <ul>
+                  <li>
+                    <strong>Asynchronous Processing:</strong> Agents process
+                    tasks as events arrive, avoiding bottlenecks caused by
+                    synchronous API calls.
+                  </li>
+                  <li>
+                    <strong>Scalability:</strong> New agents can join the system
+                    without disrupting existing workflows, much like adding new
+                    microservices to an event-driven infrastructure.
+                  </li>
+                  <li>
+                    <strong>Loose Coupling:</strong> Agents interact via event
+                    streams rather than direct dependencies, reducing fragility
+                    and enabling modular development.
+                  </li>
+                  <li>
+                    <strong>Real-Time Responsiveness:</strong> Agents react
+                    instantly to events, ensuring decisions are made based on
+                    the latest available data.
+                  </li>
+                </ul>
+                <p>
+                  Just as microservices rely on message brokers like Apache
+                  Kafka® for asynchronous communication, agents leverage event
+                  streaming to collaborate without rigid dependencies. A data
+                  streaming platform takes this further — not just streaming
+                  data, but also connecting disparate data sources, processing
+                  events in motion, and enforcing governance. With a data
+                  streaming platform, agents operate on real-time,
+                  contextualized data — avoiding stale insights from batch
+                  processing.
+                </p>
+
+                <h3>From Singular to Multi-Agent Systems</h3>
+                <p>
+                  As powerful as a single agent can be, its capabilities are
+                  inherently limited by its scope. No single agent can handle
+                  every possible task with full expertise — just as no
+                  individual worker in a company can effectively perform every
+                  job. The real promise of agentic AI lies in
+                  <strong>Multi-Agent Systems (MAS)</strong> — a network of
+                  agents that collaborate (or sometimes compete) to solve
+                  complex problems more effectively than any single agent could
+                  on its own.
+                </p>
+                <p>
+                  Multi-agent systems are designed to distribute workloads,
+                  balance specialization, and enable decentralized
+                  decision-making. They allow:
+                </p>
+                <ul>
+                  <li>
+                    <strong>Task Delegation:</strong> Agents specialize in
+                    specific domains and distribute workloads efficiently.
+                  </li>
+                  <li>
+                    <strong>Parallel Processing:</strong> Agents execute tasks
+                    simultaneously without bottlenecks.
+                  </li>
+                  <li>
+                    <strong>Dynamic Role Allocation:</strong> Responsibilities
+                    shift based on changing requirements.
+                  </li>
+                </ul>
+                <p>
+                  Traditional API-based integrations create tight coupling —
+                  agents must know exactly which other agents to interact with.
+                  This does not scale. As the number of agents grows, the
+                  complexity of interactions increases exponentially.
+                  Event-driven architecture ensures seamless coordination,
+                  enabling agents to operate as part of an adaptive, resilient
+                  ecosystem.
+                </p>
+              </div>
+
+              <!-- PART III -->
+              <div class="fr-block">
+                <h2>Part III — Design Patterns for Multi-Agent Systems</h2>
+                <p>
+                  Enterprises require networks of agents that collaborate, share
+                  context, and execute workflows together. Scaling from a single
+                  agent to a multi-agent system introduces eight significant
+                  challenges:
+                </p>
+                <ul>
+                  <li>
+                    <strong>Context and Data Sharing:</strong> Agents must
+                    exchange information efficiently without duplication, loss,
+                    or inconsistency.
+                  </li>
+                  <li>
+                    <strong>Scalability and Fault Tolerance:</strong> Systems
+                    should handle a growing number of agents while ensuring
+                    recovery from failures.
+                  </li>
+                  <li>
+                    <strong>Integration Complexity:</strong> Agents interact
+                    with diverse tools and data sources, requiring seamless
+                    interoperability.
+                  </li>
+                  <li>
+                    <strong>Timely and Accurate Decisions:</strong> Agents need
+                    access to fresh, real-time data to make informed decisions
+                    without delay.
+                  </li>
+                  <li>
+                    <strong>Safety and Validation:</strong> Guardrails are
+                    necessary to prevent unintended behaviors and ensure
+                    reliable, high-quality outputs.
+                  </li>
+                  <li>
+                    <strong>Security and Governance:</strong> Organizations must
+                    enforce data security, compliance, and lineage to maintain
+                    trust and control.
+                  </li>
+                  <li>
+                    <strong>Operational Overhead:</strong> Managing
+                    infrastructure for data pipelines, integration, and compute
+                    at scale adds significant burden.
+                  </li>
+                  <li>
+                    <strong>Lack of Global Availability:</strong> AI systems
+                    require real-time data access and processing across regions
+                    to support global operations.
+                  </li>
+                </ul>
+                <p>
+                  The <strong>Confluent Data Streaming Platform</strong> is the
+                  future-proof foundation for addressing these challenges —
+                  acting as the communication layer and data enabler in the
+                  agentic AI stack.
+                </p>
+
+                <img
+                  src="images/Figure9.png"
+                  alt="Agent anatomy diagram showing all components"
+                  style="width: 100%; border-radius: 10px; margin: 16px 0"
+                />
+
+                <h3>The Four Pillars of Confluent Data Streaming Platform</h3>
+                <p>
+                  By combining four key pillars — Stream, Connect, Process, and
+                  Govern — Confluent enables agents to seamlessly consume,
+                  process, and act on data in motion:
+                </p>
+                <div class="pillars-grid">
+                  <div class="pillar-card">
+                    <div class="pillar-label">📡 Stream</div>
+                    <div class="pillar-body">
+                      Continuously capture and share real-time events with AI
+                      systems and agents anywhere, built on Kora — the
+                      cloud-native Apache Kafka® engine. Ensures real-time event
+                      flow, allowing agents to react instantly to changes.
+                    </div>
+                  </div>
+                  <div class="pillar-card">
+                    <div class="pillar-label">🔌 Connect</div>
+                    <div class="pillar-body">
+                      Integrate disparate data from any environment with 120+
+                      pre-built and custom connectors, bringing real-time data
+                      to agents. Removes bottlenecks in interoperability between
+                      diverse systems.
+                    </div>
+                  </div>
+                  <div class="pillar-card">
+                    <div class="pillar-label">⚙️ Process</div>
+                    <div class="pillar-body">
+                      Use Flink stream processing (join, filter, enrich) to
+                      enrich data with real-time context at query execution,
+                      enabling Agentic RAG. Transforms and enriches data in
+                      motion for contextualized decision-making.
+                    </div>
+                  </div>
+                  <div class="pillar-card">
+                    <div class="pillar-label">🛡️ Govern</div>
+                    <div class="pillar-body">
+                      Use data lineage, quality controls, and traceability to
+                      ensure data for agents is secure and verifiable. Enforces
+                      security, compliance, and data quality — ensuring trust
+                      and reliability.
+                    </div>
+                  </div>
+                </div>
+
+                <h3>The Four Multi-Agent Design Patterns</h3>
+                <p>
+                  Multi-agent design patterns define how autonomous agents
+                  communicate, collaborate, or compete to solve problems. The
+                  document covers four essential patterns and how event-driven
+                  architectures transform each into a scalable, loosely coupled
+                  system.
+                </p>
+
+                <div class="pattern-card">
+                  <div class="pattern-title">
+                    🎯 Pattern 1: Orchestrator-Worker
+                  </div>
+                  <div class="pattern-tag">Centralized Control</div>
+                  <div class="pattern-body">
+                    <p>
+                      A central <strong>Orchestrator agent</strong> assigns
+                      tasks to worker agents and manages execution — akin to the
+                      Master-Worker pattern in distributed computing, where an
+                      orchestrator coordinates multiple independent workers that
+                      execute specific jobs.
+                    </p>
+                    <p><strong>Traditional Approach:</strong></p>
+                    <ul
+                      style="
+                        font-size: 13.5px;
+                        padding-left: 20px;
+                        margin-bottom: 8px;
+                      "
+                    >
+                      <li>The orchestrator assigns tasks to worker agents.</li>
+                      <li>
+                        Workers execute tasks and return results to the
+                        orchestrator.
+                      </li>
+                      <li>
+                        If a worker fails, the orchestrator must reassign tasks
+                        manually.
+                      </li>
+                    </ul>
+                    <p>
+                      <strong>Event-Driven Approach:</strong> The orchestrator
+                      uses
+                      <strong>key-based Kafka partitioning strategies</strong> —
+                      using keys to distribute command messages across
+                      partitions in a single Orchestration Topic. Worker agents
+                      act as a consumer group, pulling events from one or more
+                      assigned partitions. Each worker agent sends output
+                      messages into a Response Topic where downstream systems
+                      consume them. For events that should be processed by the
+                      same stateful worker agent as a previous message, the same
+                      key is used for each event in a sequence. The
+                      <strong>Kafka Consumer Rebalance Protocol</strong> ensures
+                      each worker gets similar workloads — even as workers are
+                      added or removed. On worker failure, the log can be
+                      replayed from a saved partition offset. The orchestrator
+                      no longer needs bespoke failure logic — it simply
+                      specifies work and distributes it with a sensible keying
+                      strategy.
+                    </p>
+                    <p>
+                      <strong>Result:</strong> Dynamic scaling, automatic fault
+                      recovery, and efficient workload distribution without
+                      complex management logic.
+                    </p>
+                    <p>
+                      <strong>When to use:</strong> Structured, predictable
+                      workflows where task decomposition is well understood —
+                      document processing pipelines, code review, customer query
+                      routing.
+                    </p>
+                    <p>
+                      <strong>Avoid when:</strong> Task decomposition is unknown
+                      upfront.
+                    </p>
+                  </div>
+                </div>
+
+                <img
+                  src="images/Figure10.png"
+                  alt="Agent anatomy diagram showing all components"
+                  style="width: 100%; border-radius: 10px; margin: 16px 0"
+                />
+
+                <img
+                  src="images/Figure11.png"
+                  alt="Agent anatomy diagram showing all components"
+                  style="width: 100%; border-radius: 10px; margin: 16px 0"
+                />
+
+                <div class="pattern-card">
+                  <div class="pattern-title">
+                    🌳 Pattern 2: Hierarchical Agent
+                  </div>
+                  <div class="pattern-tag">Multi-Level Coordination</div>
+                  <div class="pattern-body">
+                    <p>
+                      Organizes agents into layers where higher-level agents
+                      oversee or delegate tasks to lower-level agents — ideal
+                      for breaking down complex problems into smaller,
+                      manageable parts.
+                    </p>
+                    <p><strong>Traditional Approach:</strong></p>
+                    <ul
+                      style="
+                        font-size: 13.5px;
+                        padding-left: 20px;
+                        margin-bottom: 8px;
+                      "
+                    >
+                      <li>
+                        A central decision-making agent controls multiple
+                        subordinate agents.
+                      </li>
+                      <li>
+                        Subordinate agents handle specialized tasks but require
+                        direct coordination.
+                      </li>
+                    </ul>
+                    <p>
+                      <strong>Event-Driven Approach:</strong> Apply the
+                      orchestrator-worker technique
+                      <strong>recursively</strong> in the agent hierarchy — each
+                      non-leaf node acts as the orchestrator for its respective
+                      subtree. Higher-level agents publish objectives as events.
+                      Mid-tier agents consume events, break down tasks, and
+                      issue new events to lower-tier agents. Execution (leaf)
+                      agents consume low-level tasks, process them, and publish
+                      results. Sibling agents form consumer groups to process
+                      shared workloads dynamically. Hierarchy is no longer rigid
+                      — agents can be added or removed dynamically without
+                      modifying the system's core logic.
+                    </p>
+                    <p>
+                      <strong>When to use:</strong> Large-scale enterprise
+                      systems where different sub-domains have their own
+                      expertise — company-wide AI assistant routing to HR,
+                      Finance, Engineering, Legal sub-agents, each with their
+                      own specialist workers.
+                    </p>
+                    <p>
+                      <strong>Avoid when:</strong> Low-latency or simple tasks
+                      where deep call chains add unnecessary overhead.
+                    </p>
+                  </div>
+                </div>
+
+                <img
+                  src="images/Figure12.png"
+                  alt="Agent anatomy diagram showing all components"
+                  style="width: 100%; border-radius: 10px; margin: 16px 0"
+                />
+
+                <img
+                  src="images/Figure13.png"
+                  alt="Agent anatomy diagram showing all components"
+                  style="width: 100%; border-radius: 10px; margin: 16px 0"
+                />
+
+                <div class="pattern-card">
+                  <div class="pattern-title">
+                    📋 Pattern 3: Blackboard (Shared Knowledge)
+                  </div>
+                  <div class="pattern-tag">Collaborative / Emergent</div>
+                  <div class="pattern-body">
+                    <p>
+                      Introduces a shared knowledge base — a "blackboard" —
+                      where agents asynchronously post and retrieve information.
+                      Widely used in complex problem-solving such as
+                      collaborative AI systems and robotics.
+                    </p>
+                    <p><strong>Traditional Approach:</strong></p>
+                    <ul
+                      style="
+                        font-size: 13.5px;
+                        padding-left: 20px;
+                        margin-bottom: 8px;
+                      "
+                    >
+                      <li>
+                        Agents must explicitly query a database or communicate
+                        directly with other agents.
+                      </li>
+                      <li>
+                        Coordination becomes a bottleneck, leading to
+                        synchronization challenges.
+                      </li>
+                    </ul>
+                    <p>
+                      <strong>Event-Driven Approach:</strong> The blackboard is
+                      implemented as a
+                      <strong>streaming topic in Kafka</strong>. Agents publish
+                      knowledge updates as events instead of direct database
+                      writes. Other agents subscribe to these updates
+                      dynamically, consuming only relevant information. The
+                      blackboard <strong>acts as a memory layer</strong> —
+                      ensuring that shared context is always available without
+                      excessive network calls. Real-time collaboration without
+                      agents needing to track each other's state explicitly.
+                    </p>
+                    <p>
+                      <strong>When to use:</strong> Problems where no single
+                      agent has complete knowledge and the best solution emerges
+                      iteratively — scientific hypothesis generation,
+                      collaborative document drafting, complex debugging.
+                    </p>
+                    <p>
+                      <strong>Avoid when:</strong> Strict ordering or
+                      consistency is required.
+                    </p>
+                  </div>
+                </div>
+
+                <img
+                  src="images/Figure14.png"
+                  alt="Agent anatomy diagram showing all components"
+                  style="width: 100%; border-radius: 10px; margin: 16px 0"
+                />
+
+                <img
+                  src="images/Figure15.png"
+                  alt="Agent anatomy diagram showing all components"
+                  style="width: 100%; border-radius: 10px; margin: 16px 0"
+                />
+
+                <div class="pattern-card">
+                  <div class="pattern-title">
+                    💰 Pattern 4: Market-Based (Competitive Bidding)
+                  </div>
+                  <div class="pattern-tag">Self-Organizing</div>
+                  <div class="pattern-body">
+                    <p>
+                      Models a decentralized system where agents negotiate or
+                      compete for tasks and resources. Commonly used in
+                      autonomous trading, logistics, and distributed
+                      optimization problems.
+                    </p>
+                    <p><strong>Traditional Approach:</strong></p>
+                    <ul
+                      style="
+                        font-size: 13.5px;
+                        padding-left: 20px;
+                        margin-bottom: 8px;
+                      "
+                    >
+                      <li>
+                        Agents communicate directly with each other to place
+                        bids or negotiate terms.
+                      </li>
+                      <li>
+                        A central system is often required to coordinate
+                        interactions.
+                      </li>
+                    </ul>
+                    <p>
+                      <strong>Event-Driven Approach:</strong> Bidding agents
+                      publish offers and requests as events. A market-making
+                      service matches events, executing transactions
+                      asynchronously. Agents listen for matched events and
+                      adjust their strategies dynamically. This removes the
+                      <strong>quadratic complexity</strong> of direct
+                      peer-to-peer communication — agents interact through a
+                      central event log instead of maintaining individual
+                      connections. Example: in financial markets, a data
+                      streaming platform acts as a real-time event broker,
+                      allowing thousands of trading agents to execute bids,
+                      match orders, and react to price fluctuations in
+                      milliseconds.
+                    </p>
+                    <p>
+                      <strong>When to use:</strong> Dynamic workloads where the
+                      right agent depends on current conditions — cloud resource
+                      allocation, distributed rendering, content moderation at
+                      scale, logistics optimization.
+                    </p>
+                    <p>
+                      <strong>Avoid when:</strong> Predictable, low-volume tasks
+                      where bidding overhead outweighs benefits.
+                    </p>
+                  </div>
+                </div>
+
+                <img
+                  src="images/Figure16.png"
+                  alt="Agent anatomy diagram showing all components"
+                  style="width: 100%; border-radius: 10px; margin: 16px 0"
+                />
+
+                <img
+                  src="images/Figure17.png"
+                  alt="Agent anatomy diagram showing all components"
+                  style="width: 100%; border-radius: 10px; margin: 16px 0"
+                />
+
+                <h3>Pattern Selection Guide</h3>
+                <table>
+                  <tr>
+                    <th>Pattern</th>
+                    <th>Control Model</th>
+                    <th>Best For</th>
+                    <th>Avoid When</th>
+                  </tr>
+                  <tr>
+                    <td><strong>Orchestrator-Worker</strong></td>
+                    <td>Centralized</td>
+                    <td>Known, structured pipelines</td>
+                    <td>Task decomposition unknown upfront</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Hierarchical</strong></td>
+                    <td>Multi-level</td>
+                    <td>Large enterprise with sub-domains</td>
+                    <td>Low-latency or simple tasks</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Blackboard</strong></td>
+                    <td>Decentralized</td>
+                    <td>Emergent, collaborative problems</td>
+                    <td>Strict ordering or consistency required</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Market-Based</strong></td>
+                    <td>Self-organizing</td>
+                    <td>Dynamic, variable workloads</td>
+                    <td>Predictable, low-volume tasks</td>
+                  </tr>
+                </table>
+
+                <h3>
+                  Real-World Example: Multi-Agent AI Sales Development
+                  Representative (SDR)
+                </h3>
+                <div class="example-block">
+                  <div class="example-tag">Example — PDF page 21</div>
+                  <div class="example-title">Multi-Agent AI SDR System</div>
+                  <div class="example-body">
+                    <p>
+                      An event-driven, multi-agent system that automates the SDR
+                      (Sales Development Representative) workflow. Apache Flink®
+                      with AI Model Inference is used to orchestrate
+                      communication with a series of AI agents.
+                    </p>
+                    <img
+                      src="images/Figure18.png"
+                      alt="Agent anatomy diagram showing all components"
+                      style="width: 100%; border-radius: 10px; margin: 16px 0"
+                    />
+                    <p>The system consists of the following five agents:</p>
+                    <ul>
+                      <li>
+                        <strong>Lead Ingestion Agent:</strong> Captures incoming
+                        leads from web forms, enriches them with external data
+                        (e.g., company website, Salesforce), and generates a
+                        report that can be used for scoring.
+                      </li>
+                      <li>
+                        <strong>Lead Scoring Agent:</strong> Uses enriched lead
+                        information to score leads and generate a short summary
+                        for how to best engage. Determines the appropriate next
+                        step and triggers downstream agents.
+                      </li>
+                      <li>
+                        <strong>Active Outreach Agent:</strong> Creates
+                        personalized outreach emails, incorporating insights
+                        from the lead's online presence, in order to book a
+                        meeting.
+                      </li>
+                      <li>
+                        <strong>Nurture Campaign Agent:</strong> Dynamically
+                        creates a sequence of emails based on where the lead
+                        originated and what their interest was.
+                      </li>
+                      <li>
+                        <strong>Send Email Agent:</strong> Currently sends to a
+                        terminal, but in a real application would send via email
+                        relay or email service.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <h3>
+                  The Role of the Data Streaming Platform in Multi-Agent Systems
+                </h3>
+                <p>
+                  For multi-agent systems to function efficiently, they must
+                  operate under a shared event-driven model that standardizes
+                  communication and decision-making. This model has three
+                  primary components:
+                </p>
+                <ol>
+                  <li>
+                    <strong>Input:</strong> Agents consume structured events or
+                    commands.
+                  </li>
+                  <li>
+                    <strong>Processing:</strong> Agents apply reasoning, use
+                    tools, or retrieve additional context.
+                  </li>
+                  <li>
+                    <strong>Output:</strong> Agents produce new events or take
+                    actions in external systems.
+                  </li>
+                </ol>
+                <p>
+                  Maintaining state consistency across multiple agents requires
+                  <strong>event persistence and replayability</strong>. Every
+                  event is recorded as an immutable entry (no data loss). If an
+                  agent fails, it can replay events from a saved offset,
+                  restoring its state seamlessly. Multiple agents can consume
+                  the same event stream, allowing parallel processing without
+                  interference.
+                </p>
+              </div>
+
+              <!-- PART IV -->
+              <div class="fr-block">
+                <h2>Part IV — Building Event-Driven Systems for Agents</h2>
+                <p>
+                  AI agents are only as effective as the infrastructure that
+                  supports them. No matter how sophisticated an agent's
+                  reasoning and decision-making capabilities are, they depend on
+                  access to the right data, tools, and communication channels.
+                  Traditional architectures — built around request/response
+                  patterns, rigid APIs, and batch data processing — create
+                  bottlenecks that limit an agent's ability to act in real time.
+                </p>
+                <p>
+                  EDAs solve this by treating
+                  <strong>data as a continuously moving asset</strong>, rather
+                  than a static snapshot. Using the Confluent Data Streaming
+                  Platform as the backbone, agents can consume, process, and
+                  emit events asynchronously — making them adaptable, scalable,
+                  and resilient for enterprise use cases.
+                </p>
+
+                <h3>Architecting Singular and Multi-Agent Systems</h3>
+                <p>
+                  Instead of waiting for direct instructions, agents are
+                  designed to emit and listen for events autonomously. Events
+                  act as signals that something has happened — a change in data,
+                  a triggered action, or an important update — allowing agents
+                  to respond dynamically and independently.
+                </p>
+                <p>
+                  At their core, AI agents function much like microservices —
+                  operating autonomously but needing structured communication to
+                  collaborate effectively. The Confluent Data Streaming Platform
+                  acts as the <strong>"central nervous system"</strong> for
+                  agents, enabling them to function in a loosely coupled but
+                  highly coordinated manner.
+                </p>
+
+                <img
+                  src="images/Figure19.png"
+                  alt="Agent anatomy diagram showing all components"
+                  style="width: 100%; border-radius: 10px; margin: 16px 0"
+                />
+
+                <img
+                  src="images/Figure20.png"
+                  alt="Agent anatomy diagram showing all components"
+                  style="width: 100%; border-radius: 10px; margin: 16px 0"
+                />
+
+                <p>
+                  By integrating Apache Kafka®, Apache Flink®, and an agent
+                  framework like LangGraph, we can build architectures that
+                  scale horizontally, process high-throughput data streams, and
+                  ensure real-time responsiveness. What the platform provides:
+                </p>
+                <ul>
+                  <li>
+                    <strong>Horizontal Scalability:</strong> Agents operate
+                    independently — adding more agents does not require
+                    rewriting the entire system.
+                  </li>
+                  <li>
+                    <strong>Low Latency and High Throughput:</strong> Streaming
+                    platforms ensure agents receive and act on fresh data
+                    without waiting for batch updates.
+                  </li>
+                  <li>
+                    <strong>Fault Recovery and Isolation:</strong> Failures in
+                    one part of the system do not bring down the entire
+                    workflow. Agents replay events from logs, ensuring
+                    resilience.
+                  </li>
+                  <li>
+                    <strong>Shift Left:</strong> Data is processed closer to the
+                    source, reducing latency and improving AI performance.
+                  </li>
+                </ul>
+
+                <h3>Challenges and Solutions in Event-Driven Agent Design</h3>
+
+                <h4>
+                  [Stream] Next-Level Data Streaming with a Fully Managed,
+                  Cloud-Native Service
+                </h4>
+                <p>
+                  In an agent-driven system, failures — from network issues,
+                  hardware faults, or software crashes — are inevitable. The
+                  challenge is ensuring agents can recover seamlessly without
+                  disrupting workflows.
+                </p>
+                <p>
+                  <strong>Solution:</strong> Kafka's log-based architecture (on
+                  Kora) enables agents to replay events and recover from
+                  failures. Idempotent processing ensures retried operations do
+                  not result in duplicate actions. Dead-letter queues handle
+                  failure scenarios gracefully, allowing human oversight when
+                  needed.
+                </p>
+
+                <h4>
+                  [Connect] Seamless Integration: Connecting Agents with Diverse
+                  Systems
+                </h4>
+                <p>
+                  AI agents often interact with multiple external systems —
+                  databases, APIs, vector stores, and enterprise applications.
+                  These interactions require seamless, low-latency connectivity
+                  without introducing unnecessary dependencies.
+                </p>
+                <p>
+                  <strong>Solution:</strong> Use connectors to integrate
+                  disparate data sources and event streams — allowing agents to
+                  consume and produce events without hardcoded dependencies.
+                  Leverage LangGraph, Microsoft AutoGen, CrewAI, and similar
+                  frameworks for tool integration, enabling agents to call APIs,
+                  databases, and models dynamically. Use Kafka topics and Flink
+                  stream processing for structured collaboration between
+                  different AI agents.
+                </p>
+
+                <h4>
+                  [Process] Ensuring Data Freshness: Handling Dynamic Data
+                  Streams
+                </h4>
+                <p>
+                  Agents require up-to-date, real-time data for optimal
+                  decision-making. Traditional architectures that rely on static
+                  data retrieval lead to outdated responses and inefficient
+                  workflows.
+                </p>
+                <p>
+                  <strong>Solution:</strong> Use Flink SQL and Table API to
+                  process incoming data streams, ensuring AI models and agents
+                  work with the latest context. Flink AI Model Inference ensures
+                  model predictions update dynamically as new data flows in.
+                  Embedding pipelines transform unstructured text into vector
+                  representations in real time, stored in vector databases
+                  (e.g., MongoDB) for rapid retrieval in RAG.
+                </p>
+
+                <h4>[Govern] Data Quality, Security, and Compliance</h4>
+                <p>
+                  AI agents often interact with sensitive data, requiring strong
+                  governance, auditing, and compliance measures.
+                </p>
+                <p>
+                  <strong>Solution:</strong> Stream Governance ensures clean,
+                  structured data flows through the system, enforcing policies
+                  and data lineage tracking. Encryption and access control at
+                  the field level prevent unauthorized data exposure.
+                  Fine-grained retention policies ensure data is handled in
+                  compliance with regulatory requirements like GDPR.
+                </p>
+
+                <h3>Real-World Example: Agentic RAG</h3>
+                <div class="example-block">
+                  <div class="example-tag">Example — PDF page 26</div>
+                  <div class="example-title">
+                    Agentic RAG — Event-Driven Research Agent
+                  </div>
+                  <div class="example-body">
+                    <p>
+                      An event-driven research agent that mines source materials
+                      and leverages RAG to create a podcast interview brief.
+                    </p>
+                    <img
+                      src="images/Figure21.png"
+                      alt="Agent anatomy diagram showing all components"
+                      style="width: 100%; border-radius: 10px; margin: 16px 0"
+                    />
+                    <p><strong>The workflow:</strong></p>
+                    <ol>
+                      <li>
+                        Stream unstructured data (e.g., website URLs, blogs,
+                        podcasts) into Confluent, retrieve the text, chunk it,
+                        generate embeddings using Flink, and store them in a
+                        vector database like MongoDB Atlas using a sink
+                        connector.
+                      </li>
+                      <li>
+                        For all text extracted, pull out the most interesting
+                        questions and store those.
+                      </li>
+                      <li>
+                        Call the LLM to generate a research brief combining the
+                        most relevant context based on the embeddings.
+                      </li>
+                    </ol>
+                  </div>
                 </div>
               </div>
 
+              <!-- PART V -->
               <div class="fr-block">
-                <h2>Part 2 — Anatomy of an AI Agent</h2>
+                <h2>Part V — Real-World Applications</h2>
                 <p>
-                  An AI agent is not a single component — it is a system of
-                  interacting parts that together enable autonomous,
-                  goal-directed behavior. Understanding the anatomy helps you
-                  design agents that are reliable, extensible, and observable.
+                  Event-driven architectures unlock powerful AI applications
+                  across industries by ensuring agents operate with fresh,
+                  real-time data. Below are three companies using a data
+                  streaming platform to build event-driven multi-agent systems.
                 </p>
 
-                <h3>Core Components</h3>
-                <div class="def-grid">
-                  <div class="def-card">
-                    <div class="def-term">🧠 LLM / Reasoning Core</div>
-                    <div class="def-body">
-                      The cognitive engine. Processes context, formulates plans,
-                      decides which tool to call next, and generates responses.
-                      Typically a large language model (GPT-4, Claude, Gemini,
-                      Llama).
-                    </div>
-                  </div>
-                  <div class="def-card">
-                    <div class="def-term">💾 Short-Term Memory</div>
-                    <div class="def-body">
-                      The active context window — everything the agent currently
-                      "remembers" about the current task: prior messages, tool
-                      results, partial plans. Limited by the LLM's context
-                      length.
-                    </div>
-                  </div>
-                  <div class="def-card">
-                    <div class="def-term">🗄️ Long-Term Memory</div>
-                    <div class="def-body">
-                      Persistent storage that survives across sessions. Usually
-                      a vector database (Pinecone, Chroma, Weaviate) that stores
-                      past experiences, domain knowledge, and user preferences —
-                      retrieved by semantic similarity.
-                    </div>
-                  </div>
-                  <div class="def-card">
-                    <div class="def-term">🔧 Tools / Actions</div>
-                    <div class="def-body">
-                      The agent's hands. External capabilities it can invoke:
-                      web search, code execution, database queries, API calls,
-                      file I/O, email sending. Each tool has a defined interface
-                      the LLM can call.
-                    </div>
-                  </div>
-                  <div class="def-card">
-                    <div class="def-term">📋 Planner</div>
-                    <div class="def-body">
-                      Decomposes high-level goals into a sequence of concrete,
-                      executable steps. Approaches: ReAct (interleave reasoning
-                      with action), Chain-of-Thought, Tree-of-Thought,
-                      Plan-and-Execute.
-                    </div>
-                  </div>
-                  <div class="def-card">
-                    <div class="def-term">🔄 Feedback / Evaluator</div>
-                    <div class="def-body">
-                      Observes the results of each action, compares against the
-                      goal, and decides whether to continue the current plan or
-                      re-plan. Enables self-correction — a defining capability
-                      of robust agents.
-                    </div>
-                  </div>
-                  <div class="def-card">
-                    <div class="def-term">📡 Communication Interface</div>
-                    <div class="def-body">
-                      How the agent receives tasks and reports results. In EDA
-                      systems this is the event bus — the agent consumes task
-                      events and publishes result events. In simpler systems it
-                      may be a REST API or message queue.
-                    </div>
-                  </div>
-                  <div class="def-card">
-                    <div class="def-term">🆔 Identity / Profile</div>
-                    <div class="def-body">
-                      The agent's defined role, capabilities, and constraints.
-                      In multi-agent systems, each agent has a declared identity
-                      so the orchestrator knows what tasks to assign to it.
-                    </div>
-                  </div>
-                </div>
-
-                <div class="img-placeholder">
-                  <strong>[IMAGE — Figure 2]</strong>
-                  <span
-                    >Insert image here — Agent anatomy diagram showing all
-                    components (LLM core, memory, tools, planner, feedback loop,
-                    communication) and their connections</span
-                  >
-                </div>
-
-                <h3>The ReAct Agent Loop</h3>
+                <h3>1. Automating Web Scraping with AI Agents — Reworkd</h3>
                 <p>
-                  The most widely used agent pattern is
-                  <strong>ReAct (Reason + Act)</strong> — the agent alternates
-                  between reasoning steps and tool invocations:
+                  Traditional web scraping is brittle — requiring manual efforts
+                  to handle dynamic pages, extract relevant data, and adapt to
+                  site changes. This complexity increases when supporting GenAI
+                  models that need structured and unstructured data in real
+                  time. Static scraping workflows fail to keep up, leading to
+                  outdated or incomplete information.
                 </p>
-                <div class="code-block">
-                  Goal received → Thought: "What is the first step I need to
-                  take?" → Action: call_tool("web_search", query="...") →
-                  Observation: search results returned → Thought: "Based on
-                  results, I need to..." → Action: call_tool("code_executor",
-                  code="...") → Observation: code output → Thought: "Goal
-                  achieved / need to revise plan because..." → Final Answer:
-                  deliver result
-                </div>
                 <p>
-                  This loop continues until the agent determines the goal is
-                  satisfied or a maximum iteration limit is reached. The key
-                  insight is that reasoning and action are
-                  <strong>interleaved</strong> — the agent can observe results
-                  before deciding its next move.
+                  <strong>Reworkd</strong> tackled this by building an agentic
+                  system for web scraping. AI agents write code to extract
+                  relevant data, while test and validation agents verify that
+                  the generated code is correct. These agents operate
+                  asynchronously, consuming and producing events in a continuous
+                  feedback loop. The result: a scalable, fault-tolerant system
+                  that dynamically adjusts to website changes and ensures
+                  high-quality data feeds for AI models.
                 </p>
 
-                <h3>Memory Architecture in Detail</h3>
-                <p>Agent memory operates at multiple timescales:</p>
+                <h3>2. Intelligent Business Copilots — Airy</h3>
+                <p>
+                  Teams need self-serve, real-time access to data for faster,
+                  smarter decision-making. Yet business stakeholders often rely
+                  on engineering and data science teams to integrate and query
+                  data, introducing bottlenecks, batch-based delays, and stale
+                  insights.
+                </p>
+                <p>
+                  <strong>Airy</strong> transforms this by enabling AI-powered
+                  copilots that provide a natural language interface for
+                  exploring and working with real-time data. Agents convert
+                  plain language into Flink jobs, continuously monitoring and
+                  processing data streams. By leveraging real-time context from
+                  a data streaming platform, these agents use LLMs to generate
+                  precise Flink SQL queries — empowering teams to extract and
+                  analyze live data instantly. This shifts data interaction from
+                  manual queries to conversational, real-time insights.
+                </p>
+
+                <h3>
+                  3. Workflow Automation with a Drag-and-Drop Agent Builder —
+                  Agent Taskflow
+                </h3>
+                <p>
+                  When starting to build multi-agent systems, teams face the
+                  complexity of integrating and orchestrating AI agents and
+                  tools, as well as managing intricate tasks at scale.
+                </p>
+                <p>
+                  <strong>Agent Taskflow</strong> provides a no-code platform
+                  that helps users get up and running with all the features that
+                  go into an agent — memory, knowledge bases, and tools — in
+                  just a few clicks. The drag-and-drop UI allows effortless
+                  creation of workflows. Built on a data streaming platform, the
+                  solution enables agents to make context-informed decisions and
+                  adapt to real-time events for more efficient and intelligent
+                  automation. From automating customer support to marketing
+                  campaigns, this frees teams to focus on high-value work while
+                  democratizing AI agents for users without programming
+                  expertise.
+                </p>
+
+                <h3>Broader Industry Impact</h3>
+                <p>
+                  Event-driven AI agents enable businesses to automate complex,
+                  real-time tasks across industries:
+                </p>
                 <ul>
                   <li>
-                    <strong>In-context (working memory):</strong> Everything in
-                    the current LLM prompt — limited by context window (e.g.,
-                    128K tokens for GPT-4o). Very fast access, but ephemeral.
+                    <strong>E-commerce:</strong> Agents continuously track price
+                    changes, product availability, and competitor trends —
+                    ensuring businesses make informed pricing decisions.
                   </li>
                   <li>
-                    <strong>External short-term (episodic):</strong> Recent task
-                    history stored in a database, retrieved for the current
-                    session. Survives context window limits.
+                    <strong>Market Research:</strong> Streaming data feeds allow
+                    companies to monitor customer sentiment, competitive shifts,
+                    and industry trends in real time.
                   </li>
                   <li>
-                    <strong>External long-term (semantic):</strong> Accumulated
-                    knowledge, user preferences, domain facts. Stored as vector
-                    embeddings in a vector DB. Retrieved by similarity to
-                    current query.
+                    <strong>Finance:</strong> Agents aggregate financial data,
+                    news sentiment, and stock movements — helping analysts make
+                    more accurate, timely decisions.
+                  </li>
+                </ul>
+
+                <h3>
+                  Why a Data Streaming Platform is Essential for AI Agents
+                </h3>
+                <p>
+                  At the heart of every scalable agentic system is a real-time
+                  data streaming platform. Unlike traditional request/response
+                  architectures that introduce bottlenecks and stale data,
+                  streaming enables continuous, low-latency access to the
+                  information agents need. Why streaming matters:
+                </p>
+                <ul>
+                  <li>
+                    <strong>Real-Time Access:</strong> Eliminates batch delays
+                    and ensures agents make decisions based on the latest
+                    available data.
                   </li>
                   <li>
-                    <strong>Procedural:</strong> The agent's "how-to" knowledge
-                    — often encoded in system prompts or fine-tuning rather than
-                    explicit retrieval.
+                    <strong>Decoupled Architecture:</strong> Agents interact
+                    through event streams rather than direct calls, reducing
+                    complexity and interdependencies.
+                  </li>
+                  <li>
+                    <strong>AI-Ready Data:</strong> Streaming platforms
+                    transform unstructured data into embeddings stored in vector
+                    stores like MongoDB, making it AI-friendly.
+                  </li>
+                  <li>
+                    <strong>Scalable AI Interactions:</strong> AI workloads are
+                    distributed across streaming pipelines, preventing
+                    bottlenecks and improving efficiency.
+                  </li>
+                  <li>
+                    <strong>Modular and Future-Proof:</strong> Use any model,
+                    vector database, or AI framework of choice, with flexibility
+                    to swap in new technologies as they evolve — ensuring
+                    long-term adaptability.
                   </li>
                 </ul>
               </div>
 
+              <!-- THE FUTURE -->
               <div class="fr-block">
-                <h2>Part 3 — Event-Driven Architecture (EDA)</h2>
+                <h2>The Future of AI is Event-Driven</h2>
                 <p>
-                  <strong>Event-Driven Architecture</strong> is a software
-                  design paradigm in which system components communicate by
-                  producing and consuming <em>events</em> — discrete, immutable
-                  records that something notable has happened — rather than via
-                  direct synchronous API calls.
+                  AI-powered agents will define the next era of automation, but
+                  only if they can think, act, and collaborate in real time.
+                  Event-driven architectures ensure that agents are no longer
+                  limited by outdated batch processes, rigid APIs, or stale
+                  data. Instead, they operate dynamically — processing,
+                  analyzing, and acting on real-time events as they happen.
+                </p>
+                <p>
+                  As AI adoption accelerates, companies that embrace
+                  <strong>streaming-first architectures</strong> will have a
+                  massive advantage. They will build AI systems that are
+                  smarter, more adaptable, and infinitely scalable — unlocking
+                  true agentic intelligence across industries.
+                </p>
+                <p>
+                  By adopting a <strong>shift-left approach</strong> — moving
+                  computation closer to the data source — organizations can
+                  reduce latency, improve AI performance, and create a more
+                  adaptive architecture that is built not just for today, but
+                  for long-term scalability and adaptability.
                 </p>
 
-                <h3>Core Vocabulary</h3>
+                <div class="callout">
+                  <strong>Key Takeaway:</strong> The future of AI is not about
+                  making individual models smarter — it is about making AI
+                  <em>systems</em> work together seamlessly through event-driven
+                  infrastructure. EDA + Data Streaming Platform (Stream /
+                  Connect / Process / Govern) = the backbone of scalable,
+                  real-time, autonomous AI.
+                </div>
+              </div>
+
+              <!-- KAFKA REFERENCE -->
+              <div class="fr-block">
+                <h2>Apache Kafka — Core Concepts for Agent Coordination</h2>
+                <p>
+                  The document uses Apache Kafka (via Confluent's cloud-native
+                  Kora engine) as the reference event streaming platform. Kafka
+                  is the de facto standard for high-throughput, fault-tolerant
+                  event streaming in production AI systems.
+                </p>
+
+                <h3>Key Kafka Concepts</h3>
                 <div class="def-grid">
                   <div class="def-card">
-                    <div class="def-term">📨 Event</div>
+                    <div class="def-term">📁 Topic</div>
                     <div class="def-body">
-                      An immutable record: "Payment of $150 processed at
-                      14:32:01". Contains: event type, timestamp, source,
-                      payload, and optionally a correlation ID for tracing
-                      related events.
+                      Named, partitioned event channel. Agents subscribe to
+                      relevant topics. Example: "tasks.research",
+                      "results.research", "errors.all". Orchestrator publishes
+                      task events to a topic; workers subscribe and consume.
                     </div>
                   </div>
                   <div class="def-card">
-                    <div class="def-term">📢 Producer (Publisher)</div>
+                    <div class="def-term">📦 Partition</div>
                     <div class="def-body">
-                      A component that emits events when something happens.
-                      Producers are <em>decoupled</em> — they don't know which
-                      consumers (if any) will react to their events.
+                      Topics split into N partitions. Each partition is an
+                      ordered log. Multiple agent instances consume different
+                      partitions in parallel — enabling horizontal scale. The
+                      orchestrator uses a keying strategy to distribute work
+                      across partitions sensibly; same key = same partition for
+                      stateful consistency.
                     </div>
                   </div>
                   <div class="def-card">
-                    <div class="def-term">📥 Consumer (Subscriber)</div>
+                    <div class="def-term">🔖 Offset</div>
                     <div class="def-body">
-                      A component that subscribes to specific event types and
-                      reacts when they arrive. Multiple consumers can
-                      independently react to the same event — no coordination
-                      required.
+                      Position of an event within a partition. Consumers track
+                      their offset — if a consumer crashes, it resumes from the
+                      last committed offset. No work is lost. The log can be
+                      replayed from any saved offset for failure recovery.
                     </div>
                   </div>
                   <div class="def-card">
-                    <div class="def-term">🚌 Event Bus / Broker</div>
+                    <div class="def-term">👥 Consumer Group</div>
                     <div class="def-body">
-                      The messaging infrastructure routing events from producers
-                      to consumers. Examples: Apache Kafka, AWS EventBridge,
-                      Google Pub/Sub, RabbitMQ, NATS.
+                      N agent instances in the same group collectively consume a
+                      topic. The Kafka Consumer Rebalance Protocol distributes
+                      partitions evenly — each worker gets similar workloads
+                      even as agents are added or removed. Natural load
+                      balancing without orchestration code.
                     </div>
                   </div>
                   <div class="def-card">
-                    <div class="def-term">📊 Event Stream</div>
+                    <div class="def-term">🔄 Exactly-Once</div>
                     <div class="def-body">
-                      A persistent, ordered, append-only log of events. Unlike
-                      traditional message queues (messages deleted after
-                      consumption), streams <em>retain</em> events — enabling
-                      replay, auditing, and time-travel debugging.
+                      Kafka's strongest delivery guarantee — each event
+                      processed exactly once even across failures. Critical for
+                      financial agents and medical agents where duplicate
+                      actions could be catastrophic.
                     </div>
                   </div>
                   <div class="def-card">
-                    <div class="def-term">📁 Topic / Channel</div>
+                    <div class="def-term">⏳ Retention / Replay</div>
                     <div class="def-body">
-                      A named category of events. Producers write to topics;
-                      consumers subscribe to topics. Example topics:
-                      "agent.tasks", "agent.results", "agent.errors",
-                      "payment.processed".
+                      Events stored for a configurable duration (minutes to
+                      forever). Full retention enables event replay — debugging
+                      agent misbehavior by replaying the exact same event
+                      sequence. Provides complete audit trails of every agent
+                      action.
                     </div>
                   </div>
                 </div>
 
-                <div class="img-placeholder">
-                  <strong>[IMAGE — Figure 3]</strong>
-                  <span
-                    >Insert image here — EDA overview diagram: Producers → Event
-                    Bus (with Topics) → Multiple Consumers, showing the
-                    decoupled flow</span
-                  >
+                <h3>Sample Agent Event Structure</h3>
+                <div class="code-block">
+                  { "event_id": "evt_9a2f1b3c", "event_type": "TASK_ASSIGNED",
+                  "schema_version": "1.0", "timestamp":
+                  "2025-03-15T09:41:22.341Z", "source_agent":
+                  "orchestrator-prod-01", "target_agent": "research-worker",
+                  "correlation_id": "goal_xyz789", // ties all events for one
+                  goal together "payload": { "task_id": "task_042", "task_type":
+                  "web_research", "query": "recent advances in agentic AI 2025",
+                  "deadline": "2025-03-15T09:42:22Z", "priority": "HIGH",
+                  "context": "Part of user goal: write a research summary" } }
                 </div>
 
-                <h3>Why EDA is the Right Architecture for AI Agents</h3>
-                <p>
-                  Traditional request-response (REST APIs) works well for
-                  simple, fast, synchronous interactions. But AI agents —
-                  especially multi-agent systems — have characteristics that
-                  make REST a poor fit:
-                </p>
+                <h3>Why EDA vs. REST — Comparison Table</h3>
                 <table>
                   <tr>
                     <th>Agent Requirement</th>
@@ -729,492 +1969,6 @@
                   </tr>
                 </table>
               </div>
-
-              <div class="fr-block">
-                <h2>Part 4 — EDA Design Patterns for Multi-Agent Systems</h2>
-                <p>
-                  The document covers four foundational patterns for
-                  coordinating multiple AI agents. Each pattern makes different
-                  tradeoffs between control, flexibility, fault tolerance, and
-                  complexity.
-                </p>
-
-                <div class="pattern-card">
-                  <div class="pattern-title">
-                    🎯 Pattern 1: Orchestrator-Worker
-                  </div>
-                  <div class="pattern-tag">Centralized Control</div>
-                  <div class="pattern-body">
-                    <p>
-                      A central <strong>Orchestrator agent</strong> receives the
-                      top-level goal, decomposes it into sub-tasks, assigns each
-                      sub-task to a <strong>Worker agent</strong> via an event,
-                      and aggregates the results into a final output.
-                    </p>
-                    <p><strong>Event flow:</strong></p>
-                    <p>
-                      <code
-                        >User Goal Event → Orchestrator → Task Events (one per
-                        worker) → Workers process → Result Events → Orchestrator
-                        → Final Output Event</code
-                      >
-                    </p>
-                    <p>
-                      <strong>When to use:</strong> Structured, predictable
-                      workflows where the task decomposition is well understood.
-                      Examples: document processing pipeline (parse → extract →
-                      summarize → format), code review (lint → test → security
-                      scan → review), customer query routing.
-                    </p>
-                    <p>
-                      <strong>Strengths:</strong> Simple to reason about; clear
-                      chain of responsibility; workers are stateless and
-                      horizontally scalable; easy to add new worker types.
-                    </p>
-                    <p>
-                      <strong>Weaknesses:</strong> Orchestrator is a single
-                      point of failure; bottleneck if the orchestrator is slow;
-                      poor fit for tasks where the decomposition is unknown
-                      upfront.
-                    </p>
-                  </div>
-                </div>
-
-                <div class="img-placeholder">
-                  <strong>[IMAGE — Figure 4]</strong>
-                  <span
-                    >Insert image here — Orchestrator-Worker pattern diagram
-                    from the PDF showing event flow between orchestrator and
-                    multiple worker agents</span
-                  >
-                </div>
-
-                <div class="pattern-card">
-                  <div class="pattern-title">
-                    🌳 Pattern 2: Hierarchical Multi-Agent
-                  </div>
-                  <div class="pattern-tag">Multi-Level Coordination</div>
-                  <div class="pattern-body">
-                    <p>
-                      A tree of agents: a
-                      <strong>Top-Level Manager</strong> decomposes the goal and
-                      routes sub-goals to <strong>Department Managers</strong>,
-                      each of which further decomposes and routes to
-                      <strong>Worker agents</strong>. Each level communicates
-                      through its own event channels.
-                    </p>
-                    <p>
-                      <strong>When to use:</strong> Large-scale enterprise
-                      systems where different sub-domains have their own
-                      expertise and policies. Example: a company-wide AI
-                      assistant where a top-level agent routes to HR, Finance,
-                      Engineering, and Legal sub-agents, each of which has their
-                      own specialist workers.
-                    </p>
-                    <p>
-                      <strong>Strengths:</strong> Scales to very large systems;
-                      clear separation of concerns; sub-hierarchies can be
-                      developed and deployed independently.
-                    </p>
-                    <p>
-                      <strong>Weaknesses:</strong> High design complexity; deep
-                      call chains increase latency; debugging requires tracing
-                      across multiple levels.
-                    </p>
-                  </div>
-                </div>
-
-                <div class="img-placeholder">
-                  <strong>[IMAGE — Figure 5]</strong>
-                  <span
-                    >Insert image here — Hierarchical pattern diagram showing
-                    tree structure of manager and worker agents at multiple
-                    levels</span
-                  >
-                </div>
-
-                <div class="pattern-card">
-                  <div class="pattern-title">
-                    📋 Pattern 3: Blackboard (Shared Knowledge)
-                  </div>
-                  <div class="pattern-tag">Collaborative / Emergent</div>
-                  <div class="pattern-body">
-                    <p>
-                      All agents share access to a
-                      <strong>common event stream</strong> — the "blackboard".
-                      Any agent can publish observations, partial results, or
-                      hypotheses. Any agent can consume others' contributions
-                      and build on them. There is no single coordinator — the
-                      solution emerges from collective contributions.
-                    </p>
-                    <p>
-                      <strong>When to use:</strong> Problems where no single
-                      agent has complete knowledge and the best solution emerges
-                      iteratively. Examples: scientific hypothesis generation,
-                      collaborative document drafting, complex debugging where
-                      different specialist agents surface different insights.
-                    </p>
-                    <p>
-                      <strong>Strengths:</strong> Highly flexible; enables
-                      emergent behavior; no single point of failure; specialists
-                      contribute at their own pace.
-                    </p>
-                    <p>
-                      <strong>Weaknesses:</strong> Hard to reason about; can
-                      produce conflicts if agents publish contradicting
-                      information; requires careful event schema design; harder
-                      to guarantee task completion.
-                    </p>
-                  </div>
-                </div>
-
-                <div class="img-placeholder">
-                  <strong>[IMAGE — Figure 6]</strong>
-                  <span
-                    >Insert image here — Blackboard pattern diagram: multiple
-                    specialized agents all reading from and writing to a shared
-                    central event stream</span
-                  >
-                </div>
-
-                <div class="pattern-card">
-                  <div class="pattern-title">
-                    💰 Pattern 4: Market-Based (Competitive Bidding)
-                  </div>
-                  <div class="pattern-tag">Self-Organizing</div>
-                  <div class="pattern-body">
-                    <p>
-                      Tasks are published as events on an open market.
-                      <strong>Specialist agents bid</strong> for tasks based on
-                      their current capabilities, load, and confidence. A
-                      <strong>Task Allocator</strong> evaluates bids and assigns
-                      the task to the most suitable bidder, who then executes
-                      and reports results.
-                    </p>
-                    <p>
-                      <strong>When to use:</strong> Dynamic workloads where the
-                      right agent depends on current conditions (load,
-                      expertise, availability). Examples: cloud resource
-                      allocation, distributed rendering pipelines, content
-                      moderation at scale, logistics optimization.
-                    </p>
-                    <p>
-                      <strong>Strengths:</strong> Self-organizing; resilient (if
-                      one agent is overloaded, another wins the bid); naturally
-                      load-balances; encourages agent specialization.
-                    </p>
-                    <p>
-                      <strong>Weaknesses:</strong> Bidding overhead adds
-                      latency; requires agents to accurately self-assess
-                      capabilities; more complex to implement and debug than
-                      Orchestrator-Worker.
-                    </p>
-                  </div>
-                </div>
-
-                <div class="img-placeholder">
-                  <strong>[IMAGE — Figure 7]</strong>
-                  <span
-                    >Insert image here — Market-based pattern: task event
-                    published → specialist agents submit bid events → allocator
-                    assigns → winning agent executes</span
-                  >
-                </div>
-
-                <h3>Pattern Selection Guide</h3>
-                <table>
-                  <tr>
-                    <th>Pattern</th>
-                    <th>Control Model</th>
-                    <th>Best For</th>
-                    <th>Avoid When</th>
-                  </tr>
-                  <tr>
-                    <td><strong>Orchestrator-Worker</strong></td>
-                    <td>Centralized</td>
-                    <td>Known, structured pipelines</td>
-                    <td>Task decomposition is unknown upfront</td>
-                  </tr>
-                  <tr>
-                    <td><strong>Hierarchical</strong></td>
-                    <td>Multi-level</td>
-                    <td>Large enterprise with sub-domains</td>
-                    <td>Low-latency or simple tasks</td>
-                  </tr>
-                  <tr>
-                    <td><strong>Blackboard</strong></td>
-                    <td>Decentralized</td>
-                    <td>Emergent, collaborative problems</td>
-                    <td>Strict ordering or consistency required</td>
-                  </tr>
-                  <tr>
-                    <td><strong>Market-Based</strong></td>
-                    <td>Self-organizing</td>
-                    <td>Dynamic, variable workloads</td>
-                    <td>Predictable, low-volume tasks</td>
-                  </tr>
-                </table>
-              </div>
-
-              <div class="fr-block">
-                <h2>Part 5 — Apache Kafka for Agent Coordination</h2>
-                <p>
-                  The document uses <strong>Apache Kafka</strong> (Confluent's
-                  core product) as the reference event streaming platform. Kafka
-                  is the de facto standard for high-throughput, fault-tolerant
-                  event streaming in production AI systems.
-                </p>
-
-                <h3>Key Kafka Concepts</h3>
-                <div class="def-grid">
-                  <div class="def-card">
-                    <div class="def-term">📁 Topic</div>
-                    <div class="def-body">
-                      Named, partitioned event channel. Agents subscribe to
-                      relevant topics. Example: "tasks.research",
-                      "results.research", "errors.all".
-                    </div>
-                  </div>
-                  <div class="def-card">
-                    <div class="def-term">📦 Partition</div>
-                    <div class="def-body">
-                      Topics split into N partitions. Each partition is an
-                      ordered log. Multiple agent instances consume different
-                      partitions in parallel — enabling horizontal scale.
-                    </div>
-                  </div>
-                  <div class="def-card">
-                    <div class="def-term">🔖 Offset</div>
-                    <div class="def-body">
-                      Position of an event within a partition. Consumers track
-                      their offset — if a consumer crashes, it resumes from the
-                      last committed offset. No work is lost.
-                    </div>
-                  </div>
-                  <div class="def-card">
-                    <div class="def-term">👥 Consumer Group</div>
-                    <div class="def-body">
-                      N agent instances in the same group collectively consume a
-                      topic. Kafka distributes partitions evenly — natural load
-                      balancing without any orchestration code.
-                    </div>
-                  </div>
-                  <div class="def-card">
-                    <div class="def-term">🔄 Exactly-Once</div>
-                    <div class="def-body">
-                      Kafka's strongest delivery guarantee. Each event processed
-                      exactly once even across failures. Critical for financial
-                      agents, medical agents — duplicate actions could be
-                      catastrophic.
-                    </div>
-                  </div>
-                  <div class="def-card">
-                    <div class="def-term">⏳ Retention Policy</div>
-                    <div class="def-body">
-                      Events stored for configurable duration (minutes to
-                      forever). Full retention enables event replay — debugging
-                      agent misbehavior by replaying the exact same event
-                      sequence.
-                    </div>
-                  </div>
-                </div>
-
-                <h3>Sample Agent Event Structure</h3>
-                <div class="code-block">
-                  { "event_id": "evt_9a2f1b3c", "event_type": "TASK_ASSIGNED",
-                  "schema_version": "1.0", "timestamp":
-                  "2025-03-15T09:41:22.341Z", "source_agent":
-                  "orchestrator-prod-01", "target_agent": "research-worker",
-                  "correlation_id": "goal_xyz789", // ties all events for one
-                  goal together "payload": { "task_id": "task_042", "task_type":
-                  "web_research", "query": "recent advances in agentic AI 2025",
-                  "deadline": "2025-03-15T09:42:22Z", "priority": "HIGH",
-                  "context": "Part of user goal: write a research summary" } }
-                </div>
-
-                <div class="img-placeholder">
-                  <strong>[IMAGE — Figure 8]</strong>
-                  <span
-                    >Insert image here — Kafka architecture diagram: topics,
-                    partitions, producer agents, consumer agent groups with
-                    offset tracking</span
-                  >
-                </div>
-
-                <h3>Designing Agent Topics</h3>
-                <p>
-                  Well-designed topic schemas are critical for maintainable
-                  multi-agent systems. Recommended topic naming convention:
-                </p>
-                <ul>
-                  <li>
-                    <strong>agent.{agent-type}.tasks</strong> — incoming task
-                    assignments
-                  </li>
-                  <li>
-                    <strong>agent.{agent-type}.results</strong> — completed task
-                    outputs
-                  </li>
-                  <li>
-                    <strong>agent.{agent-type}.errors</strong> — failed tasks
-                    with error details
-                  </li>
-                  <li>
-                    <strong>agent.{agent-type}.status</strong> — heartbeat /
-                    health events
-                  </li>
-                  <li>
-                    <strong>workflow.{workflow-id}.events</strong> — all events
-                    for a specific goal (for tracing)
-                  </li>
-                </ul>
-              </div>
-
-              <div class="fr-block">
-                <h2>Part 6 — Building Agentic Projects: Practical Guide</h2>
-                <p>
-                  This section synthesizes the practical recommendations from
-                  the reference for implementing your own agent systems.
-                </p>
-
-                <h3>Step 1 — Define Scope and Goal</h3>
-                <p>
-                  Before writing any code, clearly define: What is the agent's
-                  objective? What are the success criteria? What tools/APIs does
-                  it need? What data sources will it use? What's the failure
-                  mode if it gets stuck?
-                </p>
-
-                <h3>Step 2 — Choose the Right Pattern</h3>
-                <p>
-                  Map your problem to one of the four patterns. Start with
-                  <strong>Orchestrator-Worker</strong> unless you have a strong
-                  reason for another — it's the easiest to implement, test, and
-                  debug. Add complexity only when the simpler pattern genuinely
-                  can't handle your use case.
-                </p>
-
-                <h3>Step 3 — Design Your Event Schema First</h3>
-                <p>
-                  Define all events before writing any agent code. For each
-                  event specify: event_type, required fields, optional fields,
-                  and which agents produce/consume it. Treat this like a
-                  contract — changing event schemas in production is painful.
-                </p>
-
-                <h3>Step 4 — Implement the Core Agent Loop</h3>
-                <div class="code-block">
-                  class Agent: def run(self): while True: # 1. Observe — get
-                  next task event event =
-                  self.event_bus.consume(self.task_topic) # 2. Recall — retrieve
-                  relevant memory context =
-                  self.memory.search(event.correlation_id) history =
-                  self.memory.get_recent(event.correlation_id) # 3. Plan —
-                  reason about what to do next plan = self.llm.plan(
-                  goal=event.payload, context=context, history=history,
-                  available_tools=self.tools.list() ) # 4. Act — execute the
-                  next action result = self.tools.execute(plan.next_action) # 5.
-                  Store — save what happened
-                  self.memory.store(event.correlation_id, result) # 6. Emit —
-                  publish result or next task if plan.is_complete:
-                  self.event_bus.publish(self.result_topic, result) else:
-                  self.event_bus.publish(self.task_topic, plan.next_task)
-                </div>
-
-                <h3>Step 5 — Add Memory Incrementally</h3>
-                <ul>
-                  <li>
-                    <strong>Start:</strong> Pass last N tool results in the LLM
-                    context window
-                  </li>
-                  <li>
-                    <strong>Add:</strong> A simple key-value store (Redis) for
-                    session state
-                  </li>
-                  <li>
-                    <strong>Scale:</strong> A vector database (Chroma, Pinecone)
-                    for semantic retrieval across sessions
-                  </li>
-                </ul>
-
-                <h3>Step 6 — Observability from Day One</h3>
-                <p>
-                  Instrument every agent action. You should be able to answer:
-                  "Why did the agent take action X at time T?" The event log is
-                  your primary debugging tool — keep it complete and searchable.
-                  Add span tracing (OpenTelemetry) to correlate events across
-                  agents using the correlation_id field.
-                </p>
-
-                <div class="callout">
-                  <strong>For Your Finals Agentic Projects:</strong> Start with
-                  the Orchestrator-Worker pattern on a simple task you
-                  understand well. Use a lightweight message queue (Redis
-                  Streams or even a simple in-memory queue) before committing to
-                  Kafka. Define clear event schemas. Build the
-                  feedback/evaluator loop early — it's what separates a fragile
-                  demo from a robust agent.
-                </div>
-
-                <div class="img-placeholder">
-                  <strong>[IMAGE — Figure 9]</strong>
-                  <span
-                    >Insert image here — Any architecture diagram from the PDF
-                    showing the recommended implementation approach, technology
-                    stack, or reference architecture for agentic projects</span
-                  >
-                </div>
-              </div>
-
-              <div class="fr-block">
-                <h2>Part 7 — Real-World Applications</h2>
-
-                <h3>Customer Support Automation</h3>
-                <p>
-                  Customer message arrives as an event → Classifier agent routes
-                  to specialist (billing, technical, returns) → Specialist
-                  researches and drafts a response → Quality agent reviews →
-                  Response delivered. EDA allows each step to run asynchronously
-                  — customers don't wait while backend agents work in parallel.
-                </p>
-
-                <h3>Software Development Pipeline</h3>
-                <p>
-                  Code commit event → Lint agent → Test runner agent → Security
-                  scanner agent → Code review agent → Deploy agent. Failures at
-                  any stage emit an error event that triggers a remediation
-                  agent. The entire pipeline is observable through the event
-                  log.
-                </p>
-
-                <h3>Healthcare Diagnostics</h3>
-                <p>
-                  Patient data event → Imaging analysis agent + Lab results
-                  agent + Medical history agent (parallel, Blackboard pattern) →
-                  Diagnostic synthesis agent → Treatment recommendation agent →
-                  Physician review. The blackboard pattern allows all
-                  specialists to contribute concurrently without blocking each
-                  other.
-                </p>
-
-                <h3>Financial Trading</h3>
-                <p>
-                  Market data stream → Analysis agents → Signal generation →
-                  Risk assessment agent → Position sizing agent → Execution
-                  agent. Kafka's ability to process millions of events/second
-                  makes it suitable for real-time trading systems where
-                  millisecond latency matters.
-                </p>
-
-                <div class="img-placeholder">
-                  <strong>[IMAGE — Figure 10]</strong>
-                  <span
-                    >Insert image here — Any real-world application diagram from
-                    the PDF showing a complete EDA + multi-agent architecture in
-                    a specific industry context</span
-                  >
-                </div>
-              </div>
             </div>
             <!-- /tab-lecture -->
 
@@ -1222,28 +1976,188 @@
             <div id="tab-lab" style="display: none">
               <div class="fr-block">
                 <h2>Laboratory Reference</h2>
-                <div class="pdf-notice">
-                  ⚠️ <strong>PDF not yet uploaded.</strong> Laboratory
-                  exercises, step-by-step guides, code templates, and grading
-                  criteria will be extracted and placed here once the PDF is
-                  uploaded.
-                </div>
-                <p>Once the PDF is uploaded, this section will include:</p>
-                <ul>
-                  <li>
-                    Laboratory exercise descriptions and learning objectives
-                  </li>
-                  <li>Starter code and scaffolding templates</li>
-                  <li>
-                    Step-by-step implementation guides for agentic projects
-                  </li>
-                  <li>Expected system architecture diagrams</li>
-                  <li>Evaluation rubric and submission requirements</li>
-                </ul>
                 <div class="callout">
-                  <strong>To populate this page:</strong> Re-upload the Finals
-                  Reference PDF in a new message and ask Claude to extract and
-                  format all laboratory content here.
+                  <strong>Note:</strong> The reference document for this subject
+                  (<em
+                    >A Guide to Event-Driven Design for Agents and Multi-Agent
+                    Systems</em
+                  >
+                  by Sean Falconer, Confluent 2025) is a technical whitepaper —
+                  it does not contain laboratory exercises, coding activities,
+                  or grading rubrics. Laboratory content comes from your
+                  instructor separately.
+                </div>
+
+                <h3>What the PDF Does Contain (Practical Guidance)</h3>
+                <p>
+                  While not a formal lab sheet, the PDF does include two
+                  hands-on worked examples and a practical implementation guide
+                  that are relevant for any agentic project:
+                </p>
+
+                <div class="pattern-card">
+                  <div class="pattern-title">
+                    🛠️ Example 1 — Multi-Agent AI SDR System
+                  </div>
+                  <div class="pattern-tag">
+                    PDF p.21 · Orchestrator-Worker Pattern
+                  </div>
+                  <div class="pattern-body">
+                    <p>
+                      An event-driven, multi-agent Sales Development
+                      Representative (SDR) workflow built with
+                      <strong>Apache Flink + AI Model Inference</strong> on
+                      Confluent Cloud. The system uses 5 specialized agents in
+                      sequence:
+                    </p>
+                    <ul>
+                      <li>
+                        <strong>Lead Ingestion Agent</strong> — captures leads
+                        from web forms, enriches with external data (Salesforce,
+                        company website), generates a scoring report
+                      </li>
+                      <li>
+                        <strong>Lead Scoring Agent</strong> — scores enriched
+                        leads, writes a summary for engagement, triggers
+                        downstream agents
+                      </li>
+                      <li>
+                        <strong>Active Outreach Agent</strong> — creates
+                        personalized outreach emails based on the lead's online
+                        presence to book meetings
+                      </li>
+                      <li>
+                        <strong>Nurture Campaign Agent</strong> — dynamically
+                        builds an email sequence based on lead origin and
+                        interest
+                      </li>
+                      <li>
+                        <strong>Send Email Agent</strong> — sends output to
+                        terminal (or a real email relay in production)
+                      </li>
+                    </ul>
+                    <p>
+                      <strong>Architecture:</strong> Lead Form → Back End →
+                      MongoDB → Confluent Cloud (Incoming Leads topic) → Flink
+                      External Model Inference → Agent Messages topic → Agent
+                      Predictions topic → 5 agents in sequence
+                    </p>
+                  </div>
+                </div>
+
+                <div class="pattern-card">
+                  <div class="pattern-title">
+                    🔬 Example 2 — Agentic RAG Research Agent
+                  </div>
+                  <div class="pattern-tag">
+                    PDF p.26 · Blackboard / Pipeline Pattern
+                  </div>
+                  <div class="pattern-body">
+                    <p>
+                      An event-driven research agent that mines source materials
+                      and uses RAG to produce a podcast interview brief. Built
+                      on Confluent Cloud + MongoDB Atlas.
+                    </p>
+                    <p><strong>Workflow (3 steps):</strong></p>
+                    <ol>
+                      <li>
+                        Stream unstructured data (website URLs, blogs, podcasts)
+                        into Confluent → retrieve text → chunk it → generate
+                        embeddings using Flink → store in MongoDB Atlas via sink
+                        connector
+                      </li>
+                      <li>
+                        For all extracted text, pull out the most interesting
+                        questions and store them (de-duplicated)
+                      </li>
+                      <li>
+                        Call the LLM to generate a research brief combining the
+                        most relevant context based on embeddings
+                      </li>
+                    </ol>
+                    <p>
+                      <strong>Agents involved:</strong> Process URLs &amp;
+                      Create Embeddings Agent → Extract Questions → Generate
+                      Research Brief Agent
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  class="fr-block"
+                  style="margin-top: 0; border: none; padding: 0"
+                >
+                  <h3>Practical Implementation Checklist (from PDF Part IV)</h3>
+                  <p>
+                    The PDF outlines these steps for building your own agentic
+                    system:
+                  </p>
+                  <table>
+                    <tr>
+                      <th>#</th>
+                      <th>Step</th>
+                      <th>Key Decision</th>
+                    </tr>
+                    <tr>
+                      <td>1</td>
+                      <td>Define scope and goal</td>
+                      <td>
+                        What is the agent's objective? What tools/APIs does it
+                        need? What's the failure mode?
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td>Choose a pattern</td>
+                      <td>
+                        Orchestrator-Worker → Hierarchical → Blackboard →
+                        Market-Based (start simple)
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>3</td>
+                      <td>Design event schema first</td>
+                      <td>
+                        Define all event types before writing agent code — treat
+                        as a contract
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>4</td>
+                      <td>Pick your stack</td>
+                      <td>
+                        Agent framework (LangGraph, AutoGen, CrewAI) + event
+                        broker (Kafka/Confluent) + vector DB (MongoDB)
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>5</td>
+                      <td>Build the core agent loop</td>
+                      <td>Observe → Recall → Plan → Act → Store → Emit</td>
+                    </tr>
+                    <tr>
+                      <td>6</td>
+                      <td>Add memory incrementally</td>
+                      <td>
+                        Start with context window → add Redis for session state
+                        → add vector DB for cross-session retrieval
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>7</td>
+                      <td>Add observability</td>
+                      <td>
+                        Instrument every agent action; use correlation IDs to
+                        trace events across agents
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+
+                <div class="callout" style="margin-top: 16px">
+                  <strong>To add your actual lab exercises here:</strong> Upload
+                  your instructor-provided lab sheet or activity document and
+                  ask Claude to extract and format the content into this tab.
                 </div>
               </div>
             </div>
@@ -1251,210 +2165,322 @@
             <!-- ===== GLOSSARY ===== -->
             <div id="tab-glossary" style="display: none">
               <div class="fr-block">
-                <h2>Key Terms & Quick Reference</h2>
+                <h2>Key Terms &amp; Quick Reference</h2>
                 <table>
                   <tr>
                     <th>Term</th>
                     <th>Definition</th>
                   </tr>
                   <tr>
+                    <td><strong>Predictive AI (Wave 1)</strong></td>
+                    <td>
+                      Traditional ML trained on historical data for narrowly
+                      defined tasks. Domain-specific, batch-based, rigid. Lacked
+                      scalability and slowed adoption. Model is bespoke per use
+                      case — adapting to a new domain meant starting from
+                      scratch.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Generative AI (Wave 2)</strong></td>
+                    <td>
+                      Foundation models (LLMs, diffusion models) trained on vast
+                      datasets — broadly capable and reusable. Fixed in time,
+                      difficult to adapt without fine-tuning, lacks
+                      domain-specific context without RAG.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Compound AI</strong></td>
+                    <td>
+                      Systems integrating generative models with programmatic
+                      logic, data retrieval mechanisms, and validation layers.
+                      Key technique is RAG (Retrieval-Augmented Generation) —
+                      dynamically pulls relevant context from a database and
+                      injects it into the LLM prompt.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>RAG (Retrieval-Augmented Generation)</strong>
+                    </td>
+                    <td>
+                      Bridges static AI and real-world needs: retrieval
+                      mechanism pulls relevant data → adds to prompt assembly →
+                      LLM generates accurate, contextualized response. Relies on
+                      fixed workflows (limitation).
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Agentic AI (Wave 3)</strong></td>
+                    <td>
+                      Autonomous systems using LLMs to drive decisions
+                      dynamically. Can reason, use tools, access memory.
+                      Variable flow vs. programmatic fixed flow. Require
+                      event-driven infrastructure to function at scale.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Autonomy Tradeoff</strong></td>
+                    <td>
+                      The spectrum from Programmatic (Fixed Flow, fully
+                      deterministic) to Agentic (Variable Flow, fully
+                      autonomous). More agentic = more adaptable, but less
+                      predictable.
+                    </td>
+                  </tr>
+                  <tr>
                     <td><strong>AI Agent</strong></td>
                     <td>
-                      An autonomous system that perceives its environment,
-                      reasons about goals, selects actions, and executes them —
-                      repeatedly until the goal is achieved
+                      Autonomous system with 9 core components: Persona (job
+                      function), Perception (sensing), Reasoning &amp;
+                      Decision-Making, Memory (short + long term), Planning,
+                      Action, Learning, Coordination &amp; Collaboration, Tool
+                      Interface.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Persona (Job Function)</strong></td>
+                    <td>
+                      Foundational agent component — defined role and expertise
+                      embedded in the system prompt. Shapes behavior by
+                      influencing the model's probability distribution over
+                      tokens.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Perception (Sensing)</strong></td>
+                    <td>
+                      How an agent gathers data from its environment — APIs,
+                      sensors, user inputs. Analogous to human senses.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Memory — Short-Term</strong></td>
+                    <td>
+                      Tracks immediate context within a conversation — stored in
+                      memory buffers during the session.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Memory — Long-Term</strong></td>
+                    <td>
+                      Historical data (user preferences, past interactions)
+                      stored in a vector database (MongoDB, Elasticsearch,
+                      Pinecone) — enables semantic search via embeddings.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Tool Interface</strong></td>
+                    <td>
+                      Bridge to specialized capabilities via modular API
+                      handlers or plugin architectures — allows dynamic,
+                      efficient extension of functionality.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Learning (Agent Component)</strong></td>
+                    <td>
+                      May involve adjusting context dynamically during prompt
+                      assembly (situational feedback, no weight changes) OR
+                      reinforcement learning (rewards/penalties). Adapting
+                      context is preferred over fine-tuning for flexibility and
+                      efficiency.
                     </td>
                   </tr>
                   <tr>
                     <td><strong>Multi-Agent System (MAS)</strong></td>
                     <td>
-                      Multiple AI agents collaborating (or competing) to solve
-                      problems too complex for a single agent
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><strong>Agentic AI</strong></td>
-                    <td>
-                      The third phase of AI — autonomous systems that plan,
-                      reason, act, and self-correct without step-by-step human
-                      guidance
+                      Network of agents collaborating (or competing) to solve
+                      complex problems. Enables: Task Delegation, Parallel
+                      Processing, Dynamic Role Allocation. Requires event-driven
+                      coordination to scale.
                     </td>
                   </tr>
                   <tr>
                     <td><strong>Event-Driven Architecture (EDA)</strong></td>
                     <td>
-                      A design paradigm where components communicate via
-                      immutable events through a broker, rather than direct API
-                      calls
+                      Design paradigm where components communicate via immutable
+                      events through a broker rather than direct synchronous API
+                      calls. Provides: Asynchronous Processing, Scalability,
+                      Loose Coupling, Real-Time Responsiveness.
                     </td>
                   </tr>
                   <tr>
                     <td><strong>Event</strong></td>
                     <td>
-                      An immutable record that something happened — includes
-                      event_type, timestamp, source, payload, and correlation_id
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><strong>Event Stream</strong></td>
-                    <td>
-                      A persistent, ordered, append-only log of events. Unlike
-                      queues, streams retain events enabling replay and audit
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><strong>Event Bus / Broker</strong></td>
-                    <td>
-                      Infrastructure routing events from producers to consumers
-                      — Kafka, RabbitMQ, AWS EventBridge, Redis Streams
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><strong>Producer</strong></td>
-                    <td>
-                      A component that publishes events. Decoupled from
-                      consumers — doesn't know or care who reacts to its events
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><strong>Consumer</strong></td>
-                    <td>
-                      A component that subscribes to and processes events.
-                      Multiple consumers can independently react to the same
-                      event
+                      Immutable record that something happened. Contains:
+                      event_id, event_type, timestamp, source_agent,
+                      target_agent, correlation_id, and payload.
                     </td>
                   </tr>
                   <tr>
                     <td><strong>Topic</strong></td>
                     <td>
-                      A named category of events (Kafka). Producers write to
-                      topics; consumers subscribe to topics
+                      Named category of events in Kafka. Producers write to
+                      topics; consumers subscribe and consume events from them.
+                      In multi-agent systems, separate topics are used for
+                      orchestration commands, worker results, and responses.
                     </td>
                   </tr>
                   <tr>
                     <td><strong>Partition</strong></td>
                     <td>
-                      A topic is split into N ordered partitions. Multiple
-                      consumers process different partitions in parallel for
-                      scale
+                      Topic split into N ordered logs. Multiple agent instances
+                      process different partitions in parallel. Same key → same
+                      partition (for stateful consistency).
                     </td>
                   </tr>
                   <tr>
                     <td><strong>Offset</strong></td>
                     <td>
-                      Consumer's position in a partition. On restart, consumer
-                      resumes from last committed offset — no events lost
+                      Consumer's position in a partition — resumes from last
+                      committed offset on restart. No events lost.
                     </td>
                   </tr>
                   <tr>
                     <td><strong>Consumer Group</strong></td>
                     <td>
-                      N instances of the same consumer collectively consuming a
-                      topic. Kafka distributes partitions evenly for load
-                      balancing
+                      N agent instances collectively consuming a topic. Kafka
+                      Consumer Rebalance Protocol distributes partitions evenly
+                      — natural load balancing, automatic fault recovery.
                     </td>
                   </tr>
                   <tr>
                     <td><strong>Exactly-Once Semantics</strong></td>
                     <td>
-                      Guarantee that each event is processed exactly once, even
-                      across failures — critical for financial/medical agents
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><strong>Event Sourcing</strong></td>
-                    <td>
-                      Storing all state changes as events — enables full replay,
-                      time-travel debugging, and complete audit trail
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><strong>CQRS</strong></td>
-                    <td>
-                      Command Query Responsibility Segregation — separate event
-                      streams for write (commands) and read (queries) paths
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><strong>Orchestrator</strong></td>
-                    <td>
-                      A controlling agent that decomposes goals into tasks and
-                      assigns them to worker agents via events
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><strong>Worker Agent</strong></td>
-                    <td>
-                      A specialist agent that executes a specific type of task
-                      assigned by an orchestrator or marketplace
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><strong>Blackboard Pattern</strong></td>
-                    <td>
-                      All agents share a common event stream — any agent can
-                      publish or consume, enabling emergent collaborative
-                      solutions
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><strong>Market-Based Pattern</strong></td>
-                    <td>
-                      Tasks posted as events; agents bid; allocator assigns to
-                      best bidder — self-organizing load balancing
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><strong>ReAct</strong></td>
-                    <td>
-                      Reason + Act — agent alternates between thinking about
-                      what to do (Thought) and doing it (Action), observing
-                      results at each step
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><strong>Tool Calling</strong></td>
-                    <td>
-                      LLM's ability to invoke external functions (web search,
-                      code execution, APIs) during the agent loop
+                      Each event processed exactly once even across failures.
+                      Critical for financial/medical agents where duplicate
+                      actions could be catastrophic.
                     </td>
                   </tr>
                   <tr>
                     <td><strong>Correlation ID</strong></td>
                     <td>
-                      A unique identifier linking all events belonging to one
-                      goal — enables end-to-end tracing across multiple agents
+                      Unique identifier linking all events belonging to one goal
+                      — enables end-to-end tracing across multiple agents.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Orchestrator-Worker Pattern</strong></td>
+                    <td>
+                      Central orchestrator distributes tasks via Kafka
+                      partitions (keying strategy); workers form consumer
+                      groups; Consumer Rebalance Protocol handles scaling and
+                      fault recovery automatically.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Hierarchical Pattern</strong></td>
+                    <td>
+                      Orchestrator-Worker applied recursively — each non-leaf
+                      node is the orchestrator for its subtree. Higher agents
+                      publish objectives; mid-tier agents break them down; leaf
+                      agents execute and publish results.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Blackboard Pattern</strong></td>
+                    <td>
+                      Implemented as a Kafka topic — all agents publish
+                      knowledge updates as events; others subscribe dynamically.
+                      Acts as a memory layer with real-time collaboration and no
+                      explicit state tracking between agents.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Market-Based Pattern</strong></td>
+                    <td>
+                      Tasks on Bid/Ask Kafka topics; Market Maker matches bids;
+                      winning agent gets Transaction Topic event. Removes
+                      quadratic complexity of peer-to-peer communication.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Confluent Data Streaming Platform</strong></td>
+                    <td>
+                      The "central nervous system" for agentic systems. Four
+                      pillars: Stream (Kafka/Kora — real-time event flow),
+                      Connect (120+ connectors — integrates all data sources),
+                      Process (Flink — enriches data in motion, enables Agentic
+                      RAG), Govern (lineage, quality, compliance).
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Apache Kafka</strong></td>
+                    <td>
+                      Distributed event streaming platform — industry standard
+                      for high-throughput, fault-tolerant event streaming.
+                      Confluent's cloud-native version runs on the Kora engine.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Apache Flink</strong></td>
+                    <td>
+                      Distributed stream processing engine — used alongside
+                      Kafka for stateful data transformations, enrichment, and
+                      AI model inference on streaming data. Enables Agentic RAG
+                      by processing context at query time.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Shift Left</strong></td>
+                    <td>
+                      Processing data closer to the source — reducing latency
+                      and improving AI performance by avoiding round-trips to a
+                      centralized data store.
                     </td>
                   </tr>
                   <tr>
                     <td><strong>Vector Database</strong></td>
                     <td>
                       Storage system for embeddings — enables semantic search
-                      for long-term agent memory. Examples: Pinecone, Chroma,
-                      Weaviate
+                      for long-term agent memory. Examples: MongoDB,
+                      Elasticsearch, Pinecone. Used for RAG retrieval of
+                      relevant historical context.
                     </td>
                   </tr>
                   <tr>
-                    <td><strong>Apache Kafka</strong></td>
+                    <td><strong>Idempotent Processing</strong></td>
                     <td>
-                      Distributed event streaming platform by Confluent —
-                      industry standard for high-throughput, fault-tolerant
-                      event streaming
+                      Retried operations do not produce duplicate results —
+                      critical for agent fault recovery where the same event may
+                      be processed more than once.
                     </td>
                   </tr>
                   <tr>
-                    <td><strong>Predictive AI</strong></td>
+                    <td><strong>Dead-Letter Queue</strong></td>
                     <td>
-                      Phase 1 — AI trained on historical data to classify or
-                      predict. Reactive and narrowly scoped (e.g., fraud
-                      detection)
+                      Captures events that could not be processed after repeated
+                      retries — allows human oversight for failure cases in
+                      agentic systems.
                     </td>
                   </tr>
                   <tr>
-                    <td><strong>Generative AI</strong></td>
+                    <td><strong>Reworkd</strong></td>
                     <td>
-                      Phase 2 — AI that creates new content (text, images, code)
-                      from learned distributions. Examples: GPT-4, DALL·E
+                      Company using event-driven multi-agent system for web
+                      scraping — AI agents write extraction code;
+                      test/validation agents verify it; all operate
+                      asynchronously in a continuous feedback loop.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Airy</strong></td>
+                    <td>
+                      Company using AI-powered copilots with natural language
+                      interface — agents convert plain language to Flink SQL
+                      queries; real-time data streaming platform provides live
+                      context.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Agent Taskflow</strong></td>
+                    <td>
+                      No-code drag-and-drop platform for building multi-agent
+                      workflows — memory, knowledge bases, and tools accessible
+                      in a few clicks; built on a data streaming platform for
+                      real-time context.
                     </td>
                   </tr>
                 </table>
@@ -1475,7 +2501,6 @@
       buildNavbar("ai");
       buildFooter();
 
-      // Build two-button sidebar
       (function () {
         var c = document.getElementById("sidebarNav");
         if (!c) return;
