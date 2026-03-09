@@ -6,38 +6,153 @@
     <title>Study Hub — CS Professional Elective 4</title>
     <link rel="stylesheet" href="style.css" />
     <style>
-      .coming-soon-wrap {
+      .section-cards-row {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 50vh;
-        text-align: center;
-        padding: 48px 20px;
+        gap: 14px;
+        margin-top: 8px;
       }
-      .cs-back-row {
-        margin-top: 16px;
+      .section-card {
         display: flex;
-        gap: 10px;
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-      .btn-outline-cs {
-        font-size: 13px;
-        padding: 12px 24px;
-        text-decoration: none;
-        display: inline-flex;
         align-items: center;
-        gap: 8px;
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        color: var(--muted);
+        gap: 20px;
         background: var(--surface);
-        transition: all 0.15s;
+        border: 1.5px solid var(--border);
+        border-radius: 16px;
+        padding: 24px;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.2s;
+        cursor: pointer;
       }
-      .btn-outline-cs:hover {
+      .section-card:hover {
         border-color: var(--accent);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 28px rgba(26, 71, 42, 0.1);
+      }
+      .sc-icon {
+        font-size: 36px;
+        flex-shrink: 0;
+        width: 56px;
+        height: 56px;
+        background: var(--tag-bg);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .sc-content {
+        flex: 1;
+      }
+      .sc-title {
+        font-family: "Lora", serif;
+        font-size: 19px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 5px;
+      }
+      .sc-desc {
+        font-size: 13.5px;
+        color: var(--muted);
+        line-height: 1.55;
+        margin-bottom: 8px;
+      }
+      .sc-meta {
+        font-size: 11px;
+        font-family: "IBM Plex Mono", monospace;
         color: var(--accent);
+        background: var(--tag-bg);
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 100px;
+      }
+      .sc-arrow {
+        font-size: 22px;
+        color: var(--muted);
+        flex-shrink: 0;
+        transition: transform 0.2s;
+      }
+      .section-card:hover .sc-arrow {
+        transform: translateX(4px);
+        color: var(--accent);
+      }
+      .e4-topics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 14px;
+        margin-top: 8px;
+      }
+      .e4-topic-card {
+        display: flex;
+        flex-direction: column;
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: 14px;
+        padding: 20px;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.2s;
+      }
+      .e4-topic-card:hover {
+        border-color: var(--accent);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 22px rgba(26, 71, 42, 0.09);
+      }
+      .e4-tc-top {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+      .e4-tc-icon {
+        font-size: 24px;
+        width: 44px;
+        height: 44px;
+        background: var(--tag-bg);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .e4-tc-name {
+        font-family: "Lora", serif;
+        font-size: 15.5px;
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1.3;
+      }
+      .e4-tc-summary {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.6;
+        flex: 1;
+      }
+      .e4-tc-footer {
+        margin-top: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .e4-tc-module {
+        font-size: 10px;
+        font-family: "IBM Plex Mono", monospace;
+        color: var(--accent);
+        background: var(--tag-bg);
+        padding: 2px 9px;
+        border-radius: 100px;
+      }
+      .e4-tc-arrow {
+        font-size: 16px;
+        color: var(--muted);
+      }
+      .mod-label {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--muted);
+        padding: 16px 0 8px;
       }
     </style>
   </head>
@@ -48,7 +163,9 @@
         <aside class="sidebar" id="sidebar">
           <div class="sidebar-header">
             <div class="brand">
-              <div class="brand-icon">💡</div>
+              <div class="brand-icon" title="CS Professional Elective 4">
+                📊
+              </div>
               <div>
                 <div class="brand-name">STUDY HUB</div>
                 <div class="brand-sub">CS Professional Elective 4</div>
@@ -62,32 +179,124 @@
           id="sidebarOverlay"
           onclick="closeSidebar()"
         ></div>
+
         <main class="main">
           <div class="main-inner animate-in">
-            <div class="coming-soon-wrap">
-              <div class="cs-icon">🚧</div>
-              <h2 class="cs-title">Coming Soon</h2>
-              <div class="cs-subject-name">💡 CS Professional Elective 4</div>
-              <p class="cs-desc">
-                Content for this subject is being prepared. Check back soon —
-                topics, flashcards, and quizzes will be added here.
+            <div class="subject-hero">
+              <div class="home-tag">📊 CS Professional Elective 4</div>
+              <h1 class="home-title">
+                Master <em>Advanced Data Analytics</em><br />from the Ground Up
+              </h1>
+              <p class="home-desc">
+                Read lecture notes, study sub-topics, flip flashcards, and quiz
+                yourself — all Elec4 topics in one place.
               </p>
-              <div class="cs-back-row">
-                <a
-                  class="btn-get-started"
-                  href="home.html"
-                  style="font-size: 13px; padding: 12px 28px"
-                  >← Back to Subjects</a
-                >
-                <a class="btn-outline-cs" href="ai.html">🤖 Try AI Topics</a>
+              <div class="home-action-row">
+                <a class="btn-outline" href="home.html">← Back to Subjects</a>
               </div>
+            </div>
+
+            <div class="mod-label">
+              Module 01 — Introduction to Advanced Data Analytics
+            </div>
+            <div class="e4-topics-grid">
+              <a
+                class="e4-topic-card"
+                href="topic-e4-what-is-data-analytics.html"
+              >
+                <div class="e4-tc-top">
+                  <div class="e4-tc-icon">📊</div>
+                  <div class="e4-tc-name">What is Data Analytics?</div>
+                </div>
+                <div class="e4-tc-summary">
+                  The definition of data analytics, its systematic process, and
+                  how advanced analytics differs from basic analytics —
+                  including key characteristics and capabilities.
+                </div>
+                <div class="e4-tc-footer">
+                  <span class="e4-tc-module">Module 01</span>
+                  <span class="e4-tc-arrow">→</span>
+                </div>
+              </a>
+              <a
+                class="e4-topic-card"
+                href="topic-e4-types-of-data-analytics.html"
+              >
+                <div class="e4-tc-top">
+                  <div class="e4-tc-icon">🔍</div>
+                  <div class="e4-tc-name">Types of Data Analytics</div>
+                </div>
+                <div class="e4-tc-summary">
+                  The four types — Descriptive, Diagnostic, Predictive, and
+                  Prescriptive — each answering a different question and using
+                  different techniques.
+                </div>
+                <div class="e4-tc-footer">
+                  <span class="e4-tc-module">Module 01</span>
+                  <span class="e4-tc-arrow">→</span>
+                </div>
+              </a>
+              <a
+                class="e4-topic-card"
+                href="topic-e4-role-in-organizations.html"
+              >
+                <div class="e4-tc-top">
+                  <div class="e4-tc-icon">🏢</div>
+                  <div class="e4-tc-name">Role in Organizations</div>
+                </div>
+                <div class="e4-tc-summary">
+                  How advanced analytics transforms organizations from
+                  traditional to data-driven — key components, structural
+                  characteristics, and strategic advantages.
+                </div>
+                <div class="e4-tc-footer">
+                  <span class="e4-tc-module">Module 01</span>
+                  <span class="e4-tc-arrow">→</span>
+                </div>
+              </a>
+              <a class="e4-topic-card" href="topic-e4-ethics-data-use.html">
+                <div class="e4-tc-top">
+                  <div class="e4-tc-icon">⚖️</div>
+                  <div class="e4-tc-name">Ethics & Responsible Data Use</div>
+                </div>
+                <div class="e4-tc-summary">
+                  Data privacy, accuracy, bias in analysis, responsible
+                  interpretation of results, and the ethical obligations of data
+                  professionals.
+                </div>
+                <div class="e4-tc-footer">
+                  <span class="e4-tc-module">Module 01</span>
+                  <span class="e4-tc-arrow">→</span>
+                </div>
+              </a>
+            </div>
+
+            <div class="mod-label">Module 02 — Data Analytics</div>
+            <div class="e4-topics-grid">
+              <a
+                class="e4-topic-card"
+                href="topic-e4-data-analytics-lifecycle.html"
+              >
+                <div class="e4-tc-top">
+                  <div class="e4-tc-icon">🔄</div>
+                  <div class="e4-tc-name">Data Analytics Lifecycle</div>
+                </div>
+                <div class="e4-tc-summary">
+                  The 6-step lifecycle: Problem Definition, Data Collection,
+                  Data Cleaning & Preparation, Data Analysis & Modeling,
+                  Visualization & Interpretation, and Decision-Making & Action.
+                </div>
+                <div class="e4-tc-footer">
+                  <span class="e4-tc-module">Module 02</span>
+                  <span class="e4-tc-arrow">→</span>
+                </div>
+              </a>
             </div>
           </div>
         </main>
       </div>
     </div>
 
-    <!-- FIXED FOOTER -->
     <footer class="site-footer" id="site-footer"></footer>
 
     <script src="data.js"></script>
@@ -97,7 +306,7 @@
       buildNavbar("elec4");
       buildFooter();
       buildSidebarToggleBtn();
-      buildGlobalSidebar("elec4");
+      buildElec4SubjectSidebar();
     </script>
   </body>
 </html>
